@@ -72,6 +72,16 @@ export default function HomePage() {
     return endMinutes - startMinutes;
   };
 
+  const formatDuration = (minutes: number): string => {
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    if (hours > 0) {
+      return `${hours}h ${mins}m`;
+    } else {
+      return `0h:${mins}m`;
+    }
+  };
+
 
   const downloadTripsAsJson = () => {
     const dataStr = JSON.stringify(filteredTrips, null, 2);
@@ -251,7 +261,7 @@ export default function HomePage() {
                                     {trip.id}
                                   </span>
                                   <span className="text-white/90 text-xs ml-2 whitespace-nowrap">
-                                    {durationMinutes}m ({Math.floor(durationMinutes / 60)}h)
+                                    {formatDuration(durationMinutes)}
                                   </span>
                                 </div>
                               </div>
@@ -265,7 +275,7 @@ export default function HomePage() {
                               <div>
                                 <span className="text-slate-400">Duration</span>
                                 <div className="text-blue-300 font-semibold">
-                                  {durationMinutes} minutes
+                                  {formatDuration(durationMinutes)}
                                 </div>
                               </div>
                               <div>
@@ -311,14 +321,15 @@ export default function HomePage() {
             <div className="text-slate-400 text-sm mb-2">Avg Duration</div>
             <div className="text-2xl font-bold text-purple-400">
               {filteredTrips.length > 0
-                ? Math.round(
-                    filteredTrips.reduce(
-                      (acc, t) => acc + calculateDuration(t.start_minutes, t.end_minutes),
-                      0
-                    ) / filteredTrips.length
+                ? formatDuration(
+                    Math.round(
+                      filteredTrips.reduce(
+                        (acc, t) => acc + calculateDuration(t.start_minutes, t.end_minutes),
+                        0
+                      ) / filteredTrips.length
+                    )
                   )
-                : 0}
-              m
+                : "0h:0m"}
             </div>
           </div>
           <div className="bg-gradient-to-br from-slate-700 to-slate-800 rounded-lg p-4 border border-slate-600">
