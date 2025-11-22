@@ -1,0 +1,3485 @@
+[
+  {
+    "id": "333001",
+    "start_station": "006",
+    "end_station": "005",
+    "start_time": "05:00",
+    "end_time": "05:30",
+    "start_minutes": 300,
+    "end_minutes": 330
+  },
+  {
+    "id": "110001",
+    "start_station": "001",
+    "end_station": "004",
+    "start_time": "05:10",
+    "end_time": "07:45",
+    "start_minutes": 310,
+    "end_minutes": 465
+  },
+  {
+    "id": "330001",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "05:10",
+    "end_time": "13:00",
+    "start_minutes": 310,
+    "end_minutes": 780
+  },
+  {
+    "id": "331002",
+    "start_station": "002",
+    "end_station": "001",
+    "start_time": "05:15",
+    "end_time": "05:30",
+    "start_minutes": 315,
+    "end_minutes": 330
+  },
+  {
+    "id": "170008",
+    "start_station": "002",
+    "end_station": "005",
+    "start_time": "05:15",
+    "end_time": "07:00",
+    "start_minutes": 315,
+    "end_minutes": 420
+  },
+  {
+    "id": "170003",
+    "start_station": "001",
+    "end_station": "005",
+    "start_time": "05:30",
+    "end_time": "07:00",
+    "start_minutes": 330,
+    "end_minutes": 420
+  },
+  {
+    "id": "170007",
+    "start_station": "001",
+    "end_station": "006",
+    "start_time": "05:30",
+    "end_time": "07:00",
+    "start_minutes": 330,
+    "end_minutes": 420
+  },
+  {
+    "id": "170009",
+    "start_station": "001",
+    "end_station": "005",
+    "start_time": "05:30",
+    "end_time": "07:00",
+    "start_minutes": 330,
+    "end_minutes": 420
+  },
+  {
+    "id": "140001",
+    "start_station": "005",
+    "end_station": "004",
+    "start_time": "05:30",
+    "end_time": "08:50",
+    "start_minutes": 330,
+    "end_minutes": 530
+  },
+  {
+    "id": "332001",
+    "start_station": "003",
+    "end_station": "003",
+    "start_time": "06:00",
+    "end_time": "07:00",
+    "start_minutes": 360,
+    "end_minutes": 420
+  },
+  {
+    "id": "332003",
+    "start_station": "003",
+    "end_station": "003",
+    "start_time": "06:00",
+    "end_time": "07:00",
+    "start_minutes": 360,
+    "end_minutes": 420
+  },
+  {
+    "id": "332005",
+    "start_station": "003",
+    "end_station": "003",
+    "start_time": "06:00",
+    "end_time": "07:15",
+    "start_minutes": 360,
+    "end_minutes": 435
+  },
+  {
+    "id": "330003",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "06:00",
+    "end_time": "07:20",
+    "start_minutes": 360,
+    "end_minutes": 440
+  },
+  {
+    "id": "280001",
+    "start_station": "003",
+    "end_station": "007",
+    "start_time": "06:00",
+    "end_time": "08:00",
+    "start_minutes": 360,
+    "end_minutes": 480
+  },
+  {
+    "id": "120001",
+    "start_station": "004",
+    "end_station": "001",
+    "start_time": "06:00",
+    "end_time": "08:30",
+    "start_minutes": 360,
+    "end_minutes": 510
+  },
+  {
+    "id": "110002",
+    "start_station": "001",
+    "end_station": "004",
+    "start_time": "06:00",
+    "end_time": "08:50",
+    "start_minutes": 360,
+    "end_minutes": 530
+  },
+  {
+    "id": "330006",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "06:15",
+    "end_time": "07:15",
+    "start_minutes": 375,
+    "end_minutes": 435
+  },
+  {
+    "id": "331004",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "06:15",
+    "end_time": "07:30",
+    "start_minutes": 375,
+    "end_minutes": 450
+  },
+  {
+    "id": "331003",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "06:15",
+    "end_time": "07:40",
+    "start_minutes": 375,
+    "end_minutes": 460
+  },
+  {
+    "id": "332013",
+    "start_station": "003",
+    "end_station": "001",
+    "start_time": "06:15",
+    "end_time": "08:05",
+    "start_minutes": 375,
+    "end_minutes": 485
+  },
+  {
+    "id": "331010",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "06:15",
+    "end_time": "14:00",
+    "start_minutes": 375,
+    "end_minutes": 840
+  },
+  {
+    "id": "332014",
+    "start_station": "003",
+    "end_station": "003",
+    "start_time": "06:20",
+    "end_time": "06:30",
+    "start_minutes": 380,
+    "end_minutes": 390
+  },
+  {
+    "id": "331015",
+    "start_station": "002",
+    "end_station": "001",
+    "start_time": "06:30",
+    "end_time": "07:00",
+    "start_minutes": 390,
+    "end_minutes": 420
+  },
+  {
+    "id": "335002",
+    "start_station": "008",
+    "end_station": "008",
+    "start_time": "06:30",
+    "end_time": "07:00",
+    "start_minutes": 390,
+    "end_minutes": 420
+  },
+  {
+    "id": "332015",
+    "start_station": "003",
+    "end_station": "001",
+    "start_time": "06:30",
+    "end_time": "07:15",
+    "start_minutes": 390,
+    "end_minutes": 435
+  },
+  {
+    "id": "330014",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "06:30",
+    "end_time": "07:20",
+    "start_minutes": 390,
+    "end_minutes": 440
+  },
+  {
+    "id": "331013",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "06:30",
+    "end_time": "07:20",
+    "start_minutes": 390,
+    "end_minutes": 440
+  },
+  {
+    "id": "330009",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "06:30",
+    "end_time": "07:30",
+    "start_minutes": 390,
+    "end_minutes": 450
+  },
+  {
+    "id": "331011",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "06:30",
+    "end_time": "07:30",
+    "start_minutes": 390,
+    "end_minutes": 450
+  },
+  {
+    "id": "331016",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "06:30",
+    "end_time": "07:30",
+    "start_minutes": 390,
+    "end_minutes": 450
+  },
+  {
+    "id": "333002",
+    "start_station": "006",
+    "end_station": "006",
+    "start_time": "06:30",
+    "end_time": "07:30",
+    "start_minutes": 390,
+    "end_minutes": 450
+  },
+  {
+    "id": "331014",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "06:30",
+    "end_time": "07:45",
+    "start_minutes": 390,
+    "end_minutes": 465
+  },
+  {
+    "id": "330010",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "06:30",
+    "end_time": "07:50",
+    "start_minutes": 390,
+    "end_minutes": 470
+  },
+  {
+    "id": "334001",
+    "start_station": "007",
+    "end_station": "007",
+    "start_time": "06:30",
+    "end_time": "08:00",
+    "start_minutes": 390,
+    "end_minutes": 480
+  },
+  {
+    "id": "332017",
+    "start_station": "003",
+    "end_station": "003",
+    "start_time": "06:45",
+    "end_time": "07:15",
+    "start_minutes": 405,
+    "end_minutes": 435
+  },
+  {
+    "id": "332019",
+    "start_station": "003",
+    "end_station": "003",
+    "start_time": "06:45",
+    "end_time": "07:15",
+    "start_minutes": 405,
+    "end_minutes": 435
+  },
+  {
+    "id": "332021",
+    "start_station": "003",
+    "end_station": "003",
+    "start_time": "06:45",
+    "end_time": "07:15",
+    "start_minutes": 405,
+    "end_minutes": 435
+  },
+  {
+    "id": "330019",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "06:45",
+    "end_time": "07:40",
+    "start_minutes": 405,
+    "end_minutes": 460
+  },
+  {
+    "id": "333063",
+    "start_station": "003",
+    "end_station": "003",
+    "start_time": "06:45",
+    "end_time": "08:30",
+    "start_minutes": 405,
+    "end_minutes": 510
+  },
+  {
+    "id": "330021",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "06:55",
+    "end_time": "07:30",
+    "start_minutes": 415,
+    "end_minutes": 450
+  },
+  {
+    "id": "331021",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "07:00",
+    "end_time": "07:20",
+    "start_minutes": 420,
+    "end_minutes": 440
+  },
+  {
+    "id": "332002",
+    "start_station": "003",
+    "end_station": "003",
+    "start_time": "07:00",
+    "end_time": "07:20",
+    "start_minutes": 420,
+    "end_minutes": 440
+  },
+  {
+    "id": "333005",
+    "start_station": "005",
+    "end_station": "005",
+    "start_time": "07:00",
+    "end_time": "07:20",
+    "start_minutes": 420,
+    "end_minutes": 440
+  },
+  {
+    "id": "330025",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "07:00",
+    "end_time": "07:30",
+    "start_minutes": 420,
+    "end_minutes": 450
+  },
+  {
+    "id": "330028",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "07:00",
+    "end_time": "07:30",
+    "start_minutes": 420,
+    "end_minutes": 450
+  },
+  {
+    "id": "330032",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "07:00",
+    "end_time": "07:40",
+    "start_minutes": 420,
+    "end_minutes": 460
+  },
+  {
+    "id": "331028",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "07:00",
+    "end_time": "07:40",
+    "start_minutes": 420,
+    "end_minutes": 460
+  },
+  {
+    "id": "331025",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "07:00",
+    "end_time": "07:50",
+    "start_minutes": 420,
+    "end_minutes": 470
+  },
+  {
+    "id": "331023",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "07:00",
+    "end_time": "07:55",
+    "start_minutes": 420,
+    "end_minutes": 475
+  },
+  {
+    "id": "330024",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "07:00",
+    "end_time": "08:00",
+    "start_minutes": 420,
+    "end_minutes": 480
+  },
+  {
+    "id": "330030",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "07:00",
+    "end_time": "08:00",
+    "start_minutes": 420,
+    "end_minutes": 480
+  },
+  {
+    "id": "331026",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "07:00",
+    "end_time": "08:00",
+    "start_minutes": 420,
+    "end_minutes": 480
+  },
+  {
+    "id": "335003",
+    "start_station": "008",
+    "end_station": "008",
+    "start_time": "07:00",
+    "end_time": "08:00",
+    "start_minutes": 420,
+    "end_minutes": 480
+  },
+  {
+    "id": "332004",
+    "start_station": "003",
+    "end_station": "001",
+    "start_time": "07:00",
+    "end_time": "08:15",
+    "start_minutes": 420,
+    "end_minutes": 495
+  },
+  {
+    "id": "110004",
+    "start_station": "001",
+    "end_station": "004",
+    "start_time": "07:00",
+    "end_time": "09:45",
+    "start_minutes": 420,
+    "end_minutes": 585
+  },
+  {
+    "id": "330036",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "07:10",
+    "end_time": "07:25",
+    "start_minutes": 430,
+    "end_minutes": 445
+  },
+  {
+    "id": "333007",
+    "start_station": "006",
+    "end_station": "006",
+    "start_time": "07:10",
+    "end_time": "07:30",
+    "start_minutes": 430,
+    "end_minutes": 450
+  },
+  {
+    "id": "331031",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "07:10",
+    "end_time": "08:05",
+    "start_minutes": 430,
+    "end_minutes": 485
+  },
+  {
+    "id": "331032",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "07:10",
+    "end_time": "08:10",
+    "start_minutes": 430,
+    "end_minutes": 490
+  },
+  {
+    "id": "330007",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "07:15",
+    "end_time": "07:30",
+    "start_minutes": 435,
+    "end_minutes": 450
+  },
+  {
+    "id": "332006",
+    "start_station": "003",
+    "end_station": "003",
+    "start_time": "07:15",
+    "end_time": "07:40",
+    "start_minutes": 435,
+    "end_minutes": 460
+  },
+  {
+    "id": "332018",
+    "start_station": "003",
+    "end_station": "003",
+    "start_time": "07:15",
+    "end_time": "07:40",
+    "start_minutes": 435,
+    "end_minutes": 460
+  },
+  {
+    "id": "332020",
+    "start_station": "003",
+    "end_station": "003",
+    "start_time": "07:15",
+    "end_time": "07:40",
+    "start_minutes": 435,
+    "end_minutes": 460
+  },
+  {
+    "id": "332022",
+    "start_station": "003",
+    "end_station": "003",
+    "start_time": "07:15",
+    "end_time": "07:40",
+    "start_minutes": 435,
+    "end_minutes": 460
+  },
+  {
+    "id": "330015",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "07:20",
+    "end_time": "07:40",
+    "start_minutes": 440,
+    "end_minutes": 460
+  },
+  {
+    "id": "333009",
+    "start_station": "005",
+    "end_station": "005",
+    "start_time": "07:20",
+    "end_time": "07:40",
+    "start_minutes": 440,
+    "end_minutes": 460
+  },
+  {
+    "id": "333011",
+    "start_station": "005",
+    "end_station": "005",
+    "start_time": "07:20",
+    "end_time": "07:40",
+    "start_minutes": 440,
+    "end_minutes": 460
+  },
+  {
+    "id": "333012",
+    "start_station": "005",
+    "end_station": "005",
+    "start_time": "07:20",
+    "end_time": "07:40",
+    "start_minutes": 440,
+    "end_minutes": 460
+  },
+  {
+    "id": "331035",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "07:20",
+    "end_time": "07:45",
+    "start_minutes": 440,
+    "end_minutes": 465
+  },
+  {
+    "id": "332023",
+    "start_station": "003",
+    "end_station": "003",
+    "start_time": "07:20",
+    "end_time": "07:50",
+    "start_minutes": 440,
+    "end_minutes": 470
+  },
+  {
+    "id": "331037",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "07:20",
+    "end_time": "07:55",
+    "start_minutes": 440,
+    "end_minutes": 475
+  },
+  {
+    "id": "330004",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "07:20",
+    "end_time": "08:00",
+    "start_minutes": 440,
+    "end_minutes": 480
+  },
+  {
+    "id": "330038",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "07:20",
+    "end_time": "08:00",
+    "start_minutes": 440,
+    "end_minutes": 480
+  },
+  {
+    "id": "333008",
+    "start_station": "005",
+    "end_station": "005",
+    "start_time": "07:20",
+    "end_time": "08:00",
+    "start_minutes": 440,
+    "end_minutes": 480
+  },
+  {
+    "id": "331022",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "07:20",
+    "end_time": "08:15",
+    "start_minutes": 440,
+    "end_minutes": 495
+  },
+  {
+    "id": "331039",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "07:20",
+    "end_time": "08:30",
+    "start_minutes": 440,
+    "end_minutes": 510
+  },
+  {
+    "id": "330037",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "07:25",
+    "end_time": "08:00",
+    "start_minutes": 445,
+    "end_minutes": 480
+  },
+  {
+    "id": "330022",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "07:30",
+    "end_time": "07:40",
+    "start_minutes": 450,
+    "end_minutes": 460
+  },
+  {
+    "id": "330029",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "07:30",
+    "end_time": "07:45",
+    "start_minutes": 450,
+    "end_minutes": 465
+  },
+  {
+    "id": "331005",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "07:30",
+    "end_time": "07:50",
+    "start_minutes": 450,
+    "end_minutes": 470
+  },
+  {
+    "id": "330008",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "07:30",
+    "end_time": "08:00",
+    "start_minutes": 450,
+    "end_minutes": 480
+  },
+  {
+    "id": "330026",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "07:30",
+    "end_time": "08:00",
+    "start_minutes": 450,
+    "end_minutes": 480
+  },
+  {
+    "id": "333013",
+    "start_station": "006",
+    "end_station": "006",
+    "start_time": "07:30",
+    "end_time": "08:00",
+    "start_minutes": 450,
+    "end_minutes": 480
+  },
+  {
+    "id": "331041",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "07:30",
+    "end_time": "08:05",
+    "start_minutes": 450,
+    "end_minutes": 485
+  },
+  {
+    "id": "331012",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "07:30",
+    "end_time": "08:15",
+    "start_minutes": 450,
+    "end_minutes": 495
+  },
+  {
+    "id": "330039",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "07:30",
+    "end_time": "08:30",
+    "start_minutes": 450,
+    "end_minutes": 510
+  },
+  {
+    "id": "330033",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "07:40",
+    "end_time": "07:50",
+    "start_minutes": 460,
+    "end_minutes": 470
+  },
+  {
+    "id": "330016",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "07:40",
+    "end_time": "08:00",
+    "start_minutes": 460,
+    "end_minutes": 480
+  },
+  {
+    "id": "330020",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "07:40",
+    "end_time": "08:00",
+    "start_minutes": 460,
+    "end_minutes": 480
+  },
+  {
+    "id": "330023",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "07:40",
+    "end_time": "08:00",
+    "start_minutes": 460,
+    "end_minutes": 480
+  },
+  {
+    "id": "332024",
+    "start_station": "003",
+    "end_station": "003",
+    "start_time": "07:40",
+    "end_time": "08:00",
+    "start_minutes": 460,
+    "end_minutes": 480
+  },
+  {
+    "id": "331029",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "07:40",
+    "end_time": "08:05",
+    "start_minutes": 460,
+    "end_minutes": 485
+  },
+  {
+    "id": "333015",
+    "start_station": "006",
+    "end_station": "005",
+    "start_time": "07:40",
+    "end_time": "08:10",
+    "start_minutes": 460,
+    "end_minutes": 490
+  },
+  {
+    "id": "333016",
+    "start_station": "005",
+    "end_station": "005",
+    "start_time": "07:40",
+    "end_time": "08:10",
+    "start_minutes": 460,
+    "end_minutes": 490
+  },
+  {
+    "id": "333017",
+    "start_station": "005",
+    "end_station": "005",
+    "start_time": "07:40",
+    "end_time": "08:10",
+    "start_minutes": 460,
+    "end_minutes": 490
+  },
+  {
+    "id": "333010",
+    "start_station": "005",
+    "end_station": "005",
+    "start_time": "07:40",
+    "end_time": "08:15",
+    "start_minutes": 460,
+    "end_minutes": 495
+  },
+  {
+    "id": "331047",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "07:40",
+    "end_time": "08:30",
+    "start_minutes": 460,
+    "end_minutes": 510
+  },
+  {
+    "id": "332025",
+    "start_station": "003",
+    "end_station": "003",
+    "start_time": "07:45",
+    "end_time": "08:00",
+    "start_minutes": 465,
+    "end_minutes": 480
+  },
+  {
+    "id": "330041",
+    "start_station": "001",
+    "end_station": "002",
+    "start_time": "07:45",
+    "end_time": "08:30",
+    "start_minutes": 465,
+    "end_minutes": 510
+  },
+  {
+    "id": "331036",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "07:45",
+    "end_time": "08:30",
+    "start_minutes": 465,
+    "end_minutes": 510
+  },
+  {
+    "id": "331048",
+    "start_station": "002",
+    "end_station": "001",
+    "start_time": "07:45",
+    "end_time": "08:30",
+    "start_minutes": 465,
+    "end_minutes": 510
+  },
+  {
+    "id": "330034",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "07:50",
+    "end_time": "08:05",
+    "start_minutes": 470,
+    "end_minutes": 485
+  },
+  {
+    "id": "330011",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "07:50",
+    "end_time": "08:10",
+    "start_minutes": 470,
+    "end_minutes": 490
+  },
+  {
+    "id": "331040",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "07:50",
+    "end_time": "08:30",
+    "start_minutes": 470,
+    "end_minutes": 510
+  },
+  {
+    "id": "331038",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "07:55",
+    "end_time": "08:20",
+    "start_minutes": 475,
+    "end_minutes": 500
+  },
+  {
+    "id": "331024",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "07:55",
+    "end_time": "08:30",
+    "start_minutes": 475,
+    "end_minutes": 510
+  },
+  {
+    "id": "330044",
+    "start_station": "001",
+    "end_station": "002",
+    "start_time": "08:00",
+    "end_time": "08:30",
+    "start_minutes": 480,
+    "end_minutes": 510
+  },
+  {
+    "id": "330042",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "08:00",
+    "end_time": "09:00",
+    "start_minutes": 480,
+    "end_minutes": 540
+  },
+  {
+    "id": "200001",
+    "start_station": "007",
+    "end_station": "001",
+    "start_time": "08:00",
+    "end_time": "10:20",
+    "start_minutes": 480,
+    "end_minutes": 620
+  },
+  {
+    "id": "120004",
+    "start_station": "004",
+    "end_station": "001",
+    "start_time": "08:00",
+    "end_time": "10:30",
+    "start_minutes": 480,
+    "end_minutes": 630
+  },
+  {
+    "id": "110005",
+    "start_station": "001",
+    "end_station": "004",
+    "start_time": "08:00",
+    "end_time": "10:45",
+    "start_minutes": 480,
+    "end_minutes": 645
+  },
+  {
+    "id": "330035",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "08:05",
+    "end_time": "08:30",
+    "start_minutes": 485,
+    "end_minutes": 510
+  },
+  {
+    "id": "330046",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "08:05",
+    "end_time": "08:30",
+    "start_minutes": 485,
+    "end_minutes": 510
+  },
+  {
+    "id": "330047",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "08:05",
+    "end_time": "08:30",
+    "start_minutes": 485,
+    "end_minutes": 510
+  },
+  {
+    "id": "330048",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "08:05",
+    "end_time": "08:30",
+    "start_minutes": 485,
+    "end_minutes": 510
+  },
+  {
+    "id": "331007",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "08:05",
+    "end_time": "08:30",
+    "start_minutes": 485,
+    "end_minutes": 510
+  },
+  {
+    "id": "331027",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "08:05",
+    "end_time": "08:30",
+    "start_minutes": 485,
+    "end_minutes": 510
+  },
+  {
+    "id": "331042",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "08:05",
+    "end_time": "08:30",
+    "start_minutes": 485,
+    "end_minutes": 510
+  },
+  {
+    "id": "333018",
+    "start_station": "006",
+    "end_station": "005",
+    "start_time": "08:10",
+    "end_time": "08:30",
+    "start_minutes": 490,
+    "end_minutes": 510
+  },
+  {
+    "id": "331050",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "08:15",
+    "end_time": "08:30",
+    "start_minutes": 495,
+    "end_minutes": 510
+  },
+  {
+    "id": "331051",
+    "start_station": "002",
+    "end_station": "001",
+    "start_time": "08:15",
+    "end_time": "08:40",
+    "start_minutes": 495,
+    "end_minutes": 520
+  },
+  {
+    "id": "331052",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "08:20",
+    "end_time": "08:30",
+    "start_minutes": 500,
+    "end_minutes": 510
+  },
+  {
+    "id": "331053",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "08:20",
+    "end_time": "08:30",
+    "start_minutes": 500,
+    "end_minutes": 510
+  },
+  {
+    "id": "330050",
+    "start_station": "001",
+    "end_station": "002",
+    "start_time": "08:20",
+    "end_time": "08:50",
+    "start_minutes": 500,
+    "end_minutes": 530
+  },
+  {
+    "id": "331056",
+    "start_station": "002",
+    "end_station": "001",
+    "start_time": "08:20",
+    "end_time": "08:50",
+    "start_minutes": 500,
+    "end_minutes": 530
+  },
+  {
+    "id": "330027",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "08:20",
+    "end_time": "09:00",
+    "start_minutes": 500,
+    "end_minutes": 540
+  },
+  {
+    "id": "330051",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "08:20",
+    "end_time": "09:30",
+    "start_minutes": 500,
+    "end_minutes": 570
+  },
+  {
+    "id": "331058",
+    "start_station": "002",
+    "end_station": "001",
+    "start_time": "08:30",
+    "end_time": "09:00",
+    "start_minutes": 510,
+    "end_minutes": 540
+  },
+  {
+    "id": "331057",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "08:30",
+    "end_time": "09:30",
+    "start_minutes": 510,
+    "end_minutes": 570
+  },
+  {
+    "id": "220001",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "08:30",
+    "end_time": "10:00",
+    "start_minutes": 510,
+    "end_minutes": 600
+  },
+  {
+    "id": "130001",
+    "start_station": "004",
+    "end_station": "005",
+    "start_time": "08:45",
+    "end_time": "11:45",
+    "start_minutes": 525,
+    "end_minutes": 705
+  },
+  {
+    "id": "331059",
+    "start_station": "002",
+    "end_station": "001",
+    "start_time": "09:00",
+    "end_time": "09:30",
+    "start_minutes": 540,
+    "end_minutes": 570
+  },
+  {
+    "id": "331060",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "09:00",
+    "end_time": "09:40",
+    "start_minutes": 540,
+    "end_minutes": 580
+  },
+  {
+    "id": "333020",
+    "start_station": "005",
+    "end_station": "005",
+    "start_time": "09:00",
+    "end_time": "09:45",
+    "start_minutes": 540,
+    "end_minutes": 585
+  },
+  {
+    "id": "330052",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "09:00",
+    "end_time": "10:00",
+    "start_minutes": 540,
+    "end_minutes": 600
+  },
+  {
+    "id": "330053",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "09:00",
+    "end_time": "10:00",
+    "start_minutes": 540,
+    "end_minutes": 600
+  },
+  {
+    "id": "330055",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "09:00",
+    "end_time": "10:00",
+    "start_minutes": 540,
+    "end_minutes": 600
+  },
+  {
+    "id": "331061",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "09:00",
+    "end_time": "10:00",
+    "start_minutes": 540,
+    "end_minutes": 600
+  },
+  {
+    "id": "330054",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "09:00",
+    "end_time": "11:00",
+    "start_minutes": 540,
+    "end_minutes": 660
+  },
+  {
+    "id": "110006",
+    "start_station": "001",
+    "end_station": "004",
+    "start_time": "09:00",
+    "end_time": "11:45",
+    "start_minutes": 540,
+    "end_minutes": 705
+  },
+  {
+    "id": "330057",
+    "start_station": "001",
+    "end_station": "002",
+    "start_time": "09:15",
+    "end_time": "09:45",
+    "start_minutes": 555,
+    "end_minutes": 585
+  },
+  {
+    "id": "331062",
+    "start_station": "002",
+    "end_station": "001",
+    "start_time": "09:15",
+    "end_time": "09:45",
+    "start_minutes": 555,
+    "end_minutes": 585
+  },
+  {
+    "id": "330058",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "09:30",
+    "end_time": "10:30",
+    "start_minutes": 570,
+    "end_minutes": 630
+  },
+  {
+    "id": "120007",
+    "start_station": "004",
+    "end_station": "002",
+    "start_time": "09:30",
+    "end_time": "11:30",
+    "start_minutes": 570,
+    "end_minutes": 690
+  },
+  {
+    "id": "120008",
+    "start_station": "004",
+    "end_station": "001",
+    "start_time": "09:30",
+    "end_time": "12:00",
+    "start_minutes": 570,
+    "end_minutes": 720
+  },
+  {
+    "id": "333021",
+    "start_station": "005",
+    "end_station": "005",
+    "start_time": "10:00",
+    "end_time": "10:45",
+    "start_minutes": 600,
+    "end_minutes": 645
+  },
+  {
+    "id": "333022",
+    "start_station": "005",
+    "end_station": "005",
+    "start_time": "10:00",
+    "end_time": "10:45",
+    "start_minutes": 600,
+    "end_minutes": 645
+  },
+  {
+    "id": "330059",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "10:00",
+    "end_time": "11:00",
+    "start_minutes": 600,
+    "end_minutes": 660
+  },
+  {
+    "id": "331065",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "10:00",
+    "end_time": "11:00",
+    "start_minutes": 600,
+    "end_minutes": 660
+  },
+  {
+    "id": "220002",
+    "start_station": "001",
+    "end_station": "002",
+    "start_time": "10:00",
+    "end_time": "11:15",
+    "start_minutes": 600,
+    "end_minutes": 675
+  },
+  {
+    "id": "330060",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "10:00",
+    "end_time": "12:00",
+    "start_minutes": 600,
+    "end_minutes": 720
+  },
+  {
+    "id": "110007",
+    "start_station": "001",
+    "end_station": "004",
+    "start_time": "10:00",
+    "end_time": "12:45",
+    "start_minutes": 600,
+    "end_minutes": 765
+  },
+  {
+    "id": "330062",
+    "start_station": "001",
+    "end_station": "002",
+    "start_time": "10:15",
+    "end_time": "10:45",
+    "start_minutes": 615,
+    "end_minutes": 645
+  },
+  {
+    "id": "331067",
+    "start_station": "002",
+    "end_station": "001",
+    "start_time": "10:15",
+    "end_time": "10:45",
+    "start_minutes": 615,
+    "end_minutes": 645
+  },
+  {
+    "id": "160002",
+    "start_station": "003",
+    "end_station": "007",
+    "start_time": "10:15",
+    "end_time": "11:05",
+    "start_minutes": 615,
+    "end_minutes": 665
+  },
+  {
+    "id": "332026",
+    "start_station": "001",
+    "end_station": "003",
+    "start_time": "10:15",
+    "end_time": "11:30",
+    "start_minutes": 615,
+    "end_minutes": 690
+  },
+  {
+    "id": "150001",
+    "start_station": "003",
+    "end_station": "001",
+    "start_time": "10:30",
+    "end_time": "11:00",
+    "start_minutes": 630,
+    "end_minutes": 660
+  },
+  {
+    "id": "330066",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "10:30",
+    "end_time": "11:30",
+    "start_minutes": 630,
+    "end_minutes": 690
+  },
+  {
+    "id": "331068",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "10:30",
+    "end_time": "11:30",
+    "start_minutes": 630,
+    "end_minutes": 690
+  },
+  {
+    "id": "120009",
+    "start_station": "004",
+    "end_station": "001",
+    "start_time": "10:30",
+    "end_time": "13:00",
+    "start_minutes": 630,
+    "end_minutes": 780
+  },
+  {
+    "id": "333023",
+    "start_station": "005",
+    "end_station": "005",
+    "start_time": "10:45",
+    "end_time": "11:30",
+    "start_minutes": 645,
+    "end_minutes": 690
+  },
+  {
+    "id": "330069",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "11:00",
+    "end_time": "11:30",
+    "start_minutes": 660,
+    "end_minutes": 690
+  },
+  {
+    "id": "331070",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "11:00",
+    "end_time": "11:40",
+    "start_minutes": 660,
+    "end_minutes": 700
+  },
+  {
+    "id": "330067",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "11:00",
+    "end_time": "12:00",
+    "start_minutes": 660,
+    "end_minutes": 720
+  },
+  {
+    "id": "330068",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "11:00",
+    "end_time": "12:00",
+    "start_minutes": 660,
+    "end_minutes": 720
+  },
+  {
+    "id": "331071",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "11:00",
+    "end_time": "12:00",
+    "start_minutes": 660,
+    "end_minutes": 720
+  },
+  {
+    "id": "332028",
+    "start_station": "001",
+    "end_station": "003",
+    "start_time": "11:00",
+    "end_time": "12:30",
+    "start_minutes": 660,
+    "end_minutes": 750
+  },
+  {
+    "id": "331072",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "11:00",
+    "end_time": "12:35",
+    "start_minutes": 660,
+    "end_minutes": 755
+  },
+  {
+    "id": "110008",
+    "start_station": "001",
+    "end_station": "004",
+    "start_time": "11:00",
+    "end_time": "13:45",
+    "start_minutes": 660,
+    "end_minutes": 825
+  },
+  {
+    "id": "140003",
+    "start_station": "005",
+    "end_station": "004",
+    "start_time": "11:00",
+    "end_time": "15:00",
+    "start_minutes": 660,
+    "end_minutes": 900
+  },
+  {
+    "id": "330073",
+    "start_station": "001",
+    "end_station": "002",
+    "start_time": "11:15",
+    "end_time": "11:45",
+    "start_minutes": 675,
+    "end_minutes": 705
+  },
+  {
+    "id": "331075",
+    "start_station": "002",
+    "end_station": "001",
+    "start_time": "11:15",
+    "end_time": "11:45",
+    "start_minutes": 675,
+    "end_minutes": 705
+  },
+  {
+    "id": "160003",
+    "start_station": "007",
+    "end_station": "007",
+    "start_time": "11:15",
+    "end_time": "13:05",
+    "start_minutes": 675,
+    "end_minutes": 785
+  },
+  {
+    "id": "110016",
+    "start_station": "002",
+    "end_station": "004",
+    "start_time": "11:20",
+    "end_time": "14:00",
+    "start_minutes": 680,
+    "end_minutes": 840
+  },
+  {
+    "id": "332027",
+    "start_station": "003",
+    "end_station": "003",
+    "start_time": "11:30",
+    "end_time": "12:00",
+    "start_minutes": 690,
+    "end_minutes": 720
+  },
+  {
+    "id": "330074",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "11:30",
+    "end_time": "12:30",
+    "start_minutes": 690,
+    "end_minutes": 750
+  },
+  {
+    "id": "334002",
+    "start_station": "007",
+    "end_station": "007",
+    "start_time": "11:30",
+    "end_time": "13:00",
+    "start_minutes": 690,
+    "end_minutes": 780
+  },
+  {
+    "id": "120010",
+    "start_station": "004",
+    "end_station": "001",
+    "start_time": "11:30",
+    "end_time": "14:00",
+    "start_minutes": 690,
+    "end_minutes": 840
+  },
+  {
+    "id": "000001",
+    "start_station": "002",
+    "end_station": "001",
+    "start_time": "11:45",
+    "end_time": "12:00",
+    "start_minutes": 705,
+    "end_minutes": 720
+  },
+  {
+    "id": "332032",
+    "start_station": "003",
+    "end_station": "003",
+    "start_time": "11:50",
+    "end_time": "12:00",
+    "start_minutes": 710,
+    "end_minutes": 720
+  },
+  {
+    "id": "332034",
+    "start_station": "001",
+    "end_station": "003",
+    "start_time": "12:00",
+    "end_time": "12:30",
+    "start_minutes": 720,
+    "end_minutes": 750
+  },
+  {
+    "id": "332033",
+    "start_station": "003",
+    "end_station": "001",
+    "start_time": "12:00",
+    "end_time": "12:45",
+    "start_minutes": 720,
+    "end_minutes": 765
+  },
+  {
+    "id": "330075",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "12:00",
+    "end_time": "13:00",
+    "start_minutes": 720,
+    "end_minutes": 780
+  },
+  {
+    "id": "330076",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "12:00",
+    "end_time": "13:00",
+    "start_minutes": 720,
+    "end_minutes": 780
+  },
+  {
+    "id": "331076",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "12:00",
+    "end_time": "13:00",
+    "start_minutes": 720,
+    "end_minutes": 780
+  },
+  {
+    "id": "110009",
+    "start_station": "001",
+    "end_station": "004",
+    "start_time": "12:00",
+    "end_time": "14:45",
+    "start_minutes": 720,
+    "end_minutes": 885
+  },
+  {
+    "id": "330077",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "12:00",
+    "end_time": "20:00",
+    "start_minutes": 720,
+    "end_minutes": 1200
+  },
+  {
+    "id": "331078",
+    "start_station": "002",
+    "end_station": "001",
+    "start_time": "12:15",
+    "end_time": "12:45",
+    "start_minutes": 735,
+    "end_minutes": 765
+  },
+  {
+    "id": "331079",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "12:15",
+    "end_time": "13:00",
+    "start_minutes": 735,
+    "end_minutes": 780
+  },
+  {
+    "id": "330078",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "12:15",
+    "end_time": "13:10",
+    "start_minutes": 735,
+    "end_minutes": 790
+  },
+  {
+    "id": "330070",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "12:30",
+    "end_time": "13:00",
+    "start_minutes": 750,
+    "end_minutes": 780
+  },
+  {
+    "id": "330085",
+    "start_station": "001",
+    "end_station": "002",
+    "start_time": "12:30",
+    "end_time": "13:00",
+    "start_minutes": 750,
+    "end_minutes": 780
+  },
+  {
+    "id": "330049",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "12:30",
+    "end_time": "13:10",
+    "start_minutes": 750,
+    "end_minutes": 790
+  },
+  {
+    "id": "330083",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "12:30",
+    "end_time": "13:30",
+    "start_minutes": 750,
+    "end_minutes": 810
+  },
+  {
+    "id": "331080",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "12:30",
+    "end_time": "13:30",
+    "start_minutes": 750,
+    "end_minutes": 810
+  },
+  {
+    "id": "120011",
+    "start_station": "004",
+    "end_station": "001",
+    "start_time": "12:30",
+    "end_time": "15:00",
+    "start_minutes": 750,
+    "end_minutes": 900
+  },
+  {
+    "id": "331081",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "12:45",
+    "end_time": "13:15",
+    "start_minutes": 765,
+    "end_minutes": 795
+  },
+  {
+    "id": "331087",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "12:50",
+    "end_time": "14:30",
+    "start_minutes": 770,
+    "end_minutes": 870
+  },
+  {
+    "id": "330091",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "13:00",
+    "end_time": "13:10",
+    "start_minutes": 780,
+    "end_minutes": 790
+  },
+  {
+    "id": "330088",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "13:00",
+    "end_time": "13:15",
+    "start_minutes": 780,
+    "end_minutes": 795
+  },
+  {
+    "id": "331095",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "13:00",
+    "end_time": "13:15",
+    "start_minutes": 780,
+    "end_minutes": 795
+  },
+  {
+    "id": "331102",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "13:00",
+    "end_time": "13:15",
+    "start_minutes": 780,
+    "end_minutes": 795
+  },
+  {
+    "id": "332035",
+    "start_station": "003",
+    "end_station": "001",
+    "start_time": "13:00",
+    "end_time": "13:45",
+    "start_minutes": 780,
+    "end_minutes": 825
+  },
+  {
+    "id": "333024",
+    "start_station": "005",
+    "end_station": "005",
+    "start_time": "13:00",
+    "end_time": "13:45",
+    "start_minutes": 780,
+    "end_minutes": 825
+  },
+  {
+    "id": "333025",
+    "start_station": "005",
+    "end_station": "005",
+    "start_time": "13:00",
+    "end_time": "13:45",
+    "start_minutes": 780,
+    "end_minutes": 825
+  },
+  {
+    "id": "333026",
+    "start_station": "005",
+    "end_station": "006",
+    "start_time": "13:00",
+    "end_time": "13:50",
+    "start_minutes": 780,
+    "end_minutes": 830
+  },
+  {
+    "id": "330086",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "13:00",
+    "end_time": "14:00",
+    "start_minutes": 780,
+    "end_minutes": 840
+  },
+  {
+    "id": "333028",
+    "start_station": "005",
+    "end_station": "005",
+    "start_time": "13:00",
+    "end_time": "14:45",
+    "start_minutes": 780,
+    "end_minutes": 885
+  },
+  {
+    "id": "110010",
+    "start_station": "001",
+    "end_station": "004",
+    "start_time": "13:00",
+    "end_time": "15:45",
+    "start_minutes": 780,
+    "end_minutes": 945
+  },
+  {
+    "id": "330092",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "13:10",
+    "end_time": "13:40",
+    "start_minutes": 790,
+    "end_minutes": 820
+  },
+  {
+    "id": "330097",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "13:10",
+    "end_time": "13:40",
+    "start_minutes": 790,
+    "end_minutes": 820
+  },
+  {
+    "id": "330079",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "13:10",
+    "end_time": "13:50",
+    "start_minutes": 790,
+    "end_minutes": 830
+  },
+  {
+    "id": "330012",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "13:10",
+    "end_time": "14:00",
+    "start_minutes": 790,
+    "end_minutes": 840
+  },
+  {
+    "id": "330099",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "13:10",
+    "end_time": "14:00",
+    "start_minutes": 790,
+    "end_minutes": 840
+  },
+  {
+    "id": "330101",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "13:10",
+    "end_time": "14:00",
+    "start_minutes": 790,
+    "end_minutes": 840
+  },
+  {
+    "id": "330095",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "13:15",
+    "end_time": "13:30",
+    "start_minutes": 795,
+    "end_minutes": 810
+  },
+  {
+    "id": "331114",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "13:15",
+    "end_time": "13:30",
+    "start_minutes": 795,
+    "end_minutes": 810
+  },
+  {
+    "id": "330089",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "13:15",
+    "end_time": "13:45",
+    "start_minutes": 795,
+    "end_minutes": 825
+  },
+  {
+    "id": "331116",
+    "start_station": "002",
+    "end_station": "001",
+    "start_time": "13:15",
+    "end_time": "13:45",
+    "start_minutes": 795,
+    "end_minutes": 825
+  },
+  {
+    "id": "331112",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "13:15",
+    "end_time": "13:55",
+    "start_minutes": 795,
+    "end_minutes": 835
+  },
+  {
+    "id": "331096",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "13:15",
+    "end_time": "14:00",
+    "start_minutes": 795,
+    "end_minutes": 840
+  },
+  {
+    "id": "332036",
+    "start_station": "003",
+    "end_station": "003",
+    "start_time": "13:15",
+    "end_time": "14:00",
+    "start_minutes": 795,
+    "end_minutes": 840
+  },
+  {
+    "id": "335004",
+    "start_station": "008",
+    "end_station": "008",
+    "start_time": "13:15",
+    "end_time": "14:00",
+    "start_minutes": 795,
+    "end_minutes": 840
+  },
+  {
+    "id": "331103",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "13:15",
+    "end_time": "14:10",
+    "start_minutes": 795,
+    "end_minutes": 850
+  },
+  {
+    "id": "331082",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "13:15",
+    "end_time": "14:20",
+    "start_minutes": 795,
+    "end_minutes": 860
+  },
+  {
+    "id": "331124",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "13:20",
+    "end_time": "13:35",
+    "start_minutes": 800,
+    "end_minutes": 815
+  },
+  {
+    "id": "331141",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "13:20",
+    "end_time": "13:35",
+    "start_minutes": 800,
+    "end_minutes": 815
+  },
+  {
+    "id": "331117",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "13:20",
+    "end_time": "13:45",
+    "start_minutes": 800,
+    "end_minutes": 825
+  },
+  {
+    "id": "331118",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "13:20",
+    "end_time": "13:45",
+    "start_minutes": 800,
+    "end_minutes": 825
+  },
+  {
+    "id": "331148",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "13:20",
+    "end_time": "13:55",
+    "start_minutes": 800,
+    "end_minutes": 835
+  },
+  {
+    "id": "331115",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "13:30",
+    "end_time": "13:55",
+    "start_minutes": 810,
+    "end_minutes": 835
+  },
+  {
+    "id": "330096",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "13:30",
+    "end_time": "14:00",
+    "start_minutes": 810,
+    "end_minutes": 840
+  },
+  {
+    "id": "330102",
+    "start_station": "001",
+    "end_station": "002",
+    "start_time": "13:30",
+    "end_time": "14:00",
+    "start_minutes": 810,
+    "end_minutes": 840
+  },
+  {
+    "id": "120012",
+    "start_station": "004",
+    "end_station": "001",
+    "start_time": "13:30",
+    "end_time": "16:00",
+    "start_minutes": 810,
+    "end_minutes": 960
+  },
+  {
+    "id": "331149",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "13:30",
+    "end_time": "21:00",
+    "start_minutes": 810,
+    "end_minutes": 1260
+  },
+  {
+    "id": "331125",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "13:35",
+    "end_time": "13:55",
+    "start_minutes": 815,
+    "end_minutes": 835
+  },
+  {
+    "id": "331142",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "13:35",
+    "end_time": "14:05",
+    "start_minutes": 815,
+    "end_minutes": 845
+  },
+  {
+    "id": "330098",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "13:40",
+    "end_time": "14:10",
+    "start_minutes": 820,
+    "end_minutes": 850
+  },
+  {
+    "id": "330093",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "13:40",
+    "end_time": "14:15",
+    "start_minutes": 820,
+    "end_minutes": 855
+  },
+  {
+    "id": "331155",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "13:45",
+    "end_time": "13:55",
+    "start_minutes": 825,
+    "end_minutes": 835
+  },
+  {
+    "id": "330105",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "13:45",
+    "end_time": "14:00",
+    "start_minutes": 825,
+    "end_minutes": 840
+  },
+  {
+    "id": "330111",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "13:45",
+    "end_time": "14:00",
+    "start_minutes": 825,
+    "end_minutes": 840
+  },
+  {
+    "id": "331110",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "13:45",
+    "end_time": "14:00",
+    "start_minutes": 825,
+    "end_minutes": 840
+  },
+  {
+    "id": "331153",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "13:45",
+    "end_time": "14:05",
+    "start_minutes": 825,
+    "end_minutes": 845
+  },
+  {
+    "id": "330108",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "13:45",
+    "end_time": "14:15",
+    "start_minutes": 825,
+    "end_minutes": 855
+  },
+  {
+    "id": "330110",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "13:45",
+    "end_time": "14:15",
+    "start_minutes": 825,
+    "end_minutes": 855
+  },
+  {
+    "id": "332038",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "13:45",
+    "end_time": "14:15",
+    "start_minutes": 825,
+    "end_minutes": 855
+  },
+  {
+    "id": "331168",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "13:45",
+    "end_time": "14:20",
+    "start_minutes": 825,
+    "end_minutes": 860
+  },
+  {
+    "id": "330107",
+    "start_station": "001",
+    "end_station": "002",
+    "start_time": "13:45",
+    "end_time": "14:30",
+    "start_minutes": 825,
+    "end_minutes": 870
+  },
+  {
+    "id": "331158",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "13:50",
+    "end_time": "14:20",
+    "start_minutes": 830,
+    "end_minutes": 860
+  },
+  {
+    "id": "331159",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "13:50",
+    "end_time": "14:20",
+    "start_minutes": 830,
+    "end_minutes": 860
+  },
+  {
+    "id": "331160",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "13:50",
+    "end_time": "14:20",
+    "start_minutes": 830,
+    "end_minutes": 860
+  },
+  {
+    "id": "331157",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "13:50",
+    "end_time": "14:40",
+    "start_minutes": 830,
+    "end_minutes": 880
+  },
+  {
+    "id": "333027",
+    "start_station": "006",
+    "end_station": "006",
+    "start_time": "13:50",
+    "end_time": "15:00",
+    "start_minutes": 830,
+    "end_minutes": 900
+  },
+  {
+    "id": "331126",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "13:55",
+    "end_time": "14:00",
+    "start_minutes": 835,
+    "end_minutes": 840
+  },
+  {
+    "id": "331169",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "13:55",
+    "end_time": "14:10",
+    "start_minutes": 835,
+    "end_minutes": 850
+  },
+  {
+    "id": "331209",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "13:55",
+    "end_time": "14:10",
+    "start_minutes": 835,
+    "end_minutes": 850
+  },
+  {
+    "id": "331165",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "13:55",
+    "end_time": "14:20",
+    "start_minutes": 835,
+    "end_minutes": 860
+  },
+  {
+    "id": "331166",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "13:55",
+    "end_time": "14:20",
+    "start_minutes": 835,
+    "end_minutes": 860
+  },
+  {
+    "id": "331156",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "13:55",
+    "end_time": "14:40",
+    "start_minutes": 835,
+    "end_minutes": 880
+  },
+  {
+    "id": "331097",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "14:00",
+    "end_time": "14:05",
+    "start_minutes": 840,
+    "end_minutes": 845
+  },
+  {
+    "id": "333031",
+    "start_station": "005",
+    "end_station": "005",
+    "start_time": "14:00",
+    "end_time": "14:15",
+    "start_minutes": 840,
+    "end_minutes": 855
+  },
+  {
+    "id": "333033",
+    "start_station": "005",
+    "end_station": "005",
+    "start_time": "14:00",
+    "end_time": "14:15",
+    "start_minutes": 840,
+    "end_minutes": 855
+  },
+  {
+    "id": "331111",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "14:00",
+    "end_time": "14:20",
+    "start_minutes": 840,
+    "end_minutes": 860
+  },
+  {
+    "id": "331127",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "14:00",
+    "end_time": "14:20",
+    "start_minutes": 840,
+    "end_minutes": 860
+  },
+  {
+    "id": "330115",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "14:00",
+    "end_time": "14:30",
+    "start_minutes": 840,
+    "end_minutes": 870
+  },
+  {
+    "id": "330116",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "14:00",
+    "end_time": "14:30",
+    "start_minutes": 840,
+    "end_minutes": 870
+  },
+  {
+    "id": "331161",
+    "start_station": "002",
+    "end_station": "001",
+    "start_time": "14:00",
+    "end_time": "14:30",
+    "start_minutes": 840,
+    "end_minutes": 870
+  },
+  {
+    "id": "333029",
+    "start_station": "005",
+    "end_station": "005",
+    "start_time": "14:00",
+    "end_time": "14:30",
+    "start_minutes": 840,
+    "end_minutes": 870
+  },
+  {
+    "id": "330080",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "14:00",
+    "end_time": "14:40",
+    "start_minutes": 840,
+    "end_minutes": 880
+  },
+  {
+    "id": "330100",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "14:00",
+    "end_time": "14:40",
+    "start_minutes": 840,
+    "end_minutes": 880
+  },
+  {
+    "id": "330112",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "14:00",
+    "end_time": "14:40",
+    "start_minutes": 840,
+    "end_minutes": 880
+  },
+  {
+    "id": "330114",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "14:00",
+    "end_time": "14:40",
+    "start_minutes": 840,
+    "end_minutes": 880
+  },
+  {
+    "id": "330117",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "14:00",
+    "end_time": "14:40",
+    "start_minutes": 840,
+    "end_minutes": 880
+  },
+  {
+    "id": "333030",
+    "start_station": "005",
+    "end_station": "005",
+    "start_time": "14:00",
+    "end_time": "14:45",
+    "start_minutes": 840,
+    "end_minutes": 885
+  },
+  {
+    "id": "330119",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "14:00",
+    "end_time": "15:00",
+    "start_minutes": 840,
+    "end_minutes": 900
+  },
+  {
+    "id": "332045",
+    "start_station": "003",
+    "end_station": "003",
+    "start_time": "14:00",
+    "end_time": "15:00",
+    "start_minutes": 840,
+    "end_minutes": 900
+  },
+  {
+    "id": "330106",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "14:00",
+    "end_time": "15:10",
+    "start_minutes": 840,
+    "end_minutes": 910
+  },
+  {
+    "id": "200002",
+    "start_station": "007",
+    "end_station": "003",
+    "start_time": "14:00",
+    "end_time": "15:15",
+    "start_minutes": 840,
+    "end_minutes": 915
+  },
+  {
+    "id": "330013",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "14:00",
+    "end_time": "15:30",
+    "start_minutes": 840,
+    "end_minutes": 930
+  },
+  {
+    "id": "334003",
+    "start_station": "007",
+    "end_station": "007",
+    "start_time": "14:00",
+    "end_time": "15:30",
+    "start_minutes": 840,
+    "end_minutes": 930
+  },
+  {
+    "id": "330118",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "14:00",
+    "end_time": "16:00",
+    "start_minutes": 840,
+    "end_minutes": 960
+  },
+  {
+    "id": "110011",
+    "start_station": "001",
+    "end_station": "004",
+    "start_time": "14:00",
+    "end_time": "16:45",
+    "start_minutes": 840,
+    "end_minutes": 1005
+  },
+  {
+    "id": "331154",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "14:05",
+    "end_time": "14:15",
+    "start_minutes": 845,
+    "end_minutes": 855
+  },
+  {
+    "id": "331098",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "14:05",
+    "end_time": "15:00",
+    "start_minutes": 845,
+    "end_minutes": 900
+  },
+  {
+    "id": "331143",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "14:05",
+    "end_time": "15:00",
+    "start_minutes": 845,
+    "end_minutes": 900
+  },
+  {
+    "id": "332040",
+    "start_station": "003",
+    "end_station": "003",
+    "start_time": "14:05",
+    "end_time": "15:00",
+    "start_minutes": 845,
+    "end_minutes": 900
+  },
+  {
+    "id": "332041",
+    "start_station": "003",
+    "end_station": "003",
+    "start_time": "14:05",
+    "end_time": "15:00",
+    "start_minutes": 845,
+    "end_minutes": 900
+  },
+  {
+    "id": "332042",
+    "start_station": "003",
+    "end_station": "003",
+    "start_time": "14:05",
+    "end_time": "15:00",
+    "start_minutes": 845,
+    "end_minutes": 900
+  },
+  {
+    "id": "332043",
+    "start_station": "003",
+    "end_station": "003",
+    "start_time": "14:05",
+    "end_time": "15:00",
+    "start_minutes": 845,
+    "end_minutes": 900
+  },
+  {
+    "id": "332044",
+    "start_station": "003",
+    "end_station": "003",
+    "start_time": "14:05",
+    "end_time": "15:00",
+    "start_minutes": 845,
+    "end_minutes": 900
+  },
+  {
+    "id": "332039",
+    "start_station": "003",
+    "end_station": "003",
+    "start_time": "14:05",
+    "end_time": "15:20",
+    "start_minutes": 845,
+    "end_minutes": 920
+  },
+  {
+    "id": "331172",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "14:10",
+    "end_time": "14:30",
+    "start_minutes": 850,
+    "end_minutes": 870
+  },
+  {
+    "id": "331104",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "14:10",
+    "end_time": "14:45",
+    "start_minutes": 850,
+    "end_minutes": 885
+  },
+  {
+    "id": "331210",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "14:10",
+    "end_time": "14:55",
+    "start_minutes": 850,
+    "end_minutes": 895
+  },
+  {
+    "id": "331170",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "14:10",
+    "end_time": "15:00",
+    "start_minutes": 850,
+    "end_minutes": 900
+  },
+  {
+    "id": "335005",
+    "start_station": "008",
+    "end_station": "008",
+    "start_time": "14:10",
+    "end_time": "15:00",
+    "start_minutes": 850,
+    "end_minutes": 900
+  },
+  {
+    "id": "333032",
+    "start_station": "005",
+    "end_station": "005",
+    "start_time": "14:15",
+    "end_time": "14:45",
+    "start_minutes": 855,
+    "end_minutes": 885
+  },
+  {
+    "id": "333034",
+    "start_station": "005",
+    "end_station": "005",
+    "start_time": "14:15",
+    "end_time": "14:50",
+    "start_minutes": 855,
+    "end_minutes": 890
+  },
+  {
+    "id": "331083",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "14:20",
+    "end_time": "14:30",
+    "start_minutes": 860,
+    "end_minutes": 870
+  },
+  {
+    "id": "331128",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "14:20",
+    "end_time": "15:30",
+    "start_minutes": 860,
+    "end_minutes": 930
+  },
+  {
+    "id": "331173",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "14:25",
+    "end_time": "15:30",
+    "start_minutes": 865,
+    "end_minutes": 930
+  },
+  {
+    "id": "331088",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "14:30",
+    "end_time": "14:40",
+    "start_minutes": 870,
+    "end_minutes": 880
+  },
+  {
+    "id": "332047",
+    "start_station": "001",
+    "end_station": "003",
+    "start_time": "14:30",
+    "end_time": "15:10",
+    "start_minutes": 870,
+    "end_minutes": 910
+  },
+  {
+    "id": "330126",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "14:30",
+    "end_time": "15:20",
+    "start_minutes": 870,
+    "end_minutes": 920
+  },
+  {
+    "id": "330124",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "14:30",
+    "end_time": "15:30",
+    "start_minutes": 870,
+    "end_minutes": 930
+  },
+  {
+    "id": "330125",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "14:30",
+    "end_time": "15:30",
+    "start_minutes": 870,
+    "end_minutes": 930
+  },
+  {
+    "id": "330123",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "14:30",
+    "end_time": "15:35",
+    "start_minutes": 870,
+    "end_minutes": 935
+  },
+  {
+    "id": "332046",
+    "start_station": "001",
+    "end_station": "003",
+    "start_time": "14:30",
+    "end_time": "16:00",
+    "start_minutes": 870,
+    "end_minutes": 960
+  },
+  {
+    "id": "330127",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "14:30",
+    "end_time": "16:05",
+    "start_minutes": 870,
+    "end_minutes": 965
+  },
+  {
+    "id": "180004",
+    "start_station": "005",
+    "end_station": "001",
+    "start_time": "14:30",
+    "end_time": "16:15",
+    "start_minutes": 870,
+    "end_minutes": 975
+  },
+  {
+    "id": "170010",
+    "start_station": "001",
+    "end_station": "005",
+    "start_time": "14:30",
+    "end_time": "16:20",
+    "start_minutes": 870,
+    "end_minutes": 980
+  },
+  {
+    "id": "120013",
+    "start_station": "004",
+    "end_station": "001",
+    "start_time": "14:30",
+    "end_time": "17:00",
+    "start_minutes": 870,
+    "end_minutes": 1020
+  },
+  {
+    "id": "331176",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "14:40",
+    "end_time": "15:30",
+    "start_minutes": 880,
+    "end_minutes": 930
+  },
+  {
+    "id": "331178",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "14:40",
+    "end_time": "15:30",
+    "start_minutes": 880,
+    "end_minutes": 930
+  },
+  {
+    "id": "331179",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "14:40",
+    "end_time": "15:30",
+    "start_minutes": 880,
+    "end_minutes": 930
+  },
+  {
+    "id": "331180",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "14:40",
+    "end_time": "15:40",
+    "start_minutes": 880,
+    "end_minutes": 940
+  },
+  {
+    "id": "331182",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "14:40",
+    "end_time": "15:40",
+    "start_minutes": 880,
+    "end_minutes": 940
+  },
+  {
+    "id": "331183",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "14:40",
+    "end_time": "15:40",
+    "start_minutes": 880,
+    "end_minutes": 940
+  },
+  {
+    "id": "331174",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "14:40",
+    "end_time": "16:00",
+    "start_minutes": 880,
+    "end_minutes": 960
+  },
+  {
+    "id": "331177",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "14:40",
+    "end_time": "16:00",
+    "start_minutes": 880,
+    "end_minutes": 960
+  },
+  {
+    "id": "331105",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "14:45",
+    "end_time": "15:30",
+    "start_minutes": 885,
+    "end_minutes": 930
+  },
+  {
+    "id": "180005",
+    "start_station": "005",
+    "end_station": "001",
+    "start_time": "14:45",
+    "end_time": "16:05",
+    "start_minutes": 885,
+    "end_minutes": 965
+  },
+  {
+    "id": "180007",
+    "start_station": "005",
+    "end_station": "001",
+    "start_time": "14:45",
+    "end_time": "16:05",
+    "start_minutes": 885,
+    "end_minutes": 965
+  },
+  {
+    "id": "180006",
+    "start_station": "005",
+    "end_station": "002",
+    "start_time": "14:45",
+    "end_time": "16:45",
+    "start_minutes": 885,
+    "end_minutes": 1005
+  },
+  {
+    "id": "331211",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "14:55",
+    "end_time": "15:45",
+    "start_minutes": 895,
+    "end_minutes": 945
+  },
+  {
+    "id": "332048",
+    "start_station": "003",
+    "end_station": "003",
+    "start_time": "15:00",
+    "end_time": "15:15",
+    "start_minutes": 900,
+    "end_minutes": 915
+  },
+  {
+    "id": "330128",
+    "start_station": "001",
+    "end_station": "002",
+    "start_time": "15:00",
+    "end_time": "15:30",
+    "start_minutes": 900,
+    "end_minutes": 930
+  },
+  {
+    "id": "330158",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "15:00",
+    "end_time": "15:30",
+    "start_minutes": 900,
+    "end_minutes": 930
+  },
+  {
+    "id": "330129",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "15:00",
+    "end_time": "16:00",
+    "start_minutes": 900,
+    "end_minutes": 960
+  },
+  {
+    "id": "331099",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "15:00",
+    "end_time": "16:00",
+    "start_minutes": 900,
+    "end_minutes": 960
+  },
+  {
+    "id": "110014",
+    "start_station": "001",
+    "end_station": "004",
+    "start_time": "15:00",
+    "end_time": "17:45",
+    "start_minutes": 900,
+    "end_minutes": 1065
+  },
+  {
+    "id": "280002",
+    "start_station": "003",
+    "end_station": "007",
+    "start_time": "15:15",
+    "end_time": "16:30",
+    "start_minutes": 915,
+    "end_minutes": 990
+  },
+  {
+    "id": "332049",
+    "start_station": "003",
+    "end_station": "003",
+    "start_time": "15:15",
+    "end_time": "17:30",
+    "start_minutes": 915,
+    "end_minutes": 1050
+  },
+  {
+    "id": "331188",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "15:30",
+    "end_time": "16:00",
+    "start_minutes": 930,
+    "end_minutes": 960
+  },
+  {
+    "id": "331186",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "15:30",
+    "end_time": "16:30",
+    "start_minutes": 930,
+    "end_minutes": 990
+  },
+  {
+    "id": "120015",
+    "start_station": "004",
+    "end_station": "001",
+    "start_time": "15:30",
+    "end_time": "18:00",
+    "start_minutes": 930,
+    "end_minutes": 1080
+  },
+  {
+    "id": "331189",
+    "start_station": "002",
+    "end_station": "001",
+    "start_time": "16:00",
+    "end_time": "16:30",
+    "start_minutes": 960,
+    "end_minutes": 990
+  },
+  {
+    "id": "330131",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "16:00",
+    "end_time": "17:00",
+    "start_minutes": 960,
+    "end_minutes": 1020
+  },
+  {
+    "id": "330133",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "16:00",
+    "end_time": "17:30",
+    "start_minutes": 960,
+    "end_minutes": 1050
+  },
+  {
+    "id": "330134",
+    "start_station": "001",
+    "end_station": "002",
+    "start_time": "16:15",
+    "end_time": "16:45",
+    "start_minutes": 975,
+    "end_minutes": 1005
+  },
+  {
+    "id": "335006",
+    "start_station": "008",
+    "end_station": "008",
+    "start_time": "16:15",
+    "end_time": "16:45",
+    "start_minutes": 975,
+    "end_minutes": 1005
+  },
+  {
+    "id": "330135",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "16:20",
+    "end_time": "17:20",
+    "start_minutes": 980,
+    "end_minutes": 1040
+  },
+  {
+    "id": "150003",
+    "start_station": "004",
+    "end_station": "007",
+    "start_time": "16:20",
+    "end_time": "18:50",
+    "start_minutes": 980,
+    "end_minutes": 1130
+  },
+  {
+    "id": "130002",
+    "start_station": "004",
+    "end_station": "005",
+    "start_time": "16:20",
+    "end_time": "19:20",
+    "start_minutes": 980,
+    "end_minutes": 1160
+  },
+  {
+    "id": "333035",
+    "start_station": "005",
+    "end_station": "005",
+    "start_time": "16:30",
+    "end_time": "17:15",
+    "start_minutes": 990,
+    "end_minutes": 1035
+  },
+  {
+    "id": "330137",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "16:30",
+    "end_time": "17:30",
+    "start_minutes": 990,
+    "end_minutes": 1050
+  },
+  {
+    "id": "331191",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "16:30",
+    "end_time": "17:30",
+    "start_minutes": 990,
+    "end_minutes": 1050
+  },
+  {
+    "id": "120016",
+    "start_station": "004",
+    "end_station": "001",
+    "start_time": "16:30",
+    "end_time": "19:00",
+    "start_minutes": 990,
+    "end_minutes": 1140
+  },
+  {
+    "id": "110018",
+    "start_station": "001",
+    "end_station": "004",
+    "start_time": "16:30",
+    "end_time": "19:15",
+    "start_minutes": 990,
+    "end_minutes": 1155
+  },
+  {
+    "id": "330139",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "17:00",
+    "end_time": "18:00",
+    "start_minutes": 1020,
+    "end_minutes": 1080
+  },
+  {
+    "id": "331194",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "17:00",
+    "end_time": "18:00",
+    "start_minutes": 1020,
+    "end_minutes": 1080
+  },
+  {
+    "id": "330141",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "17:20",
+    "end_time": "18:30",
+    "start_minutes": 1040,
+    "end_minutes": 1110
+  },
+  {
+    "id": "330143",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "17:30",
+    "end_time": "18:15",
+    "start_minutes": 1050,
+    "end_minutes": 1095
+  },
+  {
+    "id": "331195",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "17:30",
+    "end_time": "18:30",
+    "start_minutes": 1050,
+    "end_minutes": 1110
+  },
+  {
+    "id": "332050",
+    "start_station": "003",
+    "end_station": "003",
+    "start_time": "17:30",
+    "end_time": "19:00",
+    "start_minutes": 1050,
+    "end_minutes": 1140
+  },
+  {
+    "id": "330142",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "17:30",
+    "end_time": "19:30",
+    "start_minutes": 1050,
+    "end_minutes": 1170
+  },
+  {
+    "id": "120017",
+    "start_station": "004",
+    "end_station": "001",
+    "start_time": "17:30",
+    "end_time": "20:00",
+    "start_minutes": 1050,
+    "end_minutes": 1200
+  },
+  {
+    "id": "110020",
+    "start_station": "001",
+    "end_station": "004",
+    "start_time": "17:30",
+    "end_time": "20:15",
+    "start_minutes": 1050,
+    "end_minutes": 1215
+  },
+  {
+    "id": "140004",
+    "start_station": "005",
+    "end_station": "004",
+    "start_time": "17:30",
+    "end_time": "20:30",
+    "start_minutes": 1050,
+    "end_minutes": 1230
+  },
+  {
+    "id": "160007",
+    "start_station": "007",
+    "end_station": "003",
+    "start_time": "18:00",
+    "end_time": "18:50",
+    "start_minutes": 1080,
+    "end_minutes": 1130
+  },
+  {
+    "id": "330144",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "18:15",
+    "end_time": "19:15",
+    "start_minutes": 1095,
+    "end_minutes": 1155
+  },
+  {
+    "id": "330147",
+    "start_station": "001",
+    "end_station": "002",
+    "start_time": "18:30",
+    "end_time": "19:00",
+    "start_minutes": 1110,
+    "end_minutes": 1140
+  },
+  {
+    "id": "330148",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "18:30",
+    "end_time": "19:30",
+    "start_minutes": 1110,
+    "end_minutes": 1170
+  },
+  {
+    "id": "331198",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "18:30",
+    "end_time": "19:30",
+    "start_minutes": 1110,
+    "end_minutes": 1170
+  },
+  {
+    "id": "331199",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "18:30",
+    "end_time": "19:30",
+    "start_minutes": 1110,
+    "end_minutes": 1170
+  },
+  {
+    "id": "120019",
+    "start_station": "004",
+    "end_station": "001",
+    "start_time": "18:30",
+    "end_time": "21:00",
+    "start_minutes": 1110,
+    "end_minutes": 1260
+  },
+  {
+    "id": "150006",
+    "start_station": "007",
+    "end_station": "003",
+    "start_time": "19:00",
+    "end_time": "20:00",
+    "start_minutes": 1140,
+    "end_minutes": 1200
+  },
+  {
+    "id": "110022",
+    "start_station": "001",
+    "end_station": "004",
+    "start_time": "19:00",
+    "end_time": "21:15",
+    "start_minutes": 1140,
+    "end_minutes": 1275
+  },
+  {
+    "id": "330151",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "19:15",
+    "end_time": "19:35",
+    "start_minutes": 1155,
+    "end_minutes": 1175
+  },
+  {
+    "id": "330150",
+    "start_station": "001",
+    "end_station": "002",
+    "start_time": "19:15",
+    "end_time": "19:45",
+    "start_minutes": 1155,
+    "end_minutes": 1185
+  },
+  {
+    "id": "331203",
+    "start_station": "002",
+    "end_station": "001",
+    "start_time": "19:30",
+    "end_time": "20:00",
+    "start_minutes": 1170,
+    "end_minutes": 1200
+  },
+  {
+    "id": "333036",
+    "start_station": "005",
+    "end_station": "006",
+    "start_time": "19:30",
+    "end_time": "20:00",
+    "start_minutes": 1170,
+    "end_minutes": 1200
+  },
+  {
+    "id": "330152",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "19:30",
+    "end_time": "20:30",
+    "start_minutes": 1170,
+    "end_minutes": 1230
+  },
+  {
+    "id": "120020",
+    "start_station": "004",
+    "end_station": "001",
+    "start_time": "19:30",
+    "end_time": "22:00",
+    "start_minutes": 1170,
+    "end_minutes": 1320
+  },
+  {
+    "id": "332055",
+    "start_station": "001",
+    "end_station": "003",
+    "start_time": "19:40",
+    "end_time": "20:10",
+    "start_minutes": 1180,
+    "end_minutes": 1210
+  },
+  {
+    "id": "000002",
+    "start_station": "001",
+    "end_station": "002",
+    "start_time": "20:00",
+    "end_time": "20:30",
+    "start_minutes": 1200,
+    "end_minutes": 1230
+  },
+  {
+    "id": "330153",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "20:00",
+    "end_time": "21:00",
+    "start_minutes": 1200,
+    "end_minutes": 1260
+  },
+  {
+    "id": "110023",
+    "start_station": "001",
+    "end_station": "004",
+    "start_time": "20:00",
+    "end_time": "22:45",
+    "start_minutes": 1200,
+    "end_minutes": 1365
+  },
+  {
+    "id": "331205",
+    "start_station": "002",
+    "end_station": "001",
+    "start_time": "20:30",
+    "end_time": "21:00",
+    "start_minutes": 1230,
+    "end_minutes": 1260
+  },
+  {
+    "id": "330155",
+    "start_station": "001",
+    "end_station": "001",
+    "start_time": "20:30",
+    "end_time": "21:30",
+    "start_minutes": 1230,
+    "end_minutes": 1290
+  },
+  {
+    "id": "331204",
+    "start_station": "002",
+    "end_station": "002",
+    "start_time": "20:30",
+    "end_time": "21:30",
+    "start_minutes": 1230,
+    "end_minutes": 1290
+  },
+  {
+    "id": "120021",
+    "start_station": "004",
+    "end_station": "001",
+    "start_time": "20:30",
+    "end_time": "23:00",
+    "start_minutes": 1230,
+    "end_minutes": 1380
+  },
+  {
+    "id": "330156",
+    "start_station": "001",
+    "end_station": "002",
+    "start_time": "21:00",
+    "end_time": "21:30",
+    "start_minutes": 1260,
+    "end_minutes": 1290
+  },
+  {
+    "id": "120024",
+    "start_station": "004",
+    "end_station": "001",
+    "start_time": "21:30",
+    "end_time": "24:00",
+    "start_minutes": 1290,
+    "end_minutes": 1440
+  },
+  {
+    "id": "330157",
+    "start_station": "001",
+    "end_station": "002",
+    "start_time": "22:00",
+    "end_time": "22:30",
+    "start_minutes": 1320,
+    "end_minutes": 1350
+  },
+  {
+    "id": "110016",
+    "start_station": "002",
+    "end_station": "004",
+    "start_time": "39:20",
+    "end_time": "41:45",
+    "start_minutes": 2360,
+    "end_minutes": 2505
+  }
+]

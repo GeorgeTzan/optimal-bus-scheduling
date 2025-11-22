@@ -1,0 +1,30 @@
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app:Z
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+    user: "1000:1000"
+    networks:
+      - bus_network
+
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app:Z
+      - ./docs:/app/docs:Z
+    environment:
+      - PYTHONPATH=/app
+      - UV_CACHE_DIR=/tmp/uv-cache
+    networks:
+      - bus_network
+
+networks:
+  bus_network:
+    driver: bridge
