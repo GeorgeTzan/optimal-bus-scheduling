@@ -45,8 +45,6 @@ yarn-error.log*
 .env*.local
 
 *.pdf
-*.dat
-*.DAT
 *.csv
 
 # vercel
