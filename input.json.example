@@ -1,0 +1,100 @@
+{
+  "metaData": {
+    "dayOfPeriod": 61,
+    "periodLength": 90,
+    "description": "Schedule Name"
+  },
+  "configuration": {
+    "minDelays": {
+      "description": "Delay required between different vehicle types (in minutes)",
+      "values": [5, 0, 0, 0, 0, 0]
+    }
+  },
+  "stationTransferMatrix": {
+    "description": "Matrix defining requirements to move between stations.",
+    "legend": {
+      "NONE": "No constraint (1)",
+      "BREAK": "Requires Break (2)",
+      "OVERNIGHT": "Requires Overnight Stay (3)"
+    },
+    "matrix": [
+      ["NONE", "OVERNIGHT", "OVERNIGHT", "BREAK", "BREAK"],
+      ["OVERNIGHT", "NONE", "OVERNIGHT", "BREAK", "BREAK"],
+      ["OVERNIGHT", "OVERNIGHT", "NONE", "BREAK", "BREAK"],
+      ["BREAK", "BREAK", "BREAK", "NONE", "OVERNIGHT"],
+      ["BREAK", "BREAK", "BREAK", "OVERNIGHT", "NONE"]
+    ]
+  },
+  "trips": [
+    {
+      "id": "000002",
+      "startStation": "001",
+      "endStation": "001",
+      "alternativeStations": ["000", "000", "000", "000", "000"],
+      "startTime": "0645",
+      "endTime": "0830",
+      "distance": 92,
+      "classification": {
+        "allowedBusTypes": ["07", "00", "00", "00", "00", "00", "00", "00", "00", "00"],
+        "specificBusOverrides": ["000", "000"],
+        "group": "000",
+        "roadType": 0
+      },
+      "constraints": {
+        "shiftPosition": 0,
+        "nextDayRestRule": 1,
+        "daysToRest": 0
+      }
+    }
+  ],
+  "resources": [
+    {
+      "driverId": "3837",
+      "busId": "000",
+      "homeStation": "007",
+      "currentStation": "007",
+      "shiftStartTime": "0000",
+      "busAttributes": {
+        "type": "01",
+        "isKtel": 0,
+        "excludeFromEq": 0,
+        "distanceAdjustment": 0
+      },
+      "preassignedBreaks": [
+           { "durationMinutes": 0, "dayIndex": 0 },
+           { "durationMinutes": 0, "dayIndex": 0 },
+           { "durationMinutes": 0, "dayIndex": 0 },
+           { "durationMinutes": 0, "dayIndex": 0 }
+      ],
+      "parameters": {
+        "cost": 125,
+        "compatibility": "+000000"
+      }
+    }
+  ],
+  "constraints": {
+    "prohibited": {
+      "buses": [],
+      "drivers": []
+    },
+    "driverWishes": [
+      {
+        "driverId": "000",
+        "tripId": "000",
+        "type": 1
+      }
+    ],
+    "pairs": [
+      ["000068", "000013", "000004", "000024", "000022"],
+      ["005001", "000098", "000010", "000066", "005008"]
+    ],
+    "joints": [
+      {
+        "fromTripId": "003019",
+        "toTripId": "001052",
+        "time": 3345
+      }
+    ],
+    "secondShifts": []
+  }
+}

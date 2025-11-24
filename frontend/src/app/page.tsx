@@ -4,12 +4,28 @@ import { useEffect, useState } from "react";
 
 interface Trip {
   id: string;
-  start_station: string;
-  end_station: string;
-  start_time: string;
-  end_time: string;
-  start_minutes: number;
-  end_minutes: number;
+  startStation: string;
+  endStation: string;
+  time: {
+    start: string;
+    end: string;
+    durationMinutes: number;
+  };
+  classification: {
+    group: string;
+    roadType: string;
+    allowedBusTypes: string[];
+    specificBusOverrides: string[];
+  };
+  properties: {
+    distance: number;
+    alternativeStationCodes: string[];
+    constraints: {
+      shiftPosition: string;
+      nextDayRestRule: string;
+      daysToRestRule: number;
+    };
+  };
 }
 
 export default function HomePage() {
@@ -31,22 +47,22 @@ export default function HomePage() {
   const filteredTrips = trips.filter((trip) => {
     const lowerFilter = searchFilter.toLowerCase();
     const idMatch = trip.id.toLowerCase().includes(lowerFilter);
-    const startMatch = trip.start_station.toLowerCase().includes(lowerFilter);
-    const endMatch = trip.end_station.toLowerCase().includes(lowerFilter);
+    const startMatch = trip.startStation.toLowerCase().includes(lowerFilter);
+    const endMatch = trip.endStation.toLowerCase().includes(lowerFilter);
 
     if (lowerFilter.startsWith("stn ")) {
       const station = lowerFilter.slice(4);
-      return startMatch || endMatch || trip.start_station.toLowerCase().includes(station) || trip.end_station.toLowerCase().includes(station);
+      return startMatch || endMatch || trip.startStation.toLowerCase().includes(station) || trip.endStation.toLowerCase().includes(station);
     }
 
     if (lowerFilter.startsWith("from ")) {
       const station = lowerFilter.slice(5);
-      return trip.start_station.toLowerCase().includes(station);
+      return trip.startStation.toLowerCase().includes(station);
     }
 
     if (lowerFilter.startsWith("to ")) {
       const station = lowerFilter.slice(3);
-      return trip.end_station.toLowerCase().includes(station);
+      return trip.endStation.toLowerCase().includes(station);
     }
 
     return idMatch || startMatch || endMatch;
@@ -63,6 +79,11 @@ export default function HomePage() {
 
   const timeToPixels = (minutes: number): number => {
     return (minutes / (24 * 60)) * 100;
+  };
+
+  const timeStringToMinutes = (timeStr: string): number => {
+    const [hours, minutes] = timeStr.split(':').map(Number);
+    return hours * 60 + minutes;
   };
 
   const calculateDuration = (startMinutes: number, endMinutes: number) => {
@@ -93,30 +114,59 @@ export default function HomePage() {
     linkElement.click();
   };
 
-  const getColor = (tripId: string): string => {
-    const colors = [
-      "from-blue-500 to-blue-600",
-      "from-purple-500 to-purple-600",
-      "from-pink-500 to-pink-600",
-      "from-green-500 to-green-600",
-      "from-yellow-500 to-yellow-600",
-      "from-indigo-500 to-indigo-600",
-      "from-cyan-500 to-cyan-600",
-      "from-red-500 to-red-600",
-    ];
-    const hash = tripId.split('').reduce((acc, char) => {
+  const stationColor = (station: string): string => {
+    const stationColors = {
+      blue: "#3b82f6",
+      green: "#10b981",
+      red: "#ef4444",
+      purple: "#8b5cf6",
+      yellow: "#eab308",
+      orange: "#f97316",
+      indigo: "#6366f1",
+      cyan: "#06b6d4",
+      pink: "#ec4899",
+      teal: "#14b8a6",
+      lime: "#84cc16",
+      amber: "#f59e0b"
+    };
+    const colorKeys = Object.keys(stationColors);
+    const hash = station.split('').reduce((acc, char) => {
         acc = ((acc << 5) - acc) + char.charCodeAt(0);
         return acc & acc;
     }, 0);
-    const index = Math.abs(hash) % colors.length;
-    return colors[index];
+    const index = Math.abs(hash) % colorKeys.length;
+    return colorKeys[index];
+  };
+
+  const getColor = (trip: Trip): { start: string, end: string } => {
+    const startColorName = stationColor(trip.startStation);
+    const endColorName = stationColor(trip.endStation);
+    const stationColors = {
+      blue: "#3b82f6",
+      green: "#10b981",
+      red: "#ef4444",
+      purple: "#8b5cf6",
+      yellow: "#eab308",
+      orange: "#f97316",
+      indigo: "#6366f1",
+      cyan: "#06b6d4",
+      pink: "#ec4899",
+      teal: "#14b8a6",
+      lime: "#84cc16",
+      amber: "#f59e0b"
+    };
+    return {
+      start: stationColors[startColorName as keyof typeof stationColors],
+      end: stationColors[endColorName as keyof typeof stationColors]
+    };
   };
 
   const calculatePeakHour = (trips: Trip[]): string => {
     if (trips.length === 0) return "N/A";
     const hourCounts: { [key: number]: number } = {};
     trips.forEach((trip) => {
-      const hour = Math.floor(trip.start_minutes / 60);
+      const startMinutes = timeStringToMinutes(trip.time.start);
+      const hour = Math.floor(startMinutes / 60);
       hourCounts[hour] = (hourCounts[hour] || 0) + 1;
     });
     const peakHour = Object.keys(hourCounts).reduce((a, b) =>
@@ -130,8 +180,14 @@ export default function HomePage() {
 
   const calculateOperatingWindow = (trips: Trip[]): string => {
     if (trips.length === 0) return "N/A";
-    const minStart = Math.min(...trips.map(t => t.start_minutes));
-    const maxEnd = Math.max(...trips.map(t => t.end_minutes));
+    const startMinutes = trips.map(t => timeStringToMinutes(t.time.start));
+    const endMinutes = trips.map(t => {
+      const end = timeStringToMinutes(t.time.end);
+      const start = timeStringToMinutes(t.time.start);
+      return end < start ? end + 1440 : end;
+    });
+    const minStart = Math.min(...startMinutes);
+    const maxEnd = Math.max(...endMinutes);
     const formatTime = (minutes: number): string => {
       const hour = Math.floor(minutes / 60) % 24;
       const ampm = hour < 12 ? 'AM' : 'PM';
@@ -202,8 +258,10 @@ export default function HomePage() {
                 ) : (
                   paginatedTrips.map((trip, idx) => {
                     const isSelected = selectedTrip === trip.id;
-                    const durationMinutes = calculateDuration(trip.start_minutes, trip.end_minutes);
-                    const leftPercent = timeToPixels(trip.start_minutes);
+                    const startMinutes = timeStringToMinutes(trip.time.start);
+                    const endMinutes = timeStringToMinutes(trip.time.end);
+                    const durationMinutes = calculateDuration(startMinutes, endMinutes);
+                    const leftPercent = timeToPixels(startMinutes);
                     const widthPercent = timeToPixels(durationMinutes);
 
                     return (
@@ -223,14 +281,14 @@ export default function HomePage() {
                             </div>
                             <div className="text-xs text-slate-400 space-y-1">
                               <div>
-                                <span className="text-slate-500">From:</span> Stn {trip.start_station}
+                                <span className="text-slate-500">From:</span> Stn {trip.startStation}
                               </div>
                               <div>
-                                <span className="text-slate-500">To:</span> Stn {trip.end_station}
+                                <span className="text-slate-500">To:</span> Stn {trip.endStation}
                               </div>
                               <div className="pt-1 mt-1 border-t border-slate-600">
                                 <span className="text-slate-300 font-mono">
-                                  {trip.start_time} → {trip.end_time}
+                                  {trip.time.start} → {trip.time.end}
                                 </span>
                               </div>
                             </div>
@@ -248,10 +306,9 @@ export default function HomePage() {
                               </div>
 
                               <div
-                                className={`absolute top-2 bottom-2 bg-gradient-to-r ${getColor(
-                                  trip.id
-                                )} rounded-lg shadow-lg transition-all transform hover:scale-y-110 hover:shadow-xl border border-white/20`}
+                                className="absolute top-2 bottom-2 rounded-lg shadow-lg transition-all transform hover:scale-y-110 hover:shadow-xl border border-white/20"
                                 style={{
+                                  background: `linear-gradient(to right, ${getColor(trip).start}, ${getColor(trip).end})`,
                                   left: `${leftPercent}%`,
                                   width: `${Math.max(widthPercent, 2)}%`,
                                 }}
@@ -281,13 +338,13 @@ export default function HomePage() {
                               <div>
                                 <span className="text-slate-400">Departure</span>
                                 <div className="text-blue-300 font-semibold">
-                                  {trip.start_time}
+                                  {trip.time.start}
                                 </div>
                               </div>
                               <div>
                                 <span className="text-slate-400">Arrival</span>
                                 <div className="text-blue-300 font-semibold">
-                                  {trip.end_time}
+                                  {trip.time.end}
                                 </div>
                               </div>
                               <div>
@@ -324,7 +381,10 @@ export default function HomePage() {
                 ? formatDuration(
                     Math.round(
                       filteredTrips.reduce(
-                        (acc, t) => acc + calculateDuration(t.start_minutes, t.end_minutes),
+                        (acc, t) => acc + calculateDuration(
+                          timeStringToMinutes(t.time.start),
+                          timeStringToMinutes(t.time.end)
+                        ),
                         0
                       ) / filteredTrips.length
                     )

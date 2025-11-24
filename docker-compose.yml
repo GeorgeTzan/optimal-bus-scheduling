@@ -19,6 +19,7 @@ services:
     volumes:
       - ./backend:/app:Z
       - ./docs:/app/docs:Z
+      - ./data.json:/app/data.json:Z
     environment:
       - PYTHONPATH=/app
       - UV_CACHE_DIR=/tmp/uv-cache

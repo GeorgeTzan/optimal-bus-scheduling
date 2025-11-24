@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from dat_parser import parse_trips, parse_drivers
+from dat_parser import parse_trips, parse_drivers, get_full_data
 
 app = FastAPI(title="Optimal Scheduling System API", version="1.0.0")
 
@@ -28,6 +28,12 @@ async def get_trips():
 async def get_drivers():
     drivers = parse_drivers()
     return {"drivers": drivers}
+
+
+@app.get("/data")
+async def get_data():
+    data = get_full_data()
+    return data
 
 
 @app.get("/schedule")
