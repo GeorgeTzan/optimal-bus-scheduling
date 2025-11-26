@@ -28,12 +28,40 @@ interface Trip {
   };
 }
 
+interface Driver {
+  driverId: string;
+  busId: string;
+  homeStation: string;
+  currentStation: string;
+  shiftStartTime: string;
+  busAttributes: {
+    type: string;
+    isKtel: number;
+    excludeFromEq: number;
+    distanceAdjustment: number;
+  };
+  preassignedBreaks: Array<{
+    durationMinutes: number;
+    dayIndex: number;
+  }>;
+  parameters: {
+    cost: number;
+    compatibility: string;
+  };
+}
+
+type TabType = 'trips' | 'drivers';
+
 export default function HomePage() {
+  const [activeTab, setActiveTab] = useState<TabType>('trips');
   const [trips, setTrips] = useState<Trip[]>([]);
+  const [drivers, setDrivers] = useState<Driver[]>([]);
   const [selectedTrip, setSelectedTrip] = useState<string | null>(null);
   const [searchFilter, setSearchFilter] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [driverPage, setDriverPage] = useState(1);
   const tripsPerPage = 5;
+  const driversPerPage = 10;
 
   useEffect(() => {
     fetch("/api/trips")
@@ -42,6 +70,13 @@ export default function HomePage() {
         setTrips(data.trips);
       })
       .catch((err) => console.error("Failed to load trips:", err));
+
+    fetch("/api/drivers")
+      .then((res) => res.json())
+      .then((data) => {
+        setDrivers(data.drivers);
+      })
+      .catch((err) => console.error("Failed to load drivers:", err));
   }, []);
 
   const filteredTrips = trips.filter((trip) => {
@@ -83,7 +118,7 @@ export default function HomePage() {
 
   const timeStringToMinutes = (timeStr: string): number => {
     const [hours, minutes] = timeStr.split(':').map(Number);
-    return hours * 60 + minutes;
+    return (hours || 0) * 60 + (minutes || 0);
   };
 
   const calculateDuration = (startMinutes: number, endMinutes: number) => {
@@ -135,7 +170,7 @@ export default function HomePage() {
         return acc & acc;
     }, 0);
     const index = Math.abs(hash) % colorKeys.length;
-    return colorKeys[index];
+    return colorKeys[index] || 'blue';
   };
 
   const getColor = (trip: Trip): { start: string, end: string } => {
@@ -206,26 +241,53 @@ export default function HomePage() {
           <h1 className="text-5xl font-bold text-white mb-2">Bus Schedule Visualization</h1>
         </div>
 
-        <div className="bg-slate-700 rounded-xl p-4 mb-6 shadow-2xl">
-          <div className="flex gap-4">
-            <input
-              type="text"
-              placeholder="Search: Trip ID, 'stn 001', 'from 001', 'to 001'..."
-              value={searchFilter}
-              onChange={(e) => {
-                setSearchFilter(e.target.value);
-                setCurrentPage(1);  
-              }}
-              className="flex-1 px-4 py-3 rounded-lg bg-slate-600 text-white placeholder-slate-400 border border-slate-500 focus:outline-none focus:border-blue-500 transition"
-            />
-            <button
-              onClick={downloadTripsAsJson}
-              className="px-4 py-3 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
-            >
-              Save as JSON
-            </button>
-          </div>
+        {/* Tabs Navigation */}
+        <div className="flex gap-2 mb-6">
+          <button
+            onClick={() => setActiveTab('trips')}
+            className={`px-6 py-3 rounded-lg font-semibold transition ${
+              activeTab === 'trips'
+                ? 'bg-blue-600 text-white shadow-lg'
+                : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+            }`}
+          >
+            Trips / Δρομολόγια
+          </button>
+          <button
+            onClick={() => setActiveTab('drivers')}
+            className={`px-6 py-3 rounded-lg font-semibold transition ${
+              activeTab === 'drivers'
+                ? 'bg-blue-600 text-white shadow-lg'
+                : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+            }`}
+          >
+            Drivers / Οδηγοί
+          </button>
         </div>
+
+        {}
+        {activeTab === 'trips' && (
+          <>
+            <div className="bg-slate-700 rounded-xl p-4 mb-6 shadow-2xl">
+              <div className="flex gap-4">
+                <input
+                  type="text"
+                  placeholder="Search: Trip ID, 'stn 001', 'from 001', 'to 001'..."
+                  value={searchFilter}
+                  onChange={(e) => {
+                    setSearchFilter(e.target.value);
+                    setCurrentPage(1);  
+                  }}
+                  className="flex-1 px-4 py-3 rounded-lg bg-slate-600 text-white placeholder-slate-400 border border-slate-500 focus:outline-none focus:border-blue-500 transition"
+                />
+                <button
+                  onClick={downloadTripsAsJson}
+                  className="px-4 py-3 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
+                >
+                  Save as JSON
+                </button>
+              </div>
+            </div>
 
         <div className="bg-slate-800 rounded-xl shadow-2xl overflow-hidden border border-slate-700">
           <div className="overflow-x-auto">
@@ -398,25 +460,168 @@ export default function HomePage() {
           </div>
         </div>
 
-        {totalPages > 1 && (
-          <div className="flex justify-center items-center mt-6 space-x-2">
-            <button
-              onClick={() => handlePageChange(currentPage - 1)}
-              disabled={currentPage === 1}
-              className="px-4 py-2 bg-slate-600 text-white rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-500"
-            >
-              Previous
-            </button>
-            <span className="text-slate-400">
-              Page {currentPage} of {totalPages}
-            </span>
-            <button
-              onClick={() => handlePageChange(currentPage + 1)}
-              disabled={currentPage === totalPages}
-              className="px-4 py-2 bg-slate-600 text-white rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-500"
-            >
-              Next
-            </button>
+            {totalPages > 1 && (
+              <div className="flex justify-center items-center mt-6 space-x-2">
+                <button
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className="px-4 py-2 bg-slate-600 text-white rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-500"
+                >
+                  Previous
+                </button>
+                <span className="text-slate-400">
+                  Page {currentPage} of {totalPages}
+                </span>
+                <button
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  className="px-4 py-2 bg-slate-600 text-white rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-500"
+                >
+                  Next
+                </button>
+              </div>
+            )}
+          </>
+        )}
+
+        {/* Drivers Tab */}
+        {activeTab === 'drivers' && (
+          <div className="space-y-6">
+            <div className="grid grid-cols-4 gap-4">
+              <div className="bg-gradient-to-br from-slate-700 to-slate-800 rounded-lg p-4 border border-slate-600">
+                <div className="text-slate-400 text-sm mb-2">Total Drivers</div>
+                <div className="text-4xl font-bold text-blue-400">{drivers.length}</div>
+              </div>
+              <div className="bg-gradient-to-br from-slate-700 to-slate-800 rounded-lg p-4 border border-slate-600">
+                <div className="text-slate-400 text-sm mb-2">KTEL Buses</div>
+                <div className="text-4xl font-bold text-green-400">
+                  {drivers.filter(d => d.busAttributes.isKtel === 1).length}
+                </div>
+              </div>
+              <div className="bg-gradient-to-br from-slate-700 to-slate-800 rounded-lg p-4 border border-slate-600">
+                <div className="text-slate-400 text-sm mb-2">Avg Cost</div>
+                <div className="text-2xl font-bold text-purple-400">
+                  {drivers.length > 0
+                    ? Math.round(drivers.reduce((acc, d) => acc + d.parameters.cost, 0) / drivers.length)
+                    : 0}
+                </div>
+              </div>
+              <div className="bg-gradient-to-br from-slate-700 to-slate-800 rounded-lg p-4 border border-slate-600">
+                <div className="text-slate-400 text-sm mb-2">Bus Types</div>
+                <div className="text-2xl font-bold text-orange-400">
+                  {new Set(drivers.map(d => d.busAttributes.type)).size}
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-slate-800 rounded-xl shadow-2xl overflow-hidden border border-slate-700">
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-gradient-to-r from-slate-900 to-slate-800 border-b border-slate-700">
+                    <tr>
+                      <th className="px-4 py-4 text-left text-slate-400 text-sm font-semibold">Driver ID</th>
+                      <th className="px-4 py-4 text-left text-slate-400 text-sm font-semibold">Bus ID</th>
+                      <th className="px-4 py-4 text-left text-slate-400 text-sm font-semibold">Home Station</th>
+                      <th className="px-4 py-4 text-left text-slate-400 text-sm font-semibold">Bus Type</th>
+                      <th className="px-4 py-4 text-left text-slate-400 text-sm font-semibold">KTEL</th>
+                      <th className="px-4 py-4 text-left text-slate-400 text-sm font-semibold">Cost</th>
+                      <th className="px-4 py-4 text-left text-slate-400 text-sm font-semibold">Breaks</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {drivers
+                      .slice((driverPage - 1) * driversPerPage, driverPage * driversPerPage)
+                      .map((driver, idx) => (
+                        <tr
+                          key={idx}
+                          className="border-b border-slate-700 hover:bg-slate-700/50 transition"
+                        >
+                          <td className="px-4 py-3 text-white font-mono text-sm">{driver.driverId}</td>
+                          <td className="px-4 py-3 text-slate-300 font-mono text-sm">{driver.busId}</td>
+                          <td className="px-4 py-3 text-slate-300 text-sm">Station {driver.homeStation}</td>
+                          <td className="px-4 py-3 text-slate-300 text-sm">
+                            <span className="px-2 py-1 bg-blue-600/30 text-blue-300 rounded text-xs">
+                              {driver.busAttributes.type}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3 text-slate-300 text-sm">
+                            {driver.busAttributes.isKtel === 1 ? (
+                              <span className="px-2 py-1 bg-green-600/30 text-green-300 rounded text-xs">Yes</span>
+                            ) : (
+                              <span className="px-2 py-1 bg-gray-600/30 text-gray-300 rounded text-xs">No</span>
+                            )}
+                          </td>
+                          <td className="px-4 py-3 text-slate-300 font-semibold text-sm">{driver.parameters.cost}</td>
+                          <td className="px-4 py-3 text-slate-300 text-sm">
+                            {driver.preassignedBreaks.filter(b => b.durationMinutes > 0).length}
+                          </td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {Math.ceil(drivers.length / driversPerPage) > 1 && (
+              <div className="flex justify-center items-center space-x-2">
+                <button
+                  onClick={() => setDriverPage(driverPage - 1)}
+                  disabled={driverPage === 1}
+                  className="px-4 py-2 bg-slate-600 text-white rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-500"
+                >
+                  Previous
+                </button>
+                <span className="text-slate-400">
+                  Page {driverPage} of {Math.ceil(drivers.length / driversPerPage)}
+                </span>
+                <button
+                  onClick={() => setDriverPage(driverPage + 1)}
+                  disabled={driverPage === Math.ceil(drivers.length / driversPerPage)}
+                  className="px-4 py-2 bg-slate-600 text-white rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-500"
+                >
+                  Next
+                </button>
+              </div>
+            )}
+
+            <div className="bg-slate-800 rounded-xl shadow-2xl p-6 border border-slate-700">
+              <h3 className="text-xl font-bold text-white mb-4">Bus Type Distribution</h3>
+              <div className="space-y-3">
+                {Array.from(new Set(drivers.map(d => d.busAttributes.type))).map((type, idx) => {
+                  const count = drivers.filter(d => d.busAttributes.type === type).length;
+                  const percentage = (count / drivers.length) * 100;
+                  return (
+                    <div key={idx}>
+                      <div className="flex justify-between text-sm mb-1">
+                        <span className="text-slate-300">Type {type}</span>
+                        <span className="text-slate-400">{count} drivers ({percentage.toFixed(1)}%)</span>
+                      </div>
+                      <div className="w-full bg-slate-700 rounded-full h-2">
+                        <div
+                          className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all"
+                          style={{ width: `${percentage}%` }}
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="bg-slate-800 rounded-xl shadow-2xl p-6 border border-slate-700">
+              <h3 className="text-xl font-bold text-white mb-4">Drivers by Home Station</h3>
+              <div className="grid grid-cols-3 gap-4">
+                {Array.from(new Set(drivers.map(d => d.homeStation))).sort().map((station, idx) => {
+                  const count = drivers.filter(d => d.homeStation === station).length;
+                  return (
+                    <div key={idx} className="bg-slate-700 rounded-lg p-4">
+                      <div className="text-slate-400 text-sm mb-1">Station {station}</div>
+                      <div className="text-3xl font-bold text-blue-400">{count}</div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
           </div>
         )}
       </div>
