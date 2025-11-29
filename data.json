@@ -15,6 +15,14 @@
         "00",
         "00"
       ]
+    },
+    "parameters": {
+      "maxDutyMinutes": 900,
+      "normalDutyMinutes": 600,
+      "maxWorkMinutes": 720,
+      "driveTimeToBreakMinutes": 270,
+      "minBreakMinutes": 30,
+      "transitMinutes": 30
     }
   },
   "stationTransferMatrix": {
@@ -375,8 +383,8 @@
     {
       "driverId": "3805",
       "busId": "010",
-      "homeStation": "002",
-      "currentStation": "006",
+      "homeStation": "006",
+      "currentStation": "002",
       "shiftStartTime": "0000",
       "busAttributes": {
         "type": "01",
@@ -2230,8 +2238,8 @@
     {
       "driverId": "3897",
       "busId": "004",
-      "homeStation": "001",
-      "currentStation": "006",
+      "homeStation": "006",
+      "currentStation": "001",
       "shiftStartTime": "0200",
       "busAttributes": {
         "type": "01",
@@ -2370,8 +2378,8 @@
     {
       "driverId": "3935",
       "busId": "073",
-      "homeStation": "001",
-      "currentStation": "004",
+      "homeStation": "004",
+      "currentStation": "001",
       "shiftStartTime": "0230",
       "busAttributes": {
         "type": "01",
@@ -2545,8 +2553,8 @@
     {
       "driverId": "3948",
       "busId": "017",
-      "homeStation": "002",
-      "currentStation": "004",
+      "homeStation": "004",
+      "currentStation": "002",
       "shiftStartTime": "0445",
       "busAttributes": {
         "type": "01",
@@ -2657,6 +2665,7 @@
       "end_time": "05:30",
       "start_minutes": 300,
       "end_minutes": 330,
+      "dayOffset": 0,
       "time": {
         "start": "05:00",
         "end": "05:30",
@@ -2688,6 +2697,7 @@
       "end_time": "07:45",
       "start_minutes": 310,
       "end_minutes": 465,
+      "dayOffset": 0,
       "time": {
         "start": "05:10",
         "end": "07:45",
@@ -2719,6 +2729,7 @@
       "end_time": "13:00",
       "start_minutes": 310,
       "end_minutes": 780,
+      "dayOffset": 0,
       "time": {
         "start": "05:10",
         "end": "13:00",
@@ -2750,6 +2761,7 @@
       "end_time": "05:30",
       "start_minutes": 315,
       "end_minutes": 330,
+      "dayOffset": 0,
       "time": {
         "start": "05:15",
         "end": "05:30",
@@ -2781,6 +2793,7 @@
       "end_time": "07:00",
       "start_minutes": 315,
       "end_minutes": 420,
+      "dayOffset": 0,
       "time": {
         "start": "05:15",
         "end": "07:00",
@@ -2812,6 +2825,7 @@
       "end_time": "07:00",
       "start_minutes": 330,
       "end_minutes": 420,
+      "dayOffset": 0,
       "time": {
         "start": "05:30",
         "end": "07:00",
@@ -2843,6 +2857,7 @@
       "end_time": "07:00",
       "start_minutes": 330,
       "end_minutes": 420,
+      "dayOffset": 0,
       "time": {
         "start": "05:30",
         "end": "07:00",
@@ -2874,6 +2889,7 @@
       "end_time": "07:00",
       "start_minutes": 330,
       "end_minutes": 420,
+      "dayOffset": 0,
       "time": {
         "start": "05:30",
         "end": "07:00",
@@ -2905,6 +2921,7 @@
       "end_time": "08:50",
       "start_minutes": 330,
       "end_minutes": 530,
+      "dayOffset": 0,
       "time": {
         "start": "05:30",
         "end": "08:50",
@@ -2936,6 +2953,7 @@
       "end_time": "07:00",
       "start_minutes": 360,
       "end_minutes": 420,
+      "dayOffset": 0,
       "time": {
         "start": "06:00",
         "end": "07:00",
@@ -2967,6 +2985,7 @@
       "end_time": "07:00",
       "start_minutes": 360,
       "end_minutes": 420,
+      "dayOffset": 0,
       "time": {
         "start": "06:00",
         "end": "07:00",
@@ -2998,6 +3017,7 @@
       "end_time": "07:15",
       "start_minutes": 360,
       "end_minutes": 435,
+      "dayOffset": 0,
       "time": {
         "start": "06:00",
         "end": "07:15",
@@ -3029,6 +3049,7 @@
       "end_time": "07:20",
       "start_minutes": 360,
       "end_minutes": 440,
+      "dayOffset": 0,
       "time": {
         "start": "06:00",
         "end": "07:20",
@@ -3060,6 +3081,7 @@
       "end_time": "08:00",
       "start_minutes": 360,
       "end_minutes": 480,
+      "dayOffset": 0,
       "time": {
         "start": "06:00",
         "end": "08:00",
@@ -3091,6 +3113,7 @@
       "end_time": "08:30",
       "start_minutes": 360,
       "end_minutes": 510,
+      "dayOffset": 0,
       "time": {
         "start": "06:00",
         "end": "08:30",
@@ -3124,6 +3147,7 @@
       "end_time": "08:50",
       "start_minutes": 360,
       "end_minutes": 530,
+      "dayOffset": 0,
       "time": {
         "start": "06:00",
         "end": "08:50",
@@ -3155,6 +3179,7 @@
       "end_time": "07:15",
       "start_minutes": 375,
       "end_minutes": 435,
+      "dayOffset": 0,
       "time": {
         "start": "06:15",
         "end": "07:15",
@@ -3186,6 +3211,7 @@
       "end_time": "07:30",
       "start_minutes": 375,
       "end_minutes": 450,
+      "dayOffset": 0,
       "time": {
         "start": "06:15",
         "end": "07:30",
@@ -3217,6 +3243,7 @@
       "end_time": "07:40",
       "start_minutes": 375,
       "end_minutes": 460,
+      "dayOffset": 0,
       "time": {
         "start": "06:15",
         "end": "07:40",
@@ -3248,6 +3275,7 @@
       "end_time": "08:05",
       "start_minutes": 375,
       "end_minutes": 485,
+      "dayOffset": 0,
       "time": {
         "start": "06:15",
         "end": "08:05",
@@ -3279,6 +3307,7 @@
       "end_time": "14:00",
       "start_minutes": 375,
       "end_minutes": 840,
+      "dayOffset": 0,
       "time": {
         "start": "06:15",
         "end": "14:00",
@@ -3310,6 +3339,7 @@
       "end_time": "06:30",
       "start_minutes": 380,
       "end_minutes": 390,
+      "dayOffset": 0,
       "time": {
         "start": "06:20",
         "end": "06:30",
@@ -3341,6 +3371,7 @@
       "end_time": "07:00",
       "start_minutes": 390,
       "end_minutes": 420,
+      "dayOffset": 0,
       "time": {
         "start": "06:30",
         "end": "07:00",
@@ -3372,6 +3403,7 @@
       "end_time": "07:00",
       "start_minutes": 390,
       "end_minutes": 420,
+      "dayOffset": 0,
       "time": {
         "start": "06:30",
         "end": "07:00",
@@ -3403,6 +3435,7 @@
       "end_time": "07:15",
       "start_minutes": 390,
       "end_minutes": 435,
+      "dayOffset": 0,
       "time": {
         "start": "06:30",
         "end": "07:15",
@@ -3434,6 +3467,7 @@
       "end_time": "07:20",
       "start_minutes": 390,
       "end_minutes": 440,
+      "dayOffset": 0,
       "time": {
         "start": "06:30",
         "end": "07:20",
@@ -3465,6 +3499,7 @@
       "end_time": "07:20",
       "start_minutes": 390,
       "end_minutes": 440,
+      "dayOffset": 0,
       "time": {
         "start": "06:30",
         "end": "07:20",
@@ -3496,6 +3531,7 @@
       "end_time": "07:30",
       "start_minutes": 390,
       "end_minutes": 450,
+      "dayOffset": 0,
       "time": {
         "start": "06:30",
         "end": "07:30",
@@ -3527,6 +3563,7 @@
       "end_time": "07:30",
       "start_minutes": 390,
       "end_minutes": 450,
+      "dayOffset": 0,
       "time": {
         "start": "06:30",
         "end": "07:30",
@@ -3558,6 +3595,7 @@
       "end_time": "07:30",
       "start_minutes": 390,
       "end_minutes": 450,
+      "dayOffset": 0,
       "time": {
         "start": "06:30",
         "end": "07:30",
@@ -3589,6 +3627,7 @@
       "end_time": "07:30",
       "start_minutes": 390,
       "end_minutes": 450,
+      "dayOffset": 0,
       "time": {
         "start": "06:30",
         "end": "07:30",
@@ -3620,6 +3659,7 @@
       "end_time": "07:45",
       "start_minutes": 390,
       "end_minutes": 465,
+      "dayOffset": 0,
       "time": {
         "start": "06:30",
         "end": "07:45",
@@ -3651,6 +3691,7 @@
       "end_time": "07:50",
       "start_minutes": 390,
       "end_minutes": 470,
+      "dayOffset": 0,
       "time": {
         "start": "06:30",
         "end": "07:50",
@@ -3682,6 +3723,7 @@
       "end_time": "08:00",
       "start_minutes": 390,
       "end_minutes": 480,
+      "dayOffset": 0,
       "time": {
         "start": "06:30",
         "end": "08:00",
@@ -3713,6 +3755,7 @@
       "end_time": "07:15",
       "start_minutes": 405,
       "end_minutes": 435,
+      "dayOffset": 0,
       "time": {
         "start": "06:45",
         "end": "07:15",
@@ -3744,6 +3787,7 @@
       "end_time": "07:15",
       "start_minutes": 405,
       "end_minutes": 435,
+      "dayOffset": 0,
       "time": {
         "start": "06:45",
         "end": "07:15",
@@ -3775,6 +3819,7 @@
       "end_time": "07:15",
       "start_minutes": 405,
       "end_minutes": 435,
+      "dayOffset": 0,
       "time": {
         "start": "06:45",
         "end": "07:15",
@@ -3806,6 +3851,7 @@
       "end_time": "07:40",
       "start_minutes": 405,
       "end_minutes": 460,
+      "dayOffset": 0,
       "time": {
         "start": "06:45",
         "end": "07:40",
@@ -3837,6 +3883,7 @@
       "end_time": "08:30",
       "start_minutes": 405,
       "end_minutes": 510,
+      "dayOffset": 0,
       "time": {
         "start": "06:45",
         "end": "08:30",
@@ -3868,6 +3915,7 @@
       "end_time": "07:30",
       "start_minutes": 415,
       "end_minutes": 450,
+      "dayOffset": 0,
       "time": {
         "start": "06:55",
         "end": "07:30",
@@ -3899,6 +3947,7 @@
       "end_time": "07:20",
       "start_minutes": 420,
       "end_minutes": 440,
+      "dayOffset": 0,
       "time": {
         "start": "07:00",
         "end": "07:20",
@@ -3930,6 +3979,7 @@
       "end_time": "07:20",
       "start_minutes": 420,
       "end_minutes": 440,
+      "dayOffset": 0,
       "time": {
         "start": "07:00",
         "end": "07:20",
@@ -3961,6 +4011,7 @@
       "end_time": "07:20",
       "start_minutes": 420,
       "end_minutes": 440,
+      "dayOffset": 0,
       "time": {
         "start": "07:00",
         "end": "07:20",
@@ -3992,6 +4043,7 @@
       "end_time": "07:30",
       "start_minutes": 420,
       "end_minutes": 450,
+      "dayOffset": 0,
       "time": {
         "start": "07:00",
         "end": "07:30",
@@ -4023,6 +4075,7 @@
       "end_time": "07:30",
       "start_minutes": 420,
       "end_minutes": 450,
+      "dayOffset": 0,
       "time": {
         "start": "07:00",
         "end": "07:30",
@@ -4054,6 +4107,7 @@
       "end_time": "07:40",
       "start_minutes": 420,
       "end_minutes": 460,
+      "dayOffset": 0,
       "time": {
         "start": "07:00",
         "end": "07:40",
@@ -4085,6 +4139,7 @@
       "end_time": "07:40",
       "start_minutes": 420,
       "end_minutes": 460,
+      "dayOffset": 0,
       "time": {
         "start": "07:00",
         "end": "07:40",
@@ -4116,6 +4171,7 @@
       "end_time": "07:50",
       "start_minutes": 420,
       "end_minutes": 470,
+      "dayOffset": 0,
       "time": {
         "start": "07:00",
         "end": "07:50",
@@ -4147,6 +4203,7 @@
       "end_time": "07:55",
       "start_minutes": 420,
       "end_minutes": 475,
+      "dayOffset": 0,
       "time": {
         "start": "07:00",
         "end": "07:55",
@@ -4178,6 +4235,7 @@
       "end_time": "08:00",
       "start_minutes": 420,
       "end_minutes": 480,
+      "dayOffset": 0,
       "time": {
         "start": "07:00",
         "end": "08:00",
@@ -4209,6 +4267,7 @@
       "end_time": "08:00",
       "start_minutes": 420,
       "end_minutes": 480,
+      "dayOffset": 0,
       "time": {
         "start": "07:00",
         "end": "08:00",
@@ -4240,6 +4299,7 @@
       "end_time": "08:00",
       "start_minutes": 420,
       "end_minutes": 480,
+      "dayOffset": 0,
       "time": {
         "start": "07:00",
         "end": "08:00",
@@ -4271,6 +4331,7 @@
       "end_time": "08:00",
       "start_minutes": 420,
       "end_minutes": 480,
+      "dayOffset": 0,
       "time": {
         "start": "07:00",
         "end": "08:00",
@@ -4302,6 +4363,7 @@
       "end_time": "08:15",
       "start_minutes": 420,
       "end_minutes": 495,
+      "dayOffset": 0,
       "time": {
         "start": "07:00",
         "end": "08:15",
@@ -4333,6 +4395,7 @@
       "end_time": "09:45",
       "start_minutes": 420,
       "end_minutes": 585,
+      "dayOffset": 0,
       "time": {
         "start": "07:00",
         "end": "09:45",
@@ -4364,6 +4427,7 @@
       "end_time": "07:25",
       "start_minutes": 430,
       "end_minutes": 445,
+      "dayOffset": 0,
       "time": {
         "start": "07:10",
         "end": "07:25",
@@ -4395,6 +4459,7 @@
       "end_time": "07:30",
       "start_minutes": 430,
       "end_minutes": 450,
+      "dayOffset": 0,
       "time": {
         "start": "07:10",
         "end": "07:30",
@@ -4426,6 +4491,7 @@
       "end_time": "08:05",
       "start_minutes": 430,
       "end_minutes": 485,
+      "dayOffset": 0,
       "time": {
         "start": "07:10",
         "end": "08:05",
@@ -4457,6 +4523,7 @@
       "end_time": "08:10",
       "start_minutes": 430,
       "end_minutes": 490,
+      "dayOffset": 0,
       "time": {
         "start": "07:10",
         "end": "08:10",
@@ -4488,6 +4555,7 @@
       "end_time": "07:30",
       "start_minutes": 435,
       "end_minutes": 450,
+      "dayOffset": 0,
       "time": {
         "start": "07:15",
         "end": "07:30",
@@ -4519,6 +4587,7 @@
       "end_time": "07:40",
       "start_minutes": 435,
       "end_minutes": 460,
+      "dayOffset": 0,
       "time": {
         "start": "07:15",
         "end": "07:40",
@@ -4550,6 +4619,7 @@
       "end_time": "07:40",
       "start_minutes": 435,
       "end_minutes": 460,
+      "dayOffset": 0,
       "time": {
         "start": "07:15",
         "end": "07:40",
@@ -4581,6 +4651,7 @@
       "end_time": "07:40",
       "start_minutes": 435,
       "end_minutes": 460,
+      "dayOffset": 0,
       "time": {
         "start": "07:15",
         "end": "07:40",
@@ -4612,6 +4683,7 @@
       "end_time": "07:40",
       "start_minutes": 435,
       "end_minutes": 460,
+      "dayOffset": 0,
       "time": {
         "start": "07:15",
         "end": "07:40",
@@ -4643,6 +4715,7 @@
       "end_time": "07:40",
       "start_minutes": 440,
       "end_minutes": 460,
+      "dayOffset": 0,
       "time": {
         "start": "07:20",
         "end": "07:40",
@@ -4674,6 +4747,7 @@
       "end_time": "07:40",
       "start_minutes": 440,
       "end_minutes": 460,
+      "dayOffset": 0,
       "time": {
         "start": "07:20",
         "end": "07:40",
@@ -4705,6 +4779,7 @@
       "end_time": "07:40",
       "start_minutes": 440,
       "end_minutes": 460,
+      "dayOffset": 0,
       "time": {
         "start": "07:20",
         "end": "07:40",
@@ -4736,6 +4811,7 @@
       "end_time": "07:40",
       "start_minutes": 440,
       "end_minutes": 460,
+      "dayOffset": 0,
       "time": {
         "start": "07:20",
         "end": "07:40",
@@ -4767,6 +4843,7 @@
       "end_time": "07:45",
       "start_minutes": 440,
       "end_minutes": 465,
+      "dayOffset": 0,
       "time": {
         "start": "07:20",
         "end": "07:45",
@@ -4798,6 +4875,7 @@
       "end_time": "07:50",
       "start_minutes": 440,
       "end_minutes": 470,
+      "dayOffset": 0,
       "time": {
         "start": "07:20",
         "end": "07:50",
@@ -4829,6 +4907,7 @@
       "end_time": "07:55",
       "start_minutes": 440,
       "end_minutes": 475,
+      "dayOffset": 0,
       "time": {
         "start": "07:20",
         "end": "07:55",
@@ -4860,6 +4939,7 @@
       "end_time": "08:00",
       "start_minutes": 440,
       "end_minutes": 480,
+      "dayOffset": 0,
       "time": {
         "start": "07:20",
         "end": "08:00",
@@ -4891,6 +4971,7 @@
       "end_time": "08:00",
       "start_minutes": 440,
       "end_minutes": 480,
+      "dayOffset": 0,
       "time": {
         "start": "07:20",
         "end": "08:00",
@@ -4922,6 +5003,7 @@
       "end_time": "08:00",
       "start_minutes": 440,
       "end_minutes": 480,
+      "dayOffset": 0,
       "time": {
         "start": "07:20",
         "end": "08:00",
@@ -4953,6 +5035,7 @@
       "end_time": "08:15",
       "start_minutes": 440,
       "end_minutes": 495,
+      "dayOffset": 0,
       "time": {
         "start": "07:20",
         "end": "08:15",
@@ -4984,6 +5067,7 @@
       "end_time": "08:30",
       "start_minutes": 440,
       "end_minutes": 510,
+      "dayOffset": 0,
       "time": {
         "start": "07:20",
         "end": "08:30",
@@ -5015,6 +5099,7 @@
       "end_time": "08:00",
       "start_minutes": 445,
       "end_minutes": 480,
+      "dayOffset": 0,
       "time": {
         "start": "07:25",
         "end": "08:00",
@@ -5046,6 +5131,7 @@
       "end_time": "07:40",
       "start_minutes": 450,
       "end_minutes": 460,
+      "dayOffset": 0,
       "time": {
         "start": "07:30",
         "end": "07:40",
@@ -5077,6 +5163,7 @@
       "end_time": "07:45",
       "start_minutes": 450,
       "end_minutes": 465,
+      "dayOffset": 0,
       "time": {
         "start": "07:30",
         "end": "07:45",
@@ -5108,6 +5195,7 @@
       "end_time": "07:50",
       "start_minutes": 450,
       "end_minutes": 470,
+      "dayOffset": 0,
       "time": {
         "start": "07:30",
         "end": "07:50",
@@ -5139,6 +5227,7 @@
       "end_time": "08:00",
       "start_minutes": 450,
       "end_minutes": 480,
+      "dayOffset": 0,
       "time": {
         "start": "07:30",
         "end": "08:00",
@@ -5170,6 +5259,7 @@
       "end_time": "08:00",
       "start_minutes": 450,
       "end_minutes": 480,
+      "dayOffset": 0,
       "time": {
         "start": "07:30",
         "end": "08:00",
@@ -5201,6 +5291,7 @@
       "end_time": "08:00",
       "start_minutes": 450,
       "end_minutes": 480,
+      "dayOffset": 0,
       "time": {
         "start": "07:30",
         "end": "08:00",
@@ -5232,6 +5323,7 @@
       "end_time": "08:05",
       "start_minutes": 450,
       "end_minutes": 485,
+      "dayOffset": 0,
       "time": {
         "start": "07:30",
         "end": "08:05",
@@ -5263,6 +5355,7 @@
       "end_time": "08:15",
       "start_minutes": 450,
       "end_minutes": 495,
+      "dayOffset": 0,
       "time": {
         "start": "07:30",
         "end": "08:15",
@@ -5294,6 +5387,7 @@
       "end_time": "08:30",
       "start_minutes": 450,
       "end_minutes": 510,
+      "dayOffset": 0,
       "time": {
         "start": "07:30",
         "end": "08:30",
@@ -5325,6 +5419,7 @@
       "end_time": "07:50",
       "start_minutes": 460,
       "end_minutes": 470,
+      "dayOffset": 0,
       "time": {
         "start": "07:40",
         "end": "07:50",
@@ -5356,6 +5451,7 @@
       "end_time": "08:00",
       "start_minutes": 460,
       "end_minutes": 480,
+      "dayOffset": 0,
       "time": {
         "start": "07:40",
         "end": "08:00",
@@ -5387,6 +5483,7 @@
       "end_time": "08:00",
       "start_minutes": 460,
       "end_minutes": 480,
+      "dayOffset": 0,
       "time": {
         "start": "07:40",
         "end": "08:00",
@@ -5418,6 +5515,7 @@
       "end_time": "08:00",
       "start_minutes": 460,
       "end_minutes": 480,
+      "dayOffset": 0,
       "time": {
         "start": "07:40",
         "end": "08:00",
@@ -5449,6 +5547,7 @@
       "end_time": "08:00",
       "start_minutes": 460,
       "end_minutes": 480,
+      "dayOffset": 0,
       "time": {
         "start": "07:40",
         "end": "08:00",
@@ -5480,6 +5579,7 @@
       "end_time": "08:05",
       "start_minutes": 460,
       "end_minutes": 485,
+      "dayOffset": 0,
       "time": {
         "start": "07:40",
         "end": "08:05",
@@ -5511,6 +5611,7 @@
       "end_time": "08:10",
       "start_minutes": 460,
       "end_minutes": 490,
+      "dayOffset": 0,
       "time": {
         "start": "07:40",
         "end": "08:10",
@@ -5542,6 +5643,7 @@
       "end_time": "08:10",
       "start_minutes": 460,
       "end_minutes": 490,
+      "dayOffset": 0,
       "time": {
         "start": "07:40",
         "end": "08:10",
@@ -5573,6 +5675,7 @@
       "end_time": "08:10",
       "start_minutes": 460,
       "end_minutes": 490,
+      "dayOffset": 0,
       "time": {
         "start": "07:40",
         "end": "08:10",
@@ -5604,6 +5707,7 @@
       "end_time": "08:15",
       "start_minutes": 460,
       "end_minutes": 495,
+      "dayOffset": 0,
       "time": {
         "start": "07:40",
         "end": "08:15",
@@ -5635,6 +5739,7 @@
       "end_time": "08:30",
       "start_minutes": 460,
       "end_minutes": 510,
+      "dayOffset": 0,
       "time": {
         "start": "07:40",
         "end": "08:30",
@@ -5666,6 +5771,7 @@
       "end_time": "08:00",
       "start_minutes": 465,
       "end_minutes": 480,
+      "dayOffset": 0,
       "time": {
         "start": "07:45",
         "end": "08:00",
@@ -5697,6 +5803,7 @@
       "end_time": "08:30",
       "start_minutes": 465,
       "end_minutes": 510,
+      "dayOffset": 0,
       "time": {
         "start": "07:45",
         "end": "08:30",
@@ -5728,6 +5835,7 @@
       "end_time": "08:30",
       "start_minutes": 465,
       "end_minutes": 510,
+      "dayOffset": 0,
       "time": {
         "start": "07:45",
         "end": "08:30",
@@ -5759,6 +5867,7 @@
       "end_time": "08:30",
       "start_minutes": 465,
       "end_minutes": 510,
+      "dayOffset": 0,
       "time": {
         "start": "07:45",
         "end": "08:30",
@@ -5790,6 +5899,7 @@
       "end_time": "08:05",
       "start_minutes": 470,
       "end_minutes": 485,
+      "dayOffset": 0,
       "time": {
         "start": "07:50",
         "end": "08:05",
@@ -5821,6 +5931,7 @@
       "end_time": "08:10",
       "start_minutes": 470,
       "end_minutes": 490,
+      "dayOffset": 0,
       "time": {
         "start": "07:50",
         "end": "08:10",
@@ -5852,6 +5963,7 @@
       "end_time": "08:30",
       "start_minutes": 470,
       "end_minutes": 510,
+      "dayOffset": 0,
       "time": {
         "start": "07:50",
         "end": "08:30",
@@ -5883,6 +5995,7 @@
       "end_time": "08:20",
       "start_minutes": 475,
       "end_minutes": 500,
+      "dayOffset": 0,
       "time": {
         "start": "07:55",
         "end": "08:20",
@@ -5914,6 +6027,7 @@
       "end_time": "08:30",
       "start_minutes": 475,
       "end_minutes": 510,
+      "dayOffset": 0,
       "time": {
         "start": "07:55",
         "end": "08:30",
@@ -5945,6 +6059,7 @@
       "end_time": "08:30",
       "start_minutes": 480,
       "end_minutes": 510,
+      "dayOffset": 0,
       "time": {
         "start": "08:00",
         "end": "08:30",
@@ -5976,6 +6091,7 @@
       "end_time": "09:00",
       "start_minutes": 480,
       "end_minutes": 540,
+      "dayOffset": 0,
       "time": {
         "start": "08:00",
         "end": "09:00",
@@ -6007,6 +6123,7 @@
       "end_time": "10:20",
       "start_minutes": 480,
       "end_minutes": 620,
+      "dayOffset": 0,
       "time": {
         "start": "08:00",
         "end": "10:20",
@@ -6038,6 +6155,7 @@
       "end_time": "10:30",
       "start_minutes": 480,
       "end_minutes": 630,
+      "dayOffset": 0,
       "time": {
         "start": "08:00",
         "end": "10:30",
@@ -6069,6 +6187,7 @@
       "end_time": "10:45",
       "start_minutes": 480,
       "end_minutes": 645,
+      "dayOffset": 0,
       "time": {
         "start": "08:00",
         "end": "10:45",
@@ -6100,6 +6219,7 @@
       "end_time": "08:30",
       "start_minutes": 485,
       "end_minutes": 510,
+      "dayOffset": 0,
       "time": {
         "start": "08:05",
         "end": "08:30",
@@ -6131,6 +6251,7 @@
       "end_time": "08:30",
       "start_minutes": 485,
       "end_minutes": 510,
+      "dayOffset": 0,
       "time": {
         "start": "08:05",
         "end": "08:30",
@@ -6162,6 +6283,7 @@
       "end_time": "08:30",
       "start_minutes": 485,
       "end_minutes": 510,
+      "dayOffset": 0,
       "time": {
         "start": "08:05",
         "end": "08:30",
@@ -6193,6 +6315,7 @@
       "end_time": "08:30",
       "start_minutes": 485,
       "end_minutes": 510,
+      "dayOffset": 0,
       "time": {
         "start": "08:05",
         "end": "08:30",
@@ -6224,6 +6347,7 @@
       "end_time": "08:30",
       "start_minutes": 485,
       "end_minutes": 510,
+      "dayOffset": 0,
       "time": {
         "start": "08:05",
         "end": "08:30",
@@ -6255,6 +6379,7 @@
       "end_time": "08:30",
       "start_minutes": 485,
       "end_minutes": 510,
+      "dayOffset": 0,
       "time": {
         "start": "08:05",
         "end": "08:30",
@@ -6286,6 +6411,7 @@
       "end_time": "08:30",
       "start_minutes": 485,
       "end_minutes": 510,
+      "dayOffset": 0,
       "time": {
         "start": "08:05",
         "end": "08:30",
@@ -6317,6 +6443,7 @@
       "end_time": "08:30",
       "start_minutes": 490,
       "end_minutes": 510,
+      "dayOffset": 0,
       "time": {
         "start": "08:10",
         "end": "08:30",
@@ -6348,6 +6475,7 @@
       "end_time": "08:30",
       "start_minutes": 495,
       "end_minutes": 510,
+      "dayOffset": 0,
       "time": {
         "start": "08:15",
         "end": "08:30",
@@ -6379,6 +6507,7 @@
       "end_time": "08:40",
       "start_minutes": 495,
       "end_minutes": 520,
+      "dayOffset": 0,
       "time": {
         "start": "08:15",
         "end": "08:40",
@@ -6410,6 +6539,7 @@
       "end_time": "08:30",
       "start_minutes": 500,
       "end_minutes": 510,
+      "dayOffset": 0,
       "time": {
         "start": "08:20",
         "end": "08:30",
@@ -6441,6 +6571,7 @@
       "end_time": "08:30",
       "start_minutes": 500,
       "end_minutes": 510,
+      "dayOffset": 0,
       "time": {
         "start": "08:20",
         "end": "08:30",
@@ -6472,6 +6603,7 @@
       "end_time": "08:50",
       "start_minutes": 500,
       "end_minutes": 530,
+      "dayOffset": 0,
       "time": {
         "start": "08:20",
         "end": "08:50",
@@ -6503,6 +6635,7 @@
       "end_time": "08:50",
       "start_minutes": 500,
       "end_minutes": 530,
+      "dayOffset": 0,
       "time": {
         "start": "08:20",
         "end": "08:50",
@@ -6534,6 +6667,7 @@
       "end_time": "09:00",
       "start_minutes": 500,
       "end_minutes": 540,
+      "dayOffset": 0,
       "time": {
         "start": "08:20",
         "end": "09:00",
@@ -6565,6 +6699,7 @@
       "end_time": "09:30",
       "start_minutes": 500,
       "end_minutes": 570,
+      "dayOffset": 0,
       "time": {
         "start": "08:20",
         "end": "09:30",
@@ -6596,6 +6731,7 @@
       "end_time": "09:00",
       "start_minutes": 510,
       "end_minutes": 540,
+      "dayOffset": 0,
       "time": {
         "start": "08:30",
         "end": "09:00",
@@ -6627,6 +6763,7 @@
       "end_time": "09:30",
       "start_minutes": 510,
       "end_minutes": 570,
+      "dayOffset": 0,
       "time": {
         "start": "08:30",
         "end": "09:30",
@@ -6658,6 +6795,7 @@
       "end_time": "10:00",
       "start_minutes": 510,
       "end_minutes": 600,
+      "dayOffset": 0,
       "time": {
         "start": "08:30",
         "end": "10:00",
@@ -6689,6 +6827,7 @@
       "end_time": "11:45",
       "start_minutes": 525,
       "end_minutes": 705,
+      "dayOffset": 0,
       "time": {
         "start": "08:45",
         "end": "11:45",
@@ -6720,6 +6859,7 @@
       "end_time": "09:30",
       "start_minutes": 540,
       "end_minutes": 570,
+      "dayOffset": 0,
       "time": {
         "start": "09:00",
         "end": "09:30",
@@ -6751,6 +6891,7 @@
       "end_time": "09:40",
       "start_minutes": 540,
       "end_minutes": 580,
+      "dayOffset": 0,
       "time": {
         "start": "09:00",
         "end": "09:40",
@@ -6782,6 +6923,7 @@
       "end_time": "09:45",
       "start_minutes": 540,
       "end_minutes": 585,
+      "dayOffset": 0,
       "time": {
         "start": "09:00",
         "end": "09:45",
@@ -6813,6 +6955,7 @@
       "end_time": "10:00",
       "start_minutes": 540,
       "end_minutes": 600,
+      "dayOffset": 0,
       "time": {
         "start": "09:00",
         "end": "10:00",
@@ -6844,6 +6987,7 @@
       "end_time": "10:00",
       "start_minutes": 540,
       "end_minutes": 600,
+      "dayOffset": 0,
       "time": {
         "start": "09:00",
         "end": "10:00",
@@ -6875,6 +7019,7 @@
       "end_time": "10:00",
       "start_minutes": 540,
       "end_minutes": 600,
+      "dayOffset": 0,
       "time": {
         "start": "09:00",
         "end": "10:00",
@@ -6906,6 +7051,7 @@
       "end_time": "10:00",
       "start_minutes": 540,
       "end_minutes": 600,
+      "dayOffset": 0,
       "time": {
         "start": "09:00",
         "end": "10:00",
@@ -6937,6 +7083,7 @@
       "end_time": "11:00",
       "start_minutes": 540,
       "end_minutes": 660,
+      "dayOffset": 0,
       "time": {
         "start": "09:00",
         "end": "11:00",
@@ -6968,6 +7115,7 @@
       "end_time": "11:45",
       "start_minutes": 540,
       "end_minutes": 705,
+      "dayOffset": 0,
       "time": {
         "start": "09:00",
         "end": "11:45",
@@ -6999,6 +7147,7 @@
       "end_time": "09:45",
       "start_minutes": 555,
       "end_minutes": 585,
+      "dayOffset": 0,
       "time": {
         "start": "09:15",
         "end": "09:45",
@@ -7030,6 +7179,7 @@
       "end_time": "09:45",
       "start_minutes": 555,
       "end_minutes": 585,
+      "dayOffset": 0,
       "time": {
         "start": "09:15",
         "end": "09:45",
@@ -7061,6 +7211,7 @@
       "end_time": "10:30",
       "start_minutes": 570,
       "end_minutes": 630,
+      "dayOffset": 0,
       "time": {
         "start": "09:30",
         "end": "10:30",
@@ -7092,6 +7243,7 @@
       "end_time": "11:30",
       "start_minutes": 570,
       "end_minutes": 690,
+      "dayOffset": 0,
       "time": {
         "start": "09:30",
         "end": "11:30",
@@ -7123,6 +7275,7 @@
       "end_time": "12:00",
       "start_minutes": 570,
       "end_minutes": 720,
+      "dayOffset": 0,
       "time": {
         "start": "09:30",
         "end": "12:00",
@@ -7154,6 +7307,7 @@
       "end_time": "10:45",
       "start_minutes": 600,
       "end_minutes": 645,
+      "dayOffset": 0,
       "time": {
         "start": "10:00",
         "end": "10:45",
@@ -7185,6 +7339,7 @@
       "end_time": "10:45",
       "start_minutes": 600,
       "end_minutes": 645,
+      "dayOffset": 0,
       "time": {
         "start": "10:00",
         "end": "10:45",
@@ -7216,6 +7371,7 @@
       "end_time": "11:00",
       "start_minutes": 600,
       "end_minutes": 660,
+      "dayOffset": 0,
       "time": {
         "start": "10:00",
         "end": "11:00",
@@ -7247,6 +7403,7 @@
       "end_time": "11:00",
       "start_minutes": 600,
       "end_minutes": 660,
+      "dayOffset": 0,
       "time": {
         "start": "10:00",
         "end": "11:00",
@@ -7278,6 +7435,7 @@
       "end_time": "11:15",
       "start_minutes": 600,
       "end_minutes": 675,
+      "dayOffset": 0,
       "time": {
         "start": "10:00",
         "end": "11:15",
@@ -7309,6 +7467,7 @@
       "end_time": "12:00",
       "start_minutes": 600,
       "end_minutes": 720,
+      "dayOffset": 0,
       "time": {
         "start": "10:00",
         "end": "12:00",
@@ -7340,6 +7499,7 @@
       "end_time": "12:45",
       "start_minutes": 600,
       "end_minutes": 765,
+      "dayOffset": 0,
       "time": {
         "start": "10:00",
         "end": "12:45",
@@ -7371,6 +7531,7 @@
       "end_time": "10:45",
       "start_minutes": 615,
       "end_minutes": 645,
+      "dayOffset": 0,
       "time": {
         "start": "10:15",
         "end": "10:45",
@@ -7402,6 +7563,7 @@
       "end_time": "10:45",
       "start_minutes": 615,
       "end_minutes": 645,
+      "dayOffset": 0,
       "time": {
         "start": "10:15",
         "end": "10:45",
@@ -7433,6 +7595,7 @@
       "end_time": "11:05",
       "start_minutes": 615,
       "end_minutes": 665,
+      "dayOffset": 0,
       "time": {
         "start": "10:15",
         "end": "11:05",
@@ -7464,6 +7627,7 @@
       "end_time": "11:30",
       "start_minutes": 615,
       "end_minutes": 690,
+      "dayOffset": 0,
       "time": {
         "start": "10:15",
         "end": "11:30",
@@ -7495,6 +7659,7 @@
       "end_time": "11:00",
       "start_minutes": 630,
       "end_minutes": 660,
+      "dayOffset": 0,
       "time": {
         "start": "10:30",
         "end": "11:00",
@@ -7526,6 +7691,7 @@
       "end_time": "11:30",
       "start_minutes": 630,
       "end_minutes": 690,
+      "dayOffset": 0,
       "time": {
         "start": "10:30",
         "end": "11:30",
@@ -7557,6 +7723,7 @@
       "end_time": "11:30",
       "start_minutes": 630,
       "end_minutes": 690,
+      "dayOffset": 0,
       "time": {
         "start": "10:30",
         "end": "11:30",
@@ -7588,6 +7755,7 @@
       "end_time": "13:00",
       "start_minutes": 630,
       "end_minutes": 780,
+      "dayOffset": 0,
       "time": {
         "start": "10:30",
         "end": "13:00",
@@ -7619,6 +7787,7 @@
       "end_time": "11:30",
       "start_minutes": 645,
       "end_minutes": 690,
+      "dayOffset": 0,
       "time": {
         "start": "10:45",
         "end": "11:30",
@@ -7650,6 +7819,7 @@
       "end_time": "11:30",
       "start_minutes": 660,
       "end_minutes": 690,
+      "dayOffset": 0,
       "time": {
         "start": "11:00",
         "end": "11:30",
@@ -7681,6 +7851,7 @@
       "end_time": "11:40",
       "start_minutes": 660,
       "end_minutes": 700,
+      "dayOffset": 0,
       "time": {
         "start": "11:00",
         "end": "11:40",
@@ -7712,6 +7883,7 @@
       "end_time": "12:00",
       "start_minutes": 660,
       "end_minutes": 720,
+      "dayOffset": 0,
       "time": {
         "start": "11:00",
         "end": "12:00",
@@ -7743,6 +7915,7 @@
       "end_time": "12:00",
       "start_minutes": 660,
       "end_minutes": 720,
+      "dayOffset": 0,
       "time": {
         "start": "11:00",
         "end": "12:00",
@@ -7774,6 +7947,7 @@
       "end_time": "12:00",
       "start_minutes": 660,
       "end_minutes": 720,
+      "dayOffset": 0,
       "time": {
         "start": "11:00",
         "end": "12:00",
@@ -7805,6 +7979,7 @@
       "end_time": "12:30",
       "start_minutes": 660,
       "end_minutes": 750,
+      "dayOffset": 0,
       "time": {
         "start": "11:00",
         "end": "12:30",
@@ -7836,6 +8011,7 @@
       "end_time": "12:35",
       "start_minutes": 660,
       "end_minutes": 755,
+      "dayOffset": 0,
       "time": {
         "start": "11:00",
         "end": "12:35",
@@ -7867,6 +8043,7 @@
       "end_time": "13:45",
       "start_minutes": 660,
       "end_minutes": 825,
+      "dayOffset": 0,
       "time": {
         "start": "11:00",
         "end": "13:45",
@@ -7898,6 +8075,7 @@
       "end_time": "15:00",
       "start_minutes": 660,
       "end_minutes": 900,
+      "dayOffset": 0,
       "time": {
         "start": "11:00",
         "end": "15:00",
@@ -7929,6 +8107,7 @@
       "end_time": "11:45",
       "start_minutes": 675,
       "end_minutes": 705,
+      "dayOffset": 0,
       "time": {
         "start": "11:15",
         "end": "11:45",
@@ -7960,6 +8139,7 @@
       "end_time": "11:45",
       "start_minutes": 675,
       "end_minutes": 705,
+      "dayOffset": 0,
       "time": {
         "start": "11:15",
         "end": "11:45",
@@ -7991,6 +8171,7 @@
       "end_time": "13:05",
       "start_minutes": 675,
       "end_minutes": 785,
+      "dayOffset": 0,
       "time": {
         "start": "11:15",
         "end": "13:05",
@@ -8022,6 +8203,7 @@
       "end_time": "14:00",
       "start_minutes": 680,
       "end_minutes": 840,
+      "dayOffset": 0,
       "time": {
         "start": "11:20",
         "end": "14:00",
@@ -8053,6 +8235,7 @@
       "end_time": "12:00",
       "start_minutes": 690,
       "end_minutes": 720,
+      "dayOffset": 0,
       "time": {
         "start": "11:30",
         "end": "12:00",
@@ -8084,6 +8267,7 @@
       "end_time": "12:30",
       "start_minutes": 690,
       "end_minutes": 750,
+      "dayOffset": 0,
       "time": {
         "start": "11:30",
         "end": "12:30",
@@ -8115,6 +8299,7 @@
       "end_time": "13:00",
       "start_minutes": 690,
       "end_minutes": 780,
+      "dayOffset": 0,
       "time": {
         "start": "11:30",
         "end": "13:00",
@@ -8146,6 +8331,7 @@
       "end_time": "14:00",
       "start_minutes": 690,
       "end_minutes": 840,
+      "dayOffset": 0,
       "time": {
         "start": "11:30",
         "end": "14:00",
@@ -8177,6 +8363,7 @@
       "end_time": "12:00",
       "start_minutes": 705,
       "end_minutes": 720,
+      "dayOffset": 0,
       "time": {
         "start": "11:45",
         "end": "12:00",
@@ -8208,6 +8395,7 @@
       "end_time": "12:00",
       "start_minutes": 710,
       "end_minutes": 720,
+      "dayOffset": 0,
       "time": {
         "start": "11:50",
         "end": "12:00",
@@ -8239,6 +8427,7 @@
       "end_time": "12:30",
       "start_minutes": 720,
       "end_minutes": 750,
+      "dayOffset": 0,
       "time": {
         "start": "12:00",
         "end": "12:30",
@@ -8270,6 +8459,7 @@
       "end_time": "12:45",
       "start_minutes": 720,
       "end_minutes": 765,
+      "dayOffset": 0,
       "time": {
         "start": "12:00",
         "end": "12:45",
@@ -8301,6 +8491,7 @@
       "end_time": "13:00",
       "start_minutes": 720,
       "end_minutes": 780,
+      "dayOffset": 0,
       "time": {
         "start": "12:00",
         "end": "13:00",
@@ -8332,6 +8523,7 @@
       "end_time": "13:00",
       "start_minutes": 720,
       "end_minutes": 780,
+      "dayOffset": 0,
       "time": {
         "start": "12:00",
         "end": "13:00",
@@ -8363,6 +8555,7 @@
       "end_time": "13:00",
       "start_minutes": 720,
       "end_minutes": 780,
+      "dayOffset": 0,
       "time": {
         "start": "12:00",
         "end": "13:00",
@@ -8394,6 +8587,7 @@
       "end_time": "14:45",
       "start_minutes": 720,
       "end_minutes": 885,
+      "dayOffset": 0,
       "time": {
         "start": "12:00",
         "end": "14:45",
@@ -8425,6 +8619,7 @@
       "end_time": "20:00",
       "start_minutes": 720,
       "end_minutes": 1200,
+      "dayOffset": 0,
       "time": {
         "start": "12:00",
         "end": "20:00",
@@ -8456,6 +8651,7 @@
       "end_time": "12:45",
       "start_minutes": 735,
       "end_minutes": 765,
+      "dayOffset": 0,
       "time": {
         "start": "12:15",
         "end": "12:45",
@@ -8487,6 +8683,7 @@
       "end_time": "13:00",
       "start_minutes": 735,
       "end_minutes": 780,
+      "dayOffset": 0,
       "time": {
         "start": "12:15",
         "end": "13:00",
@@ -8518,6 +8715,7 @@
       "end_time": "13:10",
       "start_minutes": 735,
       "end_minutes": 790,
+      "dayOffset": 0,
       "time": {
         "start": "12:15",
         "end": "13:10",
@@ -8549,6 +8747,7 @@
       "end_time": "13:00",
       "start_minutes": 750,
       "end_minutes": 780,
+      "dayOffset": 0,
       "time": {
         "start": "12:30",
         "end": "13:00",
@@ -8580,6 +8779,7 @@
       "end_time": "13:00",
       "start_minutes": 750,
       "end_minutes": 780,
+      "dayOffset": 0,
       "time": {
         "start": "12:30",
         "end": "13:00",
@@ -8611,6 +8811,7 @@
       "end_time": "13:10",
       "start_minutes": 750,
       "end_minutes": 790,
+      "dayOffset": 0,
       "time": {
         "start": "12:30",
         "end": "13:10",
@@ -8642,6 +8843,7 @@
       "end_time": "13:30",
       "start_minutes": 750,
       "end_minutes": 810,
+      "dayOffset": 0,
       "time": {
         "start": "12:30",
         "end": "13:30",
@@ -8673,6 +8875,7 @@
       "end_time": "13:30",
       "start_minutes": 750,
       "end_minutes": 810,
+      "dayOffset": 0,
       "time": {
         "start": "12:30",
         "end": "13:30",
@@ -8704,6 +8907,7 @@
       "end_time": "15:00",
       "start_minutes": 750,
       "end_minutes": 900,
+      "dayOffset": 0,
       "time": {
         "start": "12:30",
         "end": "15:00",
@@ -8735,6 +8939,7 @@
       "end_time": "13:15",
       "start_minutes": 765,
       "end_minutes": 795,
+      "dayOffset": 0,
       "time": {
         "start": "12:45",
         "end": "13:15",
@@ -8766,6 +8971,7 @@
       "end_time": "14:30",
       "start_minutes": 770,
       "end_minutes": 870,
+      "dayOffset": 0,
       "time": {
         "start": "12:50",
         "end": "14:30",
@@ -8797,6 +9003,7 @@
       "end_time": "13:10",
       "start_minutes": 780,
       "end_minutes": 790,
+      "dayOffset": 0,
       "time": {
         "start": "13:00",
         "end": "13:10",
@@ -8828,6 +9035,7 @@
       "end_time": "13:15",
       "start_minutes": 780,
       "end_minutes": 795,
+      "dayOffset": 0,
       "time": {
         "start": "13:00",
         "end": "13:15",
@@ -8859,6 +9067,7 @@
       "end_time": "13:15",
       "start_minutes": 780,
       "end_minutes": 795,
+      "dayOffset": 0,
       "time": {
         "start": "13:00",
         "end": "13:15",
@@ -8890,6 +9099,7 @@
       "end_time": "13:15",
       "start_minutes": 780,
       "end_minutes": 795,
+      "dayOffset": 0,
       "time": {
         "start": "13:00",
         "end": "13:15",
@@ -8921,6 +9131,7 @@
       "end_time": "13:45",
       "start_minutes": 780,
       "end_minutes": 825,
+      "dayOffset": 0,
       "time": {
         "start": "13:00",
         "end": "13:45",
@@ -8952,6 +9163,7 @@
       "end_time": "13:45",
       "start_minutes": 780,
       "end_minutes": 825,
+      "dayOffset": 0,
       "time": {
         "start": "13:00",
         "end": "13:45",
@@ -8983,6 +9195,7 @@
       "end_time": "13:45",
       "start_minutes": 780,
       "end_minutes": 825,
+      "dayOffset": 0,
       "time": {
         "start": "13:00",
         "end": "13:45",
@@ -9014,6 +9227,7 @@
       "end_time": "13:50",
       "start_minutes": 780,
       "end_minutes": 830,
+      "dayOffset": 0,
       "time": {
         "start": "13:00",
         "end": "13:50",
@@ -9045,6 +9259,7 @@
       "end_time": "14:00",
       "start_minutes": 780,
       "end_minutes": 840,
+      "dayOffset": 0,
       "time": {
         "start": "13:00",
         "end": "14:00",
@@ -9076,6 +9291,7 @@
       "end_time": "14:45",
       "start_minutes": 780,
       "end_minutes": 885,
+      "dayOffset": 0,
       "time": {
         "start": "13:00",
         "end": "14:45",
@@ -9107,6 +9323,7 @@
       "end_time": "15:45",
       "start_minutes": 780,
       "end_minutes": 945,
+      "dayOffset": 0,
       "time": {
         "start": "13:00",
         "end": "15:45",
@@ -9140,6 +9357,7 @@
       "end_time": "13:40",
       "start_minutes": 790,
       "end_minutes": 820,
+      "dayOffset": 0,
       "time": {
         "start": "13:10",
         "end": "13:40",
@@ -9171,6 +9389,7 @@
       "end_time": "13:40",
       "start_minutes": 790,
       "end_minutes": 820,
+      "dayOffset": 0,
       "time": {
         "start": "13:10",
         "end": "13:40",
@@ -9202,6 +9421,7 @@
       "end_time": "13:50",
       "start_minutes": 790,
       "end_minutes": 830,
+      "dayOffset": 0,
       "time": {
         "start": "13:10",
         "end": "13:50",
@@ -9233,6 +9453,7 @@
       "end_time": "14:00",
       "start_minutes": 790,
       "end_minutes": 840,
+      "dayOffset": 0,
       "time": {
         "start": "13:10",
         "end": "14:00",
@@ -9264,6 +9485,7 @@
       "end_time": "14:00",
       "start_minutes": 790,
       "end_minutes": 840,
+      "dayOffset": 0,
       "time": {
         "start": "13:10",
         "end": "14:00",
@@ -9295,6 +9517,7 @@
       "end_time": "14:00",
       "start_minutes": 790,
       "end_minutes": 840,
+      "dayOffset": 0,
       "time": {
         "start": "13:10",
         "end": "14:00",
@@ -9326,6 +9549,7 @@
       "end_time": "13:30",
       "start_minutes": 795,
       "end_minutes": 810,
+      "dayOffset": 0,
       "time": {
         "start": "13:15",
         "end": "13:30",
@@ -9357,6 +9581,7 @@
       "end_time": "13:30",
       "start_minutes": 795,
       "end_minutes": 810,
+      "dayOffset": 0,
       "time": {
         "start": "13:15",
         "end": "13:30",
@@ -9388,6 +9613,7 @@
       "end_time": "13:45",
       "start_minutes": 795,
       "end_minutes": 825,
+      "dayOffset": 0,
       "time": {
         "start": "13:15",
         "end": "13:45",
@@ -9419,6 +9645,7 @@
       "end_time": "13:45",
       "start_minutes": 795,
       "end_minutes": 825,
+      "dayOffset": 0,
       "time": {
         "start": "13:15",
         "end": "13:45",
@@ -9450,6 +9677,7 @@
       "end_time": "13:55",
       "start_minutes": 795,
       "end_minutes": 835,
+      "dayOffset": 0,
       "time": {
         "start": "13:15",
         "end": "13:55",
@@ -9481,6 +9709,7 @@
       "end_time": "14:00",
       "start_minutes": 795,
       "end_minutes": 840,
+      "dayOffset": 0,
       "time": {
         "start": "13:15",
         "end": "14:00",
@@ -9512,6 +9741,7 @@
       "end_time": "14:00",
       "start_minutes": 795,
       "end_minutes": 840,
+      "dayOffset": 0,
       "time": {
         "start": "13:15",
         "end": "14:00",
@@ -9543,6 +9773,7 @@
       "end_time": "14:00",
       "start_minutes": 795,
       "end_minutes": 840,
+      "dayOffset": 0,
       "time": {
         "start": "13:15",
         "end": "14:00",
@@ -9574,6 +9805,7 @@
       "end_time": "14:10",
       "start_minutes": 795,
       "end_minutes": 850,
+      "dayOffset": 0,
       "time": {
         "start": "13:15",
         "end": "14:10",
@@ -9605,6 +9837,7 @@
       "end_time": "14:20",
       "start_minutes": 795,
       "end_minutes": 860,
+      "dayOffset": 0,
       "time": {
         "start": "13:15",
         "end": "14:20",
@@ -9636,6 +9869,7 @@
       "end_time": "13:35",
       "start_minutes": 800,
       "end_minutes": 815,
+      "dayOffset": 0,
       "time": {
         "start": "13:20",
         "end": "13:35",
@@ -9667,6 +9901,7 @@
       "end_time": "13:35",
       "start_minutes": 800,
       "end_minutes": 815,
+      "dayOffset": 0,
       "time": {
         "start": "13:20",
         "end": "13:35",
@@ -9698,6 +9933,7 @@
       "end_time": "13:45",
       "start_minutes": 800,
       "end_minutes": 825,
+      "dayOffset": 0,
       "time": {
         "start": "13:20",
         "end": "13:45",
@@ -9729,6 +9965,7 @@
       "end_time": "13:45",
       "start_minutes": 800,
       "end_minutes": 825,
+      "dayOffset": 0,
       "time": {
         "start": "13:20",
         "end": "13:45",
@@ -9760,6 +9997,7 @@
       "end_time": "13:55",
       "start_minutes": 800,
       "end_minutes": 835,
+      "dayOffset": 0,
       "time": {
         "start": "13:20",
         "end": "13:55",
@@ -9791,6 +10029,7 @@
       "end_time": "13:55",
       "start_minutes": 810,
       "end_minutes": 835,
+      "dayOffset": 0,
       "time": {
         "start": "13:30",
         "end": "13:55",
@@ -9822,6 +10061,7 @@
       "end_time": "14:00",
       "start_minutes": 810,
       "end_minutes": 840,
+      "dayOffset": 0,
       "time": {
         "start": "13:30",
         "end": "14:00",
@@ -9853,6 +10093,7 @@
       "end_time": "14:00",
       "start_minutes": 810,
       "end_minutes": 840,
+      "dayOffset": 0,
       "time": {
         "start": "13:30",
         "end": "14:00",
@@ -9884,6 +10125,7 @@
       "end_time": "16:00",
       "start_minutes": 810,
       "end_minutes": 960,
+      "dayOffset": 0,
       "time": {
         "start": "13:30",
         "end": "16:00",
@@ -9915,6 +10157,7 @@
       "end_time": "21:00",
       "start_minutes": 810,
       "end_minutes": 1260,
+      "dayOffset": 0,
       "time": {
         "start": "13:30",
         "end": "21:00",
@@ -9946,6 +10189,7 @@
       "end_time": "13:55",
       "start_minutes": 815,
       "end_minutes": 835,
+      "dayOffset": 0,
       "time": {
         "start": "13:35",
         "end": "13:55",
@@ -9977,6 +10221,7 @@
       "end_time": "14:05",
       "start_minutes": 815,
       "end_minutes": 845,
+      "dayOffset": 0,
       "time": {
         "start": "13:35",
         "end": "14:05",
@@ -10008,6 +10253,7 @@
       "end_time": "14:10",
       "start_minutes": 820,
       "end_minutes": 850,
+      "dayOffset": 0,
       "time": {
         "start": "13:40",
         "end": "14:10",
@@ -10039,6 +10285,7 @@
       "end_time": "14:15",
       "start_minutes": 820,
       "end_minutes": 855,
+      "dayOffset": 0,
       "time": {
         "start": "13:40",
         "end": "14:15",
@@ -10070,6 +10317,7 @@
       "end_time": "13:55",
       "start_minutes": 825,
       "end_minutes": 835,
+      "dayOffset": 0,
       "time": {
         "start": "13:45",
         "end": "13:55",
@@ -10101,6 +10349,7 @@
       "end_time": "14:00",
       "start_minutes": 825,
       "end_minutes": 840,
+      "dayOffset": 0,
       "time": {
         "start": "13:45",
         "end": "14:00",
@@ -10132,6 +10381,7 @@
       "end_time": "14:00",
       "start_minutes": 825,
       "end_minutes": 840,
+      "dayOffset": 0,
       "time": {
         "start": "13:45",
         "end": "14:00",
@@ -10163,6 +10413,7 @@
       "end_time": "14:00",
       "start_minutes": 825,
       "end_minutes": 840,
+      "dayOffset": 0,
       "time": {
         "start": "13:45",
         "end": "14:00",
@@ -10194,6 +10445,7 @@
       "end_time": "14:05",
       "start_minutes": 825,
       "end_minutes": 845,
+      "dayOffset": 0,
       "time": {
         "start": "13:45",
         "end": "14:05",
@@ -10225,6 +10477,7 @@
       "end_time": "14:15",
       "start_minutes": 825,
       "end_minutes": 855,
+      "dayOffset": 0,
       "time": {
         "start": "13:45",
         "end": "14:15",
@@ -10256,6 +10509,7 @@
       "end_time": "14:15",
       "start_minutes": 825,
       "end_minutes": 855,
+      "dayOffset": 0,
       "time": {
         "start": "13:45",
         "end": "14:15",
@@ -10287,6 +10541,7 @@
       "end_time": "14:15",
       "start_minutes": 825,
       "end_minutes": 855,
+      "dayOffset": 0,
       "time": {
         "start": "13:45",
         "end": "14:15",
@@ -10318,6 +10573,7 @@
       "end_time": "14:20",
       "start_minutes": 825,
       "end_minutes": 860,
+      "dayOffset": 0,
       "time": {
         "start": "13:45",
         "end": "14:20",
@@ -10349,6 +10605,7 @@
       "end_time": "14:30",
       "start_minutes": 825,
       "end_minutes": 870,
+      "dayOffset": 0,
       "time": {
         "start": "13:45",
         "end": "14:30",
@@ -10380,6 +10637,7 @@
       "end_time": "14:20",
       "start_minutes": 830,
       "end_minutes": 860,
+      "dayOffset": 0,
       "time": {
         "start": "13:50",
         "end": "14:20",
@@ -10411,6 +10669,7 @@
       "end_time": "14:20",
       "start_minutes": 830,
       "end_minutes": 860,
+      "dayOffset": 0,
       "time": {
         "start": "13:50",
         "end": "14:20",
@@ -10442,6 +10701,7 @@
       "end_time": "14:20",
       "start_minutes": 830,
       "end_minutes": 860,
+      "dayOffset": 0,
       "time": {
         "start": "13:50",
         "end": "14:20",
@@ -10473,6 +10733,7 @@
       "end_time": "14:40",
       "start_minutes": 830,
       "end_minutes": 880,
+      "dayOffset": 0,
       "time": {
         "start": "13:50",
         "end": "14:40",
@@ -10504,6 +10765,7 @@
       "end_time": "15:00",
       "start_minutes": 830,
       "end_minutes": 900,
+      "dayOffset": 0,
       "time": {
         "start": "13:50",
         "end": "15:00",
@@ -10535,6 +10797,7 @@
       "end_time": "14:00",
       "start_minutes": 835,
       "end_minutes": 840,
+      "dayOffset": 0,
       "time": {
         "start": "13:55",
         "end": "14:00",
@@ -10566,6 +10829,7 @@
       "end_time": "14:10",
       "start_minutes": 835,
       "end_minutes": 850,
+      "dayOffset": 0,
       "time": {
         "start": "13:55",
         "end": "14:10",
@@ -10597,6 +10861,7 @@
       "end_time": "14:10",
       "start_minutes": 835,
       "end_minutes": 850,
+      "dayOffset": 0,
       "time": {
         "start": "13:55",
         "end": "14:10",
@@ -10628,6 +10893,7 @@
       "end_time": "14:20",
       "start_minutes": 835,
       "end_minutes": 860,
+      "dayOffset": 0,
       "time": {
         "start": "13:55",
         "end": "14:20",
@@ -10659,6 +10925,7 @@
       "end_time": "14:20",
       "start_minutes": 835,
       "end_minutes": 860,
+      "dayOffset": 0,
       "time": {
         "start": "13:55",
         "end": "14:20",
@@ -10690,6 +10957,7 @@
       "end_time": "14:40",
       "start_minutes": 835,
       "end_minutes": 880,
+      "dayOffset": 0,
       "time": {
         "start": "13:55",
         "end": "14:40",
@@ -10721,6 +10989,7 @@
       "end_time": "14:05",
       "start_minutes": 840,
       "end_minutes": 845,
+      "dayOffset": 0,
       "time": {
         "start": "14:00",
         "end": "14:05",
@@ -10752,6 +11021,7 @@
       "end_time": "14:15",
       "start_minutes": 840,
       "end_minutes": 855,
+      "dayOffset": 0,
       "time": {
         "start": "14:00",
         "end": "14:15",
@@ -10783,6 +11053,7 @@
       "end_time": "14:15",
       "start_minutes": 840,
       "end_minutes": 855,
+      "dayOffset": 0,
       "time": {
         "start": "14:00",
         "end": "14:15",
@@ -10814,6 +11085,7 @@
       "end_time": "14:20",
       "start_minutes": 840,
       "end_minutes": 860,
+      "dayOffset": 0,
       "time": {
         "start": "14:00",
         "end": "14:20",
@@ -10845,6 +11117,7 @@
       "end_time": "14:20",
       "start_minutes": 840,
       "end_minutes": 860,
+      "dayOffset": 0,
       "time": {
         "start": "14:00",
         "end": "14:20",
@@ -10876,6 +11149,7 @@
       "end_time": "14:30",
       "start_minutes": 840,
       "end_minutes": 870,
+      "dayOffset": 0,
       "time": {
         "start": "14:00",
         "end": "14:30",
@@ -10907,6 +11181,7 @@
       "end_time": "14:30",
       "start_minutes": 840,
       "end_minutes": 870,
+      "dayOffset": 0,
       "time": {
         "start": "14:00",
         "end": "14:30",
@@ -10938,6 +11213,7 @@
       "end_time": "14:30",
       "start_minutes": 840,
       "end_minutes": 870,
+      "dayOffset": 0,
       "time": {
         "start": "14:00",
         "end": "14:30",
@@ -10969,6 +11245,7 @@
       "end_time": "14:30",
       "start_minutes": 840,
       "end_minutes": 870,
+      "dayOffset": 0,
       "time": {
         "start": "14:00",
         "end": "14:30",
@@ -11000,6 +11277,7 @@
       "end_time": "14:40",
       "start_minutes": 840,
       "end_minutes": 880,
+      "dayOffset": 0,
       "time": {
         "start": "14:00",
         "end": "14:40",
@@ -11031,6 +11309,7 @@
       "end_time": "14:40",
       "start_minutes": 840,
       "end_minutes": 880,
+      "dayOffset": 0,
       "time": {
         "start": "14:00",
         "end": "14:40",
@@ -11062,6 +11341,7 @@
       "end_time": "14:40",
       "start_minutes": 840,
       "end_minutes": 880,
+      "dayOffset": 0,
       "time": {
         "start": "14:00",
         "end": "14:40",
@@ -11093,6 +11373,7 @@
       "end_time": "14:40",
       "start_minutes": 840,
       "end_minutes": 880,
+      "dayOffset": 0,
       "time": {
         "start": "14:00",
         "end": "14:40",
@@ -11124,6 +11405,7 @@
       "end_time": "14:40",
       "start_minutes": 840,
       "end_minutes": 880,
+      "dayOffset": 0,
       "time": {
         "start": "14:00",
         "end": "14:40",
@@ -11155,6 +11437,7 @@
       "end_time": "14:45",
       "start_minutes": 840,
       "end_minutes": 885,
+      "dayOffset": 0,
       "time": {
         "start": "14:00",
         "end": "14:45",
@@ -11186,6 +11469,7 @@
       "end_time": "15:00",
       "start_minutes": 840,
       "end_minutes": 900,
+      "dayOffset": 0,
       "time": {
         "start": "14:00",
         "end": "15:00",
@@ -11217,6 +11501,7 @@
       "end_time": "15:00",
       "start_minutes": 840,
       "end_minutes": 900,
+      "dayOffset": 0,
       "time": {
         "start": "14:00",
         "end": "15:00",
@@ -11248,6 +11533,7 @@
       "end_time": "15:10",
       "start_minutes": 840,
       "end_minutes": 910,
+      "dayOffset": 0,
       "time": {
         "start": "14:00",
         "end": "15:10",
@@ -11279,6 +11565,7 @@
       "end_time": "15:15",
       "start_minutes": 840,
       "end_minutes": 915,
+      "dayOffset": 0,
       "time": {
         "start": "14:00",
         "end": "15:15",
@@ -11310,6 +11597,7 @@
       "end_time": "15:30",
       "start_minutes": 840,
       "end_minutes": 930,
+      "dayOffset": 0,
       "time": {
         "start": "14:00",
         "end": "15:30",
@@ -11341,6 +11629,7 @@
       "end_time": "15:30",
       "start_minutes": 840,
       "end_minutes": 930,
+      "dayOffset": 0,
       "time": {
         "start": "14:00",
         "end": "15:30",
@@ -11372,6 +11661,7 @@
       "end_time": "16:00",
       "start_minutes": 840,
       "end_minutes": 960,
+      "dayOffset": 0,
       "time": {
         "start": "14:00",
         "end": "16:00",
@@ -11403,6 +11693,7 @@
       "end_time": "16:45",
       "start_minutes": 840,
       "end_minutes": 1005,
+      "dayOffset": 0,
       "time": {
         "start": "14:00",
         "end": "16:45",
@@ -11434,6 +11725,7 @@
       "end_time": "14:15",
       "start_minutes": 845,
       "end_minutes": 855,
+      "dayOffset": 0,
       "time": {
         "start": "14:05",
         "end": "14:15",
@@ -11465,6 +11757,7 @@
       "end_time": "15:00",
       "start_minutes": 845,
       "end_minutes": 900,
+      "dayOffset": 0,
       "time": {
         "start": "14:05",
         "end": "15:00",
@@ -11496,6 +11789,7 @@
       "end_time": "15:00",
       "start_minutes": 845,
       "end_minutes": 900,
+      "dayOffset": 0,
       "time": {
         "start": "14:05",
         "end": "15:00",
@@ -11527,6 +11821,7 @@
       "end_time": "15:00",
       "start_minutes": 845,
       "end_minutes": 900,
+      "dayOffset": 0,
       "time": {
         "start": "14:05",
         "end": "15:00",
@@ -11558,6 +11853,7 @@
       "end_time": "15:00",
       "start_minutes": 845,
       "end_minutes": 900,
+      "dayOffset": 0,
       "time": {
         "start": "14:05",
         "end": "15:00",
@@ -11589,6 +11885,7 @@
       "end_time": "15:00",
       "start_minutes": 845,
       "end_minutes": 900,
+      "dayOffset": 0,
       "time": {
         "start": "14:05",
         "end": "15:00",
@@ -11620,6 +11917,7 @@
       "end_time": "15:00",
       "start_minutes": 845,
       "end_minutes": 900,
+      "dayOffset": 0,
       "time": {
         "start": "14:05",
         "end": "15:00",
@@ -11651,6 +11949,7 @@
       "end_time": "15:00",
       "start_minutes": 845,
       "end_minutes": 900,
+      "dayOffset": 0,
       "time": {
         "start": "14:05",
         "end": "15:00",
@@ -11682,6 +11981,7 @@
       "end_time": "15:20",
       "start_minutes": 845,
       "end_minutes": 920,
+      "dayOffset": 0,
       "time": {
         "start": "14:05",
         "end": "15:20",
@@ -11713,6 +12013,7 @@
       "end_time": "14:30",
       "start_minutes": 850,
       "end_minutes": 870,
+      "dayOffset": 0,
       "time": {
         "start": "14:10",
         "end": "14:30",
@@ -11744,6 +12045,7 @@
       "end_time": "14:45",
       "start_minutes": 850,
       "end_minutes": 885,
+      "dayOffset": 0,
       "time": {
         "start": "14:10",
         "end": "14:45",
@@ -11775,6 +12077,7 @@
       "end_time": "14:55",
       "start_minutes": 850,
       "end_minutes": 895,
+      "dayOffset": 0,
       "time": {
         "start": "14:10",
         "end": "14:55",
@@ -11806,6 +12109,7 @@
       "end_time": "15:00",
       "start_minutes": 850,
       "end_minutes": 900,
+      "dayOffset": 0,
       "time": {
         "start": "14:10",
         "end": "15:00",
@@ -11837,6 +12141,7 @@
       "end_time": "15:00",
       "start_minutes": 850,
       "end_minutes": 900,
+      "dayOffset": 0,
       "time": {
         "start": "14:10",
         "end": "15:00",
@@ -11868,6 +12173,7 @@
       "end_time": "14:45",
       "start_minutes": 855,
       "end_minutes": 885,
+      "dayOffset": 0,
       "time": {
         "start": "14:15",
         "end": "14:45",
@@ -11899,6 +12205,7 @@
       "end_time": "14:50",
       "start_minutes": 855,
       "end_minutes": 890,
+      "dayOffset": 0,
       "time": {
         "start": "14:15",
         "end": "14:50",
@@ -11930,6 +12237,7 @@
       "end_time": "14:30",
       "start_minutes": 860,
       "end_minutes": 870,
+      "dayOffset": 0,
       "time": {
         "start": "14:20",
         "end": "14:30",
@@ -11961,6 +12269,7 @@
       "end_time": "15:30",
       "start_minutes": 860,
       "end_minutes": 930,
+      "dayOffset": 0,
       "time": {
         "start": "14:20",
         "end": "15:30",
@@ -11992,6 +12301,7 @@
       "end_time": "15:30",
       "start_minutes": 865,
       "end_minutes": 930,
+      "dayOffset": 0,
       "time": {
         "start": "14:25",
         "end": "15:30",
@@ -12023,6 +12333,7 @@
       "end_time": "14:40",
       "start_minutes": 870,
       "end_minutes": 880,
+      "dayOffset": 0,
       "time": {
         "start": "14:30",
         "end": "14:40",
@@ -12054,6 +12365,7 @@
       "end_time": "15:10",
       "start_minutes": 870,
       "end_minutes": 910,
+      "dayOffset": 0,
       "time": {
         "start": "14:30",
         "end": "15:10",
@@ -12085,6 +12397,7 @@
       "end_time": "15:20",
       "start_minutes": 870,
       "end_minutes": 920,
+      "dayOffset": 0,
       "time": {
         "start": "14:30",
         "end": "15:20",
@@ -12116,6 +12429,7 @@
       "end_time": "15:30",
       "start_minutes": 870,
       "end_minutes": 930,
+      "dayOffset": 0,
       "time": {
         "start": "14:30",
         "end": "15:30",
@@ -12147,6 +12461,7 @@
       "end_time": "15:30",
       "start_minutes": 870,
       "end_minutes": 930,
+      "dayOffset": 0,
       "time": {
         "start": "14:30",
         "end": "15:30",
@@ -12178,6 +12493,7 @@
       "end_time": "15:35",
       "start_minutes": 870,
       "end_minutes": 935,
+      "dayOffset": 0,
       "time": {
         "start": "14:30",
         "end": "15:35",
@@ -12209,6 +12525,7 @@
       "end_time": "16:00",
       "start_minutes": 870,
       "end_minutes": 960,
+      "dayOffset": 0,
       "time": {
         "start": "14:30",
         "end": "16:00",
@@ -12240,6 +12557,7 @@
       "end_time": "16:05",
       "start_minutes": 870,
       "end_minutes": 965,
+      "dayOffset": 0,
       "time": {
         "start": "14:30",
         "end": "16:05",
@@ -12271,6 +12589,7 @@
       "end_time": "16:15",
       "start_minutes": 870,
       "end_minutes": 975,
+      "dayOffset": 0,
       "time": {
         "start": "14:30",
         "end": "16:15",
@@ -12302,6 +12621,7 @@
       "end_time": "16:20",
       "start_minutes": 870,
       "end_minutes": 980,
+      "dayOffset": 0,
       "time": {
         "start": "14:30",
         "end": "16:20",
@@ -12333,6 +12653,7 @@
       "end_time": "17:00",
       "start_minutes": 870,
       "end_minutes": 1020,
+      "dayOffset": 0,
       "time": {
         "start": "14:30",
         "end": "17:00",
@@ -12364,6 +12685,7 @@
       "end_time": "15:30",
       "start_minutes": 880,
       "end_minutes": 930,
+      "dayOffset": 0,
       "time": {
         "start": "14:40",
         "end": "15:30",
@@ -12395,6 +12717,7 @@
       "end_time": "15:30",
       "start_minutes": 880,
       "end_minutes": 930,
+      "dayOffset": 0,
       "time": {
         "start": "14:40",
         "end": "15:30",
@@ -12426,6 +12749,7 @@
       "end_time": "15:30",
       "start_minutes": 880,
       "end_minutes": 930,
+      "dayOffset": 0,
       "time": {
         "start": "14:40",
         "end": "15:30",
@@ -12457,6 +12781,7 @@
       "end_time": "15:40",
       "start_minutes": 880,
       "end_minutes": 940,
+      "dayOffset": 0,
       "time": {
         "start": "14:40",
         "end": "15:40",
@@ -12488,6 +12813,7 @@
       "end_time": "15:40",
       "start_minutes": 880,
       "end_minutes": 940,
+      "dayOffset": 0,
       "time": {
         "start": "14:40",
         "end": "15:40",
@@ -12519,6 +12845,7 @@
       "end_time": "15:40",
       "start_minutes": 880,
       "end_minutes": 940,
+      "dayOffset": 0,
       "time": {
         "start": "14:40",
         "end": "15:40",
@@ -12550,6 +12877,7 @@
       "end_time": "16:00",
       "start_minutes": 880,
       "end_minutes": 960,
+      "dayOffset": 0,
       "time": {
         "start": "14:40",
         "end": "16:00",
@@ -12581,6 +12909,7 @@
       "end_time": "16:00",
       "start_minutes": 880,
       "end_minutes": 960,
+      "dayOffset": 0,
       "time": {
         "start": "14:40",
         "end": "16:00",
@@ -12612,6 +12941,7 @@
       "end_time": "15:30",
       "start_minutes": 885,
       "end_minutes": 930,
+      "dayOffset": 0,
       "time": {
         "start": "14:45",
         "end": "15:30",
@@ -12643,6 +12973,7 @@
       "end_time": "16:05",
       "start_minutes": 885,
       "end_minutes": 965,
+      "dayOffset": 0,
       "time": {
         "start": "14:45",
         "end": "16:05",
@@ -12674,6 +13005,7 @@
       "end_time": "16:05",
       "start_minutes": 885,
       "end_minutes": 965,
+      "dayOffset": 0,
       "time": {
         "start": "14:45",
         "end": "16:05",
@@ -12705,6 +13037,7 @@
       "end_time": "16:45",
       "start_minutes": 885,
       "end_minutes": 1005,
+      "dayOffset": 0,
       "time": {
         "start": "14:45",
         "end": "16:45",
@@ -12736,6 +13069,7 @@
       "end_time": "15:45",
       "start_minutes": 895,
       "end_minutes": 945,
+      "dayOffset": 0,
       "time": {
         "start": "14:55",
         "end": "15:45",
@@ -12767,6 +13101,7 @@
       "end_time": "15:15",
       "start_minutes": 900,
       "end_minutes": 915,
+      "dayOffset": 0,
       "time": {
         "start": "15:00",
         "end": "15:15",
@@ -12798,6 +13133,7 @@
       "end_time": "15:30",
       "start_minutes": 900,
       "end_minutes": 930,
+      "dayOffset": 0,
       "time": {
         "start": "15:00",
         "end": "15:30",
@@ -12829,6 +13165,7 @@
       "end_time": "15:30",
       "start_minutes": 900,
       "end_minutes": 930,
+      "dayOffset": 0,
       "time": {
         "start": "15:00",
         "end": "15:30",
@@ -12860,6 +13197,7 @@
       "end_time": "16:00",
       "start_minutes": 900,
       "end_minutes": 960,
+      "dayOffset": 0,
       "time": {
         "start": "15:00",
         "end": "16:00",
@@ -12891,6 +13229,7 @@
       "end_time": "16:00",
       "start_minutes": 900,
       "end_minutes": 960,
+      "dayOffset": 0,
       "time": {
         "start": "15:00",
         "end": "16:00",
@@ -12922,6 +13261,7 @@
       "end_time": "17:45",
       "start_minutes": 900,
       "end_minutes": 1065,
+      "dayOffset": 0,
       "time": {
         "start": "15:00",
         "end": "17:45",
@@ -12953,6 +13293,7 @@
       "end_time": "16:30",
       "start_minutes": 915,
       "end_minutes": 990,
+      "dayOffset": 0,
       "time": {
         "start": "15:15",
         "end": "16:30",
@@ -12984,6 +13325,7 @@
       "end_time": "17:30",
       "start_minutes": 915,
       "end_minutes": 1050,
+      "dayOffset": 0,
       "time": {
         "start": "15:15",
         "end": "17:30",
@@ -13015,6 +13357,7 @@
       "end_time": "16:00",
       "start_minutes": 930,
       "end_minutes": 960,
+      "dayOffset": 0,
       "time": {
         "start": "15:30",
         "end": "16:00",
@@ -13046,6 +13389,7 @@
       "end_time": "16:30",
       "start_minutes": 930,
       "end_minutes": 990,
+      "dayOffset": 0,
       "time": {
         "start": "15:30",
         "end": "16:30",
@@ -13077,6 +13421,7 @@
       "end_time": "18:00",
       "start_minutes": 930,
       "end_minutes": 1080,
+      "dayOffset": 0,
       "time": {
         "start": "15:30",
         "end": "18:00",
@@ -13108,6 +13453,7 @@
       "end_time": "16:30",
       "start_minutes": 960,
       "end_minutes": 990,
+      "dayOffset": 0,
       "time": {
         "start": "16:00",
         "end": "16:30",
@@ -13139,6 +13485,7 @@
       "end_time": "17:00",
       "start_minutes": 960,
       "end_minutes": 1020,
+      "dayOffset": 0,
       "time": {
         "start": "16:00",
         "end": "17:00",
@@ -13170,6 +13517,7 @@
       "end_time": "17:30",
       "start_minutes": 960,
       "end_minutes": 1050,
+      "dayOffset": 0,
       "time": {
         "start": "16:00",
         "end": "17:30",
@@ -13201,6 +13549,7 @@
       "end_time": "16:45",
       "start_minutes": 975,
       "end_minutes": 1005,
+      "dayOffset": 0,
       "time": {
         "start": "16:15",
         "end": "16:45",
@@ -13232,6 +13581,7 @@
       "end_time": "16:45",
       "start_minutes": 975,
       "end_minutes": 1005,
+      "dayOffset": 0,
       "time": {
         "start": "16:15",
         "end": "16:45",
@@ -13263,6 +13613,7 @@
       "end_time": "17:20",
       "start_minutes": 980,
       "end_minutes": 1040,
+      "dayOffset": 0,
       "time": {
         "start": "16:20",
         "end": "17:20",
@@ -13294,6 +13645,7 @@
       "end_time": "18:50",
       "start_minutes": 980,
       "end_minutes": 1130,
+      "dayOffset": 0,
       "time": {
         "start": "16:20",
         "end": "18:50",
@@ -13325,6 +13677,7 @@
       "end_time": "19:20",
       "start_minutes": 980,
       "end_minutes": 1160,
+      "dayOffset": 0,
       "time": {
         "start": "16:20",
         "end": "19:20",
@@ -13356,6 +13709,7 @@
       "end_time": "17:15",
       "start_minutes": 990,
       "end_minutes": 1035,
+      "dayOffset": 0,
       "time": {
         "start": "16:30",
         "end": "17:15",
@@ -13387,6 +13741,7 @@
       "end_time": "17:30",
       "start_minutes": 990,
       "end_minutes": 1050,
+      "dayOffset": 0,
       "time": {
         "start": "16:30",
         "end": "17:30",
@@ -13418,6 +13773,7 @@
       "end_time": "17:30",
       "start_minutes": 990,
       "end_minutes": 1050,
+      "dayOffset": 0,
       "time": {
         "start": "16:30",
         "end": "17:30",
@@ -13449,6 +13805,7 @@
       "end_time": "19:00",
       "start_minutes": 990,
       "end_minutes": 1140,
+      "dayOffset": 0,
       "time": {
         "start": "16:30",
         "end": "19:00",
@@ -13482,6 +13839,7 @@
       "end_time": "19:15",
       "start_minutes": 990,
       "end_minutes": 1155,
+      "dayOffset": 0,
       "time": {
         "start": "16:30",
         "end": "19:15",
@@ -13513,6 +13871,7 @@
       "end_time": "18:00",
       "start_minutes": 1020,
       "end_minutes": 1080,
+      "dayOffset": 0,
       "time": {
         "start": "17:00",
         "end": "18:00",
@@ -13544,6 +13903,7 @@
       "end_time": "18:00",
       "start_minutes": 1020,
       "end_minutes": 1080,
+      "dayOffset": 0,
       "time": {
         "start": "17:00",
         "end": "18:00",
@@ -13575,6 +13935,7 @@
       "end_time": "18:30",
       "start_minutes": 1040,
       "end_minutes": 1110,
+      "dayOffset": 0,
       "time": {
         "start": "17:20",
         "end": "18:30",
@@ -13606,6 +13967,7 @@
       "end_time": "18:15",
       "start_minutes": 1050,
       "end_minutes": 1095,
+      "dayOffset": 0,
       "time": {
         "start": "17:30",
         "end": "18:15",
@@ -13637,6 +13999,7 @@
       "end_time": "18:30",
       "start_minutes": 1050,
       "end_minutes": 1110,
+      "dayOffset": 0,
       "time": {
         "start": "17:30",
         "end": "18:30",
@@ -13668,6 +14031,7 @@
       "end_time": "19:00",
       "start_minutes": 1050,
       "end_minutes": 1140,
+      "dayOffset": 0,
       "time": {
         "start": "17:30",
         "end": "19:00",
@@ -13699,6 +14063,7 @@
       "end_time": "19:30",
       "start_minutes": 1050,
       "end_minutes": 1170,
+      "dayOffset": 0,
       "time": {
         "start": "17:30",
         "end": "19:30",
@@ -13730,6 +14095,7 @@
       "end_time": "20:00",
       "start_minutes": 1050,
       "end_minutes": 1200,
+      "dayOffset": 0,
       "time": {
         "start": "17:30",
         "end": "20:00",
@@ -13761,6 +14127,7 @@
       "end_time": "20:15",
       "start_minutes": 1050,
       "end_minutes": 1215,
+      "dayOffset": 0,
       "time": {
         "start": "17:30",
         "end": "20:15",
@@ -13792,6 +14159,7 @@
       "end_time": "20:30",
       "start_minutes": 1050,
       "end_minutes": 1230,
+      "dayOffset": 0,
       "time": {
         "start": "17:30",
         "end": "20:30",
@@ -13823,6 +14191,7 @@
       "end_time": "18:50",
       "start_minutes": 1080,
       "end_minutes": 1130,
+      "dayOffset": 0,
       "time": {
         "start": "18:00",
         "end": "18:50",
@@ -13854,6 +14223,7 @@
       "end_time": "19:15",
       "start_minutes": 1095,
       "end_minutes": 1155,
+      "dayOffset": 0,
       "time": {
         "start": "18:15",
         "end": "19:15",
@@ -13885,6 +14255,7 @@
       "end_time": "19:00",
       "start_minutes": 1110,
       "end_minutes": 1140,
+      "dayOffset": 0,
       "time": {
         "start": "18:30",
         "end": "19:00",
@@ -13916,6 +14287,7 @@
       "end_time": "19:30",
       "start_minutes": 1110,
       "end_minutes": 1170,
+      "dayOffset": 0,
       "time": {
         "start": "18:30",
         "end": "19:30",
@@ -13947,6 +14319,7 @@
       "end_time": "19:30",
       "start_minutes": 1110,
       "end_minutes": 1170,
+      "dayOffset": 0,
       "time": {
         "start": "18:30",
         "end": "19:30",
@@ -13978,6 +14351,7 @@
       "end_time": "19:30",
       "start_minutes": 1110,
       "end_minutes": 1170,
+      "dayOffset": 0,
       "time": {
         "start": "18:30",
         "end": "19:30",
@@ -14009,6 +14383,7 @@
       "end_time": "21:00",
       "start_minutes": 1110,
       "end_minutes": 1260,
+      "dayOffset": 0,
       "time": {
         "start": "18:30",
         "end": "21:00",
@@ -14040,6 +14415,7 @@
       "end_time": "20:00",
       "start_minutes": 1140,
       "end_minutes": 1200,
+      "dayOffset": 0,
       "time": {
         "start": "19:00",
         "end": "20:00",
@@ -14071,6 +14447,7 @@
       "end_time": "21:15",
       "start_minutes": 1140,
       "end_minutes": 1275,
+      "dayOffset": 0,
       "time": {
         "start": "19:00",
         "end": "21:15",
@@ -14102,6 +14479,7 @@
       "end_time": "19:35",
       "start_minutes": 1155,
       "end_minutes": 1175,
+      "dayOffset": 0,
       "time": {
         "start": "19:15",
         "end": "19:35",
@@ -14133,6 +14511,7 @@
       "end_time": "19:45",
       "start_minutes": 1155,
       "end_minutes": 1185,
+      "dayOffset": 0,
       "time": {
         "start": "19:15",
         "end": "19:45",
@@ -14164,6 +14543,7 @@
       "end_time": "20:00",
       "start_minutes": 1170,
       "end_minutes": 1200,
+      "dayOffset": 0,
       "time": {
         "start": "19:30",
         "end": "20:00",
@@ -14195,6 +14575,7 @@
       "end_time": "20:00",
       "start_minutes": 1170,
       "end_minutes": 1200,
+      "dayOffset": 0,
       "time": {
         "start": "19:30",
         "end": "20:00",
@@ -14226,6 +14607,7 @@
       "end_time": "20:30",
       "start_minutes": 1170,
       "end_minutes": 1230,
+      "dayOffset": 0,
       "time": {
         "start": "19:30",
         "end": "20:30",
@@ -14257,6 +14639,7 @@
       "end_time": "22:00",
       "start_minutes": 1170,
       "end_minutes": 1320,
+      "dayOffset": 0,
       "time": {
         "start": "19:30",
         "end": "22:00",
@@ -14288,6 +14671,7 @@
       "end_time": "20:10",
       "start_minutes": 1180,
       "end_minutes": 1210,
+      "dayOffset": 0,
       "time": {
         "start": "19:40",
         "end": "20:10",
@@ -14319,6 +14703,7 @@
       "end_time": "20:30",
       "start_minutes": 1200,
       "end_minutes": 1230,
+      "dayOffset": 0,
       "time": {
         "start": "20:00",
         "end": "20:30",
@@ -14350,6 +14735,7 @@
       "end_time": "21:00",
       "start_minutes": 1200,
       "end_minutes": 1260,
+      "dayOffset": 0,
       "time": {
         "start": "20:00",
         "end": "21:00",
@@ -14381,6 +14767,7 @@
       "end_time": "22:45",
       "start_minutes": 1200,
       "end_minutes": 1365,
+      "dayOffset": 0,
       "time": {
         "start": "20:00",
         "end": "22:45",
@@ -14414,6 +14801,7 @@
       "end_time": "21:00",
       "start_minutes": 1230,
       "end_minutes": 1260,
+      "dayOffset": 0,
       "time": {
         "start": "20:30",
         "end": "21:00",
@@ -14445,6 +14833,7 @@
       "end_time": "21:30",
       "start_minutes": 1230,
       "end_minutes": 1290,
+      "dayOffset": 0,
       "time": {
         "start": "20:30",
         "end": "21:30",
@@ -14476,6 +14865,7 @@
       "end_time": "21:30",
       "start_minutes": 1230,
       "end_minutes": 1290,
+      "dayOffset": 0,
       "time": {
         "start": "20:30",
         "end": "21:30",
@@ -14507,6 +14897,7 @@
       "end_time": "23:00",
       "start_minutes": 1230,
       "end_minutes": 1380,
+      "dayOffset": 0,
       "time": {
         "start": "20:30",
         "end": "23:00",
@@ -14538,6 +14929,7 @@
       "end_time": "21:30",
       "start_minutes": 1260,
       "end_minutes": 1290,
+      "dayOffset": 0,
       "time": {
         "start": "21:00",
         "end": "21:30",
@@ -14569,6 +14961,7 @@
       "end_time": "00:00",
       "start_minutes": 1290,
       "end_minutes": 1440,
+      "dayOffset": 0,
       "time": {
         "start": "21:30",
         "end": "00:00",
@@ -14600,6 +14993,7 @@
       "end_time": "22:30",
       "start_minutes": 1320,
       "end_minutes": 1350,
+      "dayOffset": 0,
       "time": {
         "start": "22:00",
         "end": "22:30",
@@ -14629,8 +15023,9 @@
       "endStation": "004",
       "start_time": "15:20",
       "end_time": "17:45",
-      "start_minutes": 920,
-      "end_minutes": 1065,
+      "start_minutes": 2360,
+      "end_minutes": 2505,
+      "dayOffset": 1,
       "time": {
         "start": "15:20",
         "end": "17:45",

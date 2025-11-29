@@ -7,7 +7,15 @@
   "configuration": {
     "minDelays": {
       "description": "Delay required between different vehicle types (in minutes)",
-      "values": [5, 0, 0, 0, 0, 0]
+      "values": ["05", "00", "00", "00", "00", "00"]
+    },
+    "parameters": {
+      "maxDutyMinutes": 900,
+      "normalDutyMinutes": 600,
+      "maxWorkMinutes": 720,
+      "driveTimeToBreakMinutes": 270,
+      "minBreakMinutes": 30,
+      "transitMinutes": 30
     }
   },
   "stationTransferMatrix": {
@@ -25,34 +33,12 @@
       ["BREAK", "BREAK", "BREAK", "OVERNIGHT", "NONE"]
     ]
   },
-  "trips": [
-    {
-      "id": "000002",
-      "startStation": "001",
-      "endStation": "001",
-      "alternativeStations": ["000", "000", "000", "000", "000"],
-      "startTime": "0645",
-      "endTime": "0830",
-      "distance": 92,
-      "classification": {
-        "allowedBusTypes": ["07", "00", "00", "00", "00", "00", "00", "00", "00", "00"],
-        "specificBusOverrides": ["000", "000"],
-        "group": "000",
-        "roadType": 0
-      },
-      "constraints": {
-        "shiftPosition": 0,
-        "nextDayRestRule": 1,
-        "daysToRest": 0
-      }
-    }
-  ],
   "resources": [
     {
       "driverId": "3837",
-      "busId": "000",
-      "homeStation": "007",
-      "currentStation": "007",
+      "busId": "001",
+      "homeStation": "001",
+      "currentStation": "001",
       "shiftStartTime": "0000",
       "busAttributes": {
         "type": "01",
@@ -61,14 +47,45 @@
         "distanceAdjustment": 0
       },
       "preassignedBreaks": [
-           { "durationMinutes": 0, "dayIndex": 0 },
-           { "durationMinutes": 0, "dayIndex": 0 },
-           { "durationMinutes": 0, "dayIndex": 0 },
-           { "durationMinutes": 0, "dayIndex": 0 }
+        { "durationMinutes": 0, "dayIndex": 0 },
+        { "durationMinutes": 0, "dayIndex": 0 },
+        { "durationMinutes": 0, "dayIndex": 0 },
+        { "durationMinutes": 0, "dayIndex": 0 }
       ],
       "parameters": {
         "cost": 125,
         "compatibility": "+000000"
+      }
+    }
+  ],
+  "trips": [
+    {
+      "id": "110001",
+      "startStation": "001",
+      "endStation": "002",
+      "start_time": "06:45",
+      "end_time": "08:30",
+      "start_minutes": 405,
+      "end_minutes": 510,
+      "time": {
+        "start": "06:45",
+        "end": "08:30",
+        "durationMinutes": 105
+      },
+      "classification": {
+        "group": "000",
+        "roadType": "NORMAL",
+        "allowedBusTypes": ["01"],
+        "specificBusOverrides": []
+      },
+      "properties": {
+        "distance": 92,
+        "alternativeStationCodes": [],
+        "constraints": {
+          "shiftPosition": "ANY",
+          "nextDayRestRule": "NONE",
+          "daysToRestRule": 0
+        }
       }
     }
   ],
@@ -79,22 +96,24 @@
     },
     "driverWishes": [
       {
-        "driverId": "000",
-        "tripId": "000",
+        "driverId": "3837",
+        "tripId": "110001",
         "type": 1
       }
     ],
-    "pairs": [
-      ["000068", "000013", "000004", "000024", "000022"],
-      ["005001", "000098", "000010", "000066", "005008"]
-    ],
-    "joints": [
+    "mandatorySequences": [
       {
-        "fromTripId": "003019",
-        "toTripId": "001052",
-        "time": 3345
+        "tripIds": ["110001", "110002", "110003"],
+        "description": "Trips that must be assigned to the same driver in order"
       }
     ],
-    "secondShifts": []
+    "mandatoryConnections": [
+      {
+        "description": "Specific connection times required between trips.",
+        "incomingTripId": "120007",
+        "outgoingTripId": "110016",
+        "time": 3920
+      }
+    ]
   }
 }

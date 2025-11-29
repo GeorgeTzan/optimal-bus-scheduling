@@ -51,7 +51,7 @@ def parse_file1(dat_path):
         elif line == "[DianDial]":
             in_dian_dial = True
             dian_dial_size = int(lines[i + 1].strip())
-            dian_dial_start_idx = i + 2 
+            dian_dial_start_idx = i + 2
         elif line == "[NumOfDriverBus]":
             num_driver_bus = int(lines[i + 1].strip())
             in_dian_dial = False
@@ -70,25 +70,28 @@ def parse_file1(dat_path):
             in_proh_bus = False
         elif in_trips and line and not line.startswith("["):
             parts = line.split()
-            if len(parts) >= 27:  
-                #time fields
+            if len(parts) >= 27:
                 start_time = parts[8]
                 end_time = parts[9]
-                start_hour = int(start_time[:2]) % 24
+                raw_start_hour = int(start_time[:2])
                 start_min = int(start_time[2:])
-                end_hour = int(end_time[:2]) % 24
+                raw_end_hour = int(end_time[:2])
                 end_min = int(end_time[2:])
 
-                # Calculate duration
+                start_day = raw_start_hour // 24
+                end_day = raw_end_hour // 24
+                start_hour = raw_start_hour % 24
+                end_hour = raw_end_hour % 24
+
+                raw_start_time = int(start_time)
+
                 duration = (end_hour * 60 + end_min) - (start_hour * 60 + start_min)
                 if duration < 0:
-                    duration += 24 * 60  
+                    duration += 24 * 60
 
-                # road type
                 road_type_map = {0: "NORMAL", 1: "DIRT", 2: "INTERCITY"}
                 road_type = road_type_map.get(int(parts[23]), "NORMAL")
 
-                #shift position
                 shift_position_map = {
                     0: "ANY",
                     1: "MUST_BE_FIRST",
@@ -97,7 +100,6 @@ def parse_file1(dat_path):
                 }
                 shift_position = shift_position_map.get(int(parts[24]), "ANY")
 
-                # next day rest rule mapping
                 rest_rule_map = {
                     0: "NONE",
                     1: "NO_REST_TOMORROW",
@@ -111,18 +113,22 @@ def parse_file1(dat_path):
                     parts[i] for i in range(11, 21) if parts[i] != "00"
                 ]
 
+                start_minutes = (start_day * 1440) + (start_hour * 60) + start_min
+                end_minutes = (end_day * 1440) + (end_hour * 60) + end_min
+
+                if end_minutes <= start_minutes:
+                    end_minutes += 1440
+
                 trip = {
-                    "id": parts[0],
+                    "id": parts[0], 
                     "startStation": parts[1],
                     "endStation": parts[2],
                     "start_time": f"{start_hour:02d}:{start_min:02d}",
                     "end_time": f"{end_hour:02d}:{end_min:02d}",
-                    "start_minutes": start_hour * 60 + start_min,
-                    "end_minutes": (
-                        (end_hour * 60 + end_min)
-                        if (end_hour * 60 + end_min) > (start_hour * 60 + start_min)
-                        else (end_hour * 60 + end_min) + 24 * 60
-                    ),
+                    "start_minutes": start_minutes,
+                    "end_minutes": end_minutes,
+                    "rawStartTime": raw_start_time,  
+                    "dayOffset": start_day,  
                     "alternativeStationCodes": [
                         parts[i] for i in range(3, 8) if parts[i] != "000"
                     ],
@@ -267,31 +273,31 @@ def parse_file3(dat_path):
 
 
 def transform_to_structured_format(file1_data, file2_data, file3_data, file4_data):
-    #dianDial mapping values to descriptive
     connection_map = {1: "NONE", 2: "BREAK", 3: "OVERNIGHT"}
 
-    #dianDial matrix to descriptive format
     station_matrix = []
     dian_dial_data = file1_data.get("dianDial", [])
     for row in dian_dial_data:
         descriptive_row = [connection_map.get(val, "UNKNOWN") for val in row]
         station_matrix.append(descriptive_row)
 
-    # Transform trips
     structured_trips = []
+    trip_by_raw_time = {}
+
     for trip in file1_data.get("trips", []):
         duration = trip["end_minutes"] - trip["start_minutes"]
         if duration < 0:
-            duration += 24 * 60  
+            duration += 24 * 60
 
         structured_trip = {
             "id": trip["id"],
             "startStation": trip["startStation"],
             "endStation": trip["endStation"],
-            "start_time": trip["start_time"],  # compatibility
-            "end_time": trip["end_time"],  # *
-            "start_minutes": trip["start_minutes"],  # *
-            "end_minutes": trip["end_minutes"],  # *
+            "start_time": trip["start_time"],
+            "end_time": trip["end_time"],
+            "start_minutes": trip["start_minutes"],
+            "end_minutes": trip["end_minutes"],
+            "dayOffset": trip.get("dayOffset", 0),
             "time": {
                 "start": trip["start_time"],
                 "end": trip["end_time"],
@@ -315,48 +321,56 @@ def transform_to_structured_format(file1_data, file2_data, file3_data, file4_dat
         }
         structured_trips.append(structured_trip)
 
+        raw_time = trip.get("rawStartTime", 0)
+        trip_by_raw_time[(trip["id"], raw_time)] = structured_trip
 
     resources = []
     for driver_bus in file1_data.get("listOfDriverBus", []):
-        if len(driver_bus) >= 20:  
+        if len(driver_bus) >= 20:
             preassigned_breaks = []
-            for i in range(4): 
-                duration_col = 6 + i  # Columns 6, 7, 8, 9
-                day_col = 10 + i      # Columns 10, 11, 12, 13
-                duration = int(driver_bus[duration_col]) if duration_col < len(driver_bus) else 0
+            for i in range(4):
+                duration_col = 6 + i  
+                day_col = 10 + i  
+                duration = (
+                    int(driver_bus[duration_col])
+                    if duration_col < len(driver_bus)
+                    else 0
+                )
                 day_index = int(driver_bus[day_col]) if day_col < len(driver_bus) else 0
-                preassigned_breaks.append({
-                    "durationMinutes": duration,
-                    "dayIndex": day_index
-                })
+                preassigned_breaks.append(
+                    {"durationMinutes": duration, "dayIndex": day_index}
+                )
             cost = int(driver_bus[-1]) if len(driver_bus) > 0 else 0  # 125
-            distance_adjustment = int(driver_bus[-2]) if len(driver_bus) >= 2 else 0  # 1
+            distance_adjustment = (
+                int(driver_bus[-2]) if len(driver_bus) >= 2 else 0
+            )  # 1
             exclude_from_eq = int(driver_bus[-3]) if len(driver_bus) >= 3 else 0  # 1
             bus_type = driver_bus[-4] if len(driver_bus) >= 4 else "01"  # 01
-            compatibility = driver_bus[-5] if len(driver_bus) >= 5 else "+000000"  # +000000
+            compatibility = (
+                driver_bus[-5] if len(driver_bus) >= 5 else "+000000"
+            )  # +000000
             bus_id = driver_bus[-6] if len(driver_bus) >= 6 else "000"  # 075
-            is_ktel = int(driver_bus[17]) if len(driver_bus) > 17 else 0  
+            is_ktel = int(driver_bus[17]) if len(driver_bus) > 17 else 0
 
             resource = {
-                "driverId": driver_bus[0],  
+                "driverId": driver_bus[0],
                 "busId": bus_id,
-                "homeStation": driver_bus[1],  
-                "currentStation": driver_bus[2],  
-                "shiftStartTime": driver_bus[3], 
+                "homeStation": driver_bus[2],  # Home station
+                "currentStation": driver_bus[1],  # Current/bus station
+                "shiftStartTime": driver_bus[3],
                 "busAttributes": {
-                    "type": bus_type,  
-                    "isKtel": is_ktel, 
-                    "excludeFromEq": exclude_from_eq, 
+                    "type": bus_type,
+                    "isKtel": is_ktel,
+                    "excludeFromEq": exclude_from_eq,
                     "distanceAdjustment": distance_adjustment,
                 },
                 "preassignedBreaks": preassigned_breaks,
                 "parameters": {
-                    "cost": cost, 
-                    "compatibility": compatibility, 
+                    "cost": cost,
+                    "compatibility": compatibility,
                 },
             }
             resources.append(resource)
-
 
     prohibited_buses = []
     for bus_id in file1_data.get("prohibitedBuses", []):
@@ -391,7 +405,7 @@ def transform_to_structured_format(file1_data, file2_data, file3_data, file4_dat
                     "description": "Specific connection times required between trips.",
                     "incomingTripId": joint[0],
                     "outgoingTripId": joint[1],
-                    "time": joint[2],
+                    "time": joint[2],  # Extended HHMM of outgoing trip start
                 }
             )
 
@@ -405,7 +419,15 @@ def transform_to_structured_format(file1_data, file2_data, file3_data, file4_dat
             "minDelays": {
                 "description": "Delay required between different vehicle types (in minutes)",
                 "values": file1_data.get("minDelay", [5, 0, 0, 0, 0, 0]),
-            }
+            },
+            "parameters": {
+                "maxDutyMinutes": 900,
+                "normalDutyMinutes": 600,
+                "maxWorkMinutes": 720,
+                "driveTimeToBreakMinutes": 270,
+                "minBreakMinutes": 30,
+                "transitMinutes": 30,
+            },
         },
         "stationTransferMatrix": {
             "description": "Matrix defining requirements to move between stations.",
@@ -435,7 +457,6 @@ def parse_file4(dat_path):
     return {"numberOfProhibitedBuses": int(content) if content.isdigit() else 0}
 
 
-# Paths
 dat_dir = "docs/Information"
 file1_data = parse_file1(os.path.join(dat_dir, "FILE1.DAT"))
 file2_data = parse_file2(os.path.join(dat_dir, "FILE2.DAT"))

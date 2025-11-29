@@ -11,6 +11,8 @@ services:
     user: "1000:1000"
     networks:
       - bus_network
+    depends_on:
+      - backend
 
   backend:
     build: ./backend
@@ -20,12 +22,32 @@ services:
       - ./backend:/app:Z
       - ./docs:/app/docs:Z
       - ./data.json:/app/data.json:Z
+    env_file:
+      - ./backend/.env
     environment:
       - PYTHONPATH=/app
       - UV_CACHE_DIR=/tmp/uv-cache
+    networks:
+      - bus_network
+    depends_on:
+      - db
+
+  db:
+    image: postgres:16-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=scheduling
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
     networks:
       - bus_network
 
 networks:
   bus_network:
     driver: bridge
+
+volumes:
+  postgres_data:

@@ -39,6 +39,8 @@ yarn-error.log*
 *.pdf
 *.dat
 
+__pycache__/
+
 # vercel
 .vercel
 
