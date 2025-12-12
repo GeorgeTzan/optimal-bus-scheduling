@@ -20,6 +20,7 @@ services:
       - "8000:8000"
     volumes:
       - ./backend:/app:Z
+      - /app/.venv
       - ./docs:/app/docs:Z
       - ./data.json:/app/data.json:Z
     env_file:
