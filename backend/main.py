@@ -1,12 +1,23 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from contextlib import asynccontextmanager
 from core.sentry import init_sentry
 from api import auth, trips, drivers, solver as solver_api
 from dat_parser import get_full_data
+from db.database import engine, Base
+from db import models
 
 init_sentry()
 
-app = FastAPI(title="Optimal Scheduling System API", version="1.0.0")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    Base.metadata.create_all(bind=engine)
+    print("Database initialized")
+    yield
+
+
+app = FastAPI(title="Optimal Scheduling System API", version="1.0.0", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
