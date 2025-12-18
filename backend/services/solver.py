@@ -229,10 +229,10 @@ def run_constructive_heuristic(
         for bus_id, state in bus_states.items():
             is_at_station = state["currentStation"] == task_start_station
 
-            arrival_time = state["availableAt"]
             if not is_at_station:
-                arrival_time += params.transit_minutes
+                continue
 
+            arrival_time = state["availableAt"]
             if arrival_time > task_start:
                 continue
 

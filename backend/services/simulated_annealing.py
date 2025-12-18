@@ -96,8 +96,6 @@ def _idle_minutes(trips: List[Dict[str, Any]], transit_minutes: int) -> int:
         if b_start < a_end:
             b_start += 1440
         gap = b_start - a_end
-        if a.get("endStation") != b.get("startStation"):
-            gap -= transit_minutes
         idle += max(0, gap)
     return idle
 
@@ -161,8 +159,24 @@ def _is_legal_sequence(
     constraints: ConstraintsData,
     day_index: int,
 ) -> bool:
+    if not trips:
+        return True
+    
+    sorted_trips = sorted(trips, key=lambda x: x.get("start_minutes", 0))
+    first_trip = sorted_trips[0]
+    current_station = resource.get("currentStation", "")
+    first_trip_station = first_trip.get("startStation", "")
+    
+    if current_station and first_trip_station and current_station != first_trip_station:
+        return False
+    
     assigned: List[Dict[str, Any]] = []
-    for t in sorted(trips, key=lambda x: x.get("start_minutes", 0)):
+    for i, t in enumerate(sorted_trips):
+        if i > 0:
+            prev_end_station = sorted_trips[i-1].get("endStation", "")
+            curr_start_station = t.get("startStation", "")
+            if prev_end_station and curr_start_station and prev_end_station != curr_start_station:
+                return False
         ok, _ = check_assignment_legality(
             t,
             resource,
