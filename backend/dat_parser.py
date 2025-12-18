@@ -1,5 +1,6 @@
 import json
 import os
+from pathlib import Path
 from typing import List, Dict, Any
 
 DATA_FILE = "/app/data.json"
@@ -8,7 +9,12 @@ DATA_FILE = "/app/data.json"
 def load_data() -> Dict[str, Any]:
     """Load the structured data from data.json"""
     try:
-        with open(DATA_FILE, "r") as f:
+        local_path = Path(__file__).resolve().parent.parent / "data.json"
+        if local_path.exists():
+            with open(local_path, "r", encoding="utf-8") as f:
+                return json.load(f)
+
+        with open(DATA_FILE, "r", encoding="utf-8") as f:
             return json.load(f)
     except FileNotFoundError:
         print("Warning: data.json not found, falling back to DAT parsing")

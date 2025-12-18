@@ -20,7 +20,6 @@ services:
       - "8000:8000"
     volumes:
       - ./backend:/app:Z
-      - /app/.venv
       - ./docs:/app/docs:Z
       - ./data.json:/app/data.json:Z
     env_file:
@@ -28,6 +27,7 @@ services:
     environment:
       - PYTHONPATH=/app
       - UV_CACHE_DIR=/tmp/uv-cache
+    command: ["python", "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
     networks:
       - bus_network
     depends_on:

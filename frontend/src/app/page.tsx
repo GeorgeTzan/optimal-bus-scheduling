@@ -273,10 +273,24 @@ export default function HomePage() {
 
   const hourLabels = Array.from({ length: 25 }, (_, i) => i);
 
+  const [solverMode, setSolverMode] = useState<'greedy' | 'sa'>('greedy');
+  const [saIters, setSaIters] = useState(4000);
+  const [saTemp, setSaTemp] = useState(50);
+  const [saCooling, setSaCooling] = useState(0.999);
+
   const runConstructiveHeuristic = async () => {
     setIsSolving(true);
     try {
-      const response = await fetch("/api/solve", { method: "POST" });
+      const response = await fetch("/api/solve", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          mode: solverMode,
+          sa_iters: saIters,
+          sa_temp: saTemp,
+          sa_cooling: saCooling,
+        }),
+      });
       const data = await response.json();
       setSolution(data);
     } catch (err) {
@@ -715,6 +729,61 @@ export default function HomePage() {
                   <h3 className="text-lg font-semibold text-white">Constructive Heuristic Solver</h3>
                   <p className="text-slate-400 text-sm mt-1">Assigns trips to buses minimizing idle time between consecutive trips</p>
                 </div>
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2">
+                    <span className="text-slate-300 text-xs">Mode</span>
+                    <select
+                      value={solverMode}
+                      onChange={(e) => setSolverMode(e.target.value as 'greedy' | 'sa')}
+                      className="bg-white/5 text-white text-xs rounded-lg px-2 py-1 border border-white/10 focus:outline-none"
+                      disabled={isSolving}
+                    >
+                      <option value="greedy">Greedy</option>
+                      <option value="sa">SA (optimize)</option>
+                    </select>
+                  </div>
+
+                  {solverMode === 'sa' && (
+                    <div className="flex items-center gap-2">
+                      <span className="text-slate-300 text-xs">iters</span>
+                      <input
+                        type="number"
+                        min={1}
+                        max={200000}
+                        value={saIters}
+                        onChange={(e) => setSaIters(Math.max(1, Math.min(200000, Number(e.target.value) || 1)))}
+                        className="w-24 bg-white/5 text-white text-xs rounded-lg px-2 py-1 border border-white/10 focus:outline-none"
+                        disabled={isSolving}
+                      />
+                      <span className="text-slate-300 text-xs">temp</span>
+                      <input
+                        type="number"
+                        step={0.1}
+                        min={0.1}
+                        value={saTemp}
+                        onChange={(e) => setSaTemp(Math.max(0.1, Number(e.target.value) || 0.1))}
+                        className="w-20 bg-white/5 text-white text-xs rounded-lg px-2 py-1 border border-white/10 focus:outline-none"
+                        disabled={isSolving}
+                      />
+                      <span className="text-slate-300 text-xs">cool</span>
+                      <input
+                        type="number"
+                        step={0.0001}
+                        min={0.9}
+                        max={0.999999}
+                        value={saCooling}
+                        onChange={(e) => {
+                          const v = Number(e.target.value);
+                          setSaCooling(Number.isFinite(v) ? Math.max(0.9, Math.min(0.999999, v)) : 0.999);
+                        }}
+                        className="w-24 bg-white/5 text-white text-xs rounded-lg px-2 py-1 border border-white/10 focus:outline-none"
+                        disabled={isSolving}
+                      />
+                    </div>
+                  )}
+
+                </div>
+
                 <button
                   onClick={runConstructiveHeuristic}
                   disabled={isSolving || trips.length === 0 || drivers.length === 0}

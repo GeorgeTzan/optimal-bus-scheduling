@@ -1,6 +1,14 @@
 #!/usr/bin/env python3
 """
-Run from the backend directory: python -m services.maim
+Run from the backend directory: python -m services.main
+
+Standalone runner for:
+- Constructive heuristic solver
+- Simulated annealing optimizer (optional)
+
+Examples:
+    uv run ./services/main.py // python -m main
+    uv run ./services/main.py --sa // python -m main --sa
 """
 import sys
 import json
@@ -10,6 +18,11 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from services.solver import run_constructive_heuristic, build_tasks_from_trips
+from services.simulated_annealing import (
+    optimize_with_simulated_annealing,
+    SAConfig,
+    SAWeights,
+)
 from services.legality_checker import (
     SolverParameters,
     ConstraintsData,
@@ -75,7 +88,7 @@ def load_data(data_path: str = None) -> dict:
     if not path.exists():
         raise FileNotFoundError(f"Data file not found. Tried: {path}")
 
-    with open(path, "r") as f:
+    with open(path, "r", encoding="utf-8") as f:
         return json.load(f)
 
 
@@ -249,6 +262,7 @@ Examples:
   python -m services.main -d custom.json     # Use custom data file
   python -m services.main --test-legality    # Test legality checker
   python -m services.main -q                 # Quiet mode (less output)
+  python -m services.main --sa               # Simulated Annealing
   python -m services.main --output result.json  # Save result to file
         """,
     )
@@ -268,6 +282,30 @@ Examples:
     )
     parser.add_argument(
         "--metrics-only", action="store_true", help="Only print metrics (for scripts)"
+    )
+
+    parser.add_argument(
+        "--sa",
+        action="store_true",
+        help="Run simulated annealing after greedy solver",
+    )
+    parser.add_argument(
+        "--sa-iters",
+        type=int,
+        default=4000,
+        help="Simulated annealing max iterations",
+    )
+    parser.add_argument(
+        "--sa-temp",
+        type=float,
+        default=50.0,
+        help="Simulated annealing starting temperature",
+    )
+    parser.add_argument(
+        "--sa-cooling",
+        type=float,
+        default=0.999,
+        help="Simulated annealing cooling multiplier",
     )
 
     args = parser.parse_args()
@@ -295,12 +333,50 @@ Examples:
 
     result = run_solver_with_logs(data, verbose=not args.quiet)
 
+    if args.sa:
+        Logger.section("Step 7: Simulated Annealing Optimization")
+        sa_cfg = SAConfig(
+            max_iters=args.sa_iters, start_temp=args.sa_temp, cooling=args.sa_cooling
+        )
+        sa_weights = SAWeights(
+            duty_balance=1.0,
+            overtime_over_8h=4.0,
+            idle_time=1.0,
+            unused_bus=250.0,
+        )
+
+        params = SolverParameters.from_data(data)
+        constraints_data = ConstraintsData.from_data(data)
+        sa_result = optimize_with_simulated_annealing(
+            full_data=data,
+            greedy_result=result,
+            params=params,
+            constraints_data=constraints_data,
+            config=sa_cfg,
+            weights=sa_weights,
+            verbose=not args.quiet,
+        )
+
+        greedy_metrics = result.get("metrics", {})
+        sa_metrics = sa_result.get("metrics", {})
+        sa_extra = sa_result.get("sa", {})
+
+        Logger.metric("Greedy Idle Time", greedy_metrics.get("totalIdleTime", 0), "min")
+        Logger.metric("SA Idle Time", sa_metrics.get("totalIdleTime", 0), "min")
+        Logger.metric("SA Best Cost", f"{sa_extra.get('bestCost', 0):.1f}")
+
+        best_m = sa_extra.get("bestMetrics", {})
+        Logger.metric("SA Fairness", f"{best_m.get('fairness', 0):.1f}")
+        Logger.metric("SA Over 8h", best_m.get("totalOver8h", 0), "min")
+        Logger.metric("SA Unused Buses", best_m.get("unusedBuses", 0))
+
+        result = sa_result
+
     if args.output:
-        with open(args.output, "w") as f:
+        with open(args.output, "w", encoding="utf-8") as f:
             json.dump(result, f, indent=2)
         Logger.success(f"Result saved to {args.output}")
 
 
 if __name__ == "__main__":
     main()
-
