@@ -17,6 +17,10 @@ class SolverParameters:
     drive_time_to_break: int = DEFAULT_DRIVE_TIME_TO_BREAK
     min_break_time: int = DEFAULT_MIN_BREAK_TIME
     transit_minutes: int = DEFAULT_TRANSIT_TIME
+    max_duty_gaps: int = 5
+    min_gap_minutes: int = 15
+    min_delay_per_group: Dict[str, int] = field(default_factory=dict)
+    min_delay_per_type: Dict[str, int] = field(default_factory=dict)
 
     @classmethod
     def from_data(cls, full_data: Dict = None) -> "SolverParameters":
@@ -37,6 +41,10 @@ class SolverParameters:
             ),
             min_break_time=params.get("minBreakMinutes", DEFAULT_MIN_BREAK_TIME),
             transit_minutes=params.get("transitMinutes", DEFAULT_TRANSIT_TIME),
+            max_duty_gaps=params.get("maxDutyGaps", 5),
+            min_gap_minutes=params.get("minGapMinutes", 15),
+            min_delay_per_group=params.get("minDelayPerGroup", {}),
+            min_delay_per_type=params.get("minDelayPerType", {}),
         )
 
     def to_dict(self) -> Dict[str, int]:
@@ -47,6 +55,8 @@ class SolverParameters:
             "driveTimeToBreakMinutes": self.drive_time_to_break,
             "minBreakMinutes": self.min_break_time,
             "transitMinutes": self.transit_minutes,
+            "maxDutyGaps": self.max_duty_gaps,
+            "minGapMinutes": self.min_gap_minutes,
         }
 
 
@@ -60,6 +70,7 @@ class ConstraintsData:
     driver_wishes_negative: Dict[str, Set[str]] = field(default_factory=dict)
     trip_prohibited_buses: Dict[str, Set[str]] = field(default_factory=dict)
     trip_prohibited_drivers: Dict[str, Set[str]] = field(default_factory=dict)
+    station_transfer_matrix: List[List[str]] = field(default_factory=list)
 
     @classmethod
     def from_data(cls, full_data: Dict = None) -> "ConstraintsData":
@@ -72,6 +83,9 @@ class ConstraintsData:
         instance = cls(
             prohibited_buses=set(prohibited.get("buses", [])),
             prohibited_drivers=set(prohibited.get("drivers", [])),
+            station_transfer_matrix=full_data.get("stationTransferMatrix", {}).get(
+                "matrix", []
+            ),
         )
 
         for wish in constraints.get("driverWishes", []):
@@ -105,16 +119,20 @@ def check_assignment_legality(
 
     Implements legacy LC checks:
     - K1: Bus type check
-    - K2: Driver day-off check
+    - K2: Repo/Day-off compatibility (CheckRepo)
     - K3: Base compatibility check
     - K4: Employment/duty time check
     - K5: Driving/work time check
     - K6: First/last trip shift position check
     - K7: Next/prev day rest rule check
+    - K8: Max number of duty gaps (gaps >= 15 min)
+    - K9: Min delay per bus type
+    - K10: Min delay per group
     - K11: Break after X driving hours check
     - K12: Driver wishes check
     - K13: Prohibited routes for driver check
     - K14: Prohibited routes for bus check
+    - K15: Days to Repo check
     """
     if params is None:
         params = SolverParameters()
@@ -171,6 +189,12 @@ def check_assignment_legality(
 
     # K3: HOME STATION COMPATIBILITY
     home_station = resource.get("homeStation", "")
+    current_station = resource.get("currentStation", "")
+    shift_start_str = resource.get("shiftStartTime", "0000")
+    try:
+        shift_start_minutes = int(shift_start_str[:2]) * 60 + int(shift_start_str[2:])
+    except (ValueError, TypeError):
+        shift_start_minutes = 0
 
     raw_alt_stations = trip.get("properties", {}).get("alternativeStationCodes", [])
     active_station_constraints = [s for s in raw_alt_stations if s and s != "000"]
@@ -196,6 +220,89 @@ def check_assignment_legality(
             errors.append("driver_on_break_today")
             return False, errors
 
+    # K2/K7: Repo compatibility (CheckRepo)
+    repo_next_day = resource.get("repoNextDay", False)
+    repo_pre_day = resource.get("repoPreDay", False)
+
+    trip_props = trip.get("properties", {})
+    rest_rule = trip_props.get("nextDayRestRule", "NONE")
+
+    if repo_next_day and rest_rule == "NO_REST_TOMORROW":
+        errors.append("trip_forbidden_for_repo_tomorrow")
+        return False, errors
+    if not repo_next_day and rest_rule == "MUST_REST_TOMORROW":
+        errors.append("trip_requires_repo_tomorrow")
+        return False, errors
+    if repo_pre_day and rest_rule == "NO_REST_YESTERDAY":
+        errors.append("trip_forbidden_for_repo_yesterday")
+        return False, errors
+    if not repo_pre_day and rest_rule == "MUST_REST_YESTERDAY":
+        errors.append("trip_requires_repo_yesterday")
+        return False, errors
+
+    # K15: Days to Repo check
+    days_to_repo_resource = resource.get("daysToRepo", 0)
+    days_to_repo_trip = trip_props.get("daysToRestRule", 0)
+    if days_to_repo_trip > 0 and days_to_repo_trip != days_to_repo_resource:
+        errors.append(
+            f"days_to_repo_mismatch: Need {days_to_repo_trip}, Got {days_to_repo_resource}"
+        )
+        return False, errors
+
+    if not current_trips:
+        trip_start_station = trip.get("startStation")
+        if (
+            current_station
+            and trip_start_station
+            and current_station != trip_start_station
+        ):
+            matrix = constraints_data.station_transfer_matrix
+            if not matrix:
+                errors.append(
+                    f"first_station_mismatch: Resource at {current_station}, trip starts at {trip_start_station}"
+                )
+                return False, errors
+
+            try:
+                idx1 = int(current_station) - 1
+                idx2 = int(trip_start_station) - 1
+                if 0 <= idx1 < len(matrix) and 0 <= idx2 < len(matrix[0]):
+                    transfer_type = matrix[idx1][idx2]
+                    if transfer_type == "OVERNIGHT":
+                        errors.append(
+                            f"first_transfer_forbidden: {current_station} -> {trip_start_station} (OVERNIGHT)"
+                        )
+                        return False, errors
+
+                    trip_start = trip.get("start_minutes", 0)
+                    gap = trip_start - shift_start_minutes
+
+                    if transfer_type == "BREAK":
+                        if gap < params.min_break_time:
+                            errors.append(
+                                f"first_transfer_requires_break: {gap} < {params.min_break_time}"
+                            )
+                            return False, errors
+                    elif transfer_type == "NONE":
+                        if gap < 0:
+                            errors.append("first_trip_starts_before_shift")
+                            return False, errors
+                else:
+                    errors.append(
+                        f"first_station_index_out_of_bounds: {current_station} or {trip_start_station}"
+                    )
+                    return False, errors
+            except (ValueError, TypeError):
+                errors.append(
+                    f"first_invalid_station_code: {current_station} or {trip_start_station}"
+                )
+                return False, errors
+        else:
+            trip_start = trip.get("start_minutes", 0)
+            if trip_start < shift_start_minutes:
+                errors.append("first_trip_starts_before_shift")
+                return False, errors
+
     if current_trips:
         last_trip = current_trips[-1]
 
@@ -210,20 +317,116 @@ def check_assignment_legality(
         last_end_station = last_trip.get("endStation")
         trip_start_station = trip.get("startStation")
 
-        required_gap = 0
         if last_end_station != trip_start_station:
-            required_gap = params.transit_minutes
+            # Virtual Drom / Transfer Logic
+            matrix = constraints_data.station_transfer_matrix
+            if not matrix:
+                errors.append(
+                    f"station_mismatch: Last ended at {last_end_station}, next starts at {trip_start_station} (No transfer matrix)"
+                )
+                return False, errors
 
-        effective_last_end = last_end
-        effective_trip_start = trip_start
-        if trip_start < last_end and last_end > 1200 and trip_start < 300:
-            effective_trip_start = trip_start + 1440
+            try:
+                idx1 = int(last_end_station) - 1
+                idx2 = int(trip_start_station) - 1
 
-        if effective_trip_start < (effective_last_end + required_gap):
-            errors.append("insufficient_time_gap")
-            return False, errors
+                if 0 <= idx1 < len(matrix) and 0 <= idx2 < len(matrix[0]):
+                    transfer_type = matrix[idx1][idx2]
+
+                    if transfer_type == "OVERNIGHT":
+                        errors.append(
+                            f"transfer_forbidden_same_duty: {last_end_station} -> {trip_start_station} (OVERNIGHT)"
+                        )
+                        return False, errors
+
+                    effective_last_end = last_end
+                    effective_trip_start = trip_start
+                    if trip_start < last_end and last_end > 1200 and trip_start < 300:
+                        effective_trip_start = trip_start + 1440
+
+                    gap = effective_trip_start - effective_last_end
+
+                    if transfer_type == "BREAK":
+                        if gap < params.min_break_time:
+                            errors.append(
+                                f"transfer_requires_break: {gap} < {params.min_break_time}"
+                            )
+                            return False, errors
+                    elif transfer_type == "NONE":
+                        if gap < 0:
+                            errors.append("insufficient_time_gap")
+                            return False, errors
+                    elif transfer_type == "UNKNOWN":
+                        errors.append(
+                            f"transfer_unknown: {last_end_station} -> {trip_start_station}"
+                        )
+                        return False, errors
+                else:
+                    errors.append(
+                        f"station_index_out_of_bounds: {last_end_station} or {trip_start_station}"
+                    )
+                    return False, errors
+            except (ValueError, TypeError):
+                errors.append(
+                    f"invalid_station_code: {last_end_station} or {trip_start_station}"
+                )
+                return False, errors
+        else:
+            effective_last_end = last_end
+            effective_trip_start = trip_start
+            if trip_start < last_end and last_end > 1200 and trip_start < 300:
+                effective_trip_start = trip_start + 1440
+
+            gap = effective_trip_start - effective_last_end
+            if gap < 0:
+                errors.append("insufficient_time_gap")
+                return False, errors
+
+        # K9 & K10: Min delay per type/group
+        trip_group = trip.get("group", "0")
+        if trip_group != "0":
+            for prev in reversed(current_trips):
+                if prev.get("group") == trip_group:
+                    prev_end = prev.get("end_minutes", 0)
+                    curr_start = trip.get("start_minutes", 0)
+                    if curr_start < prev_end:
+                        curr_start += 1440
+
+                    actual_gap = curr_start - prev_end
+
+                    # K10: Group delay
+                    min_group_delay = params.min_delay_per_group.get(trip_group, 0)
+                    if actual_gap < min_group_delay:
+                        errors.append(
+                            f"min_group_delay_violated: {actual_gap} < {min_group_delay}"
+                        )
+                        return False, errors
+
+                    # K9: Type delay
+                    min_type_delay = params.min_delay_per_type.get(bus_type, 0)
+                    if actual_gap < min_type_delay:
+                        errors.append(
+                            f"min_type_delay_violated: {actual_gap} < {min_type_delay}"
+                        )
+                        return False, errors
+                    break
 
     test_trips = current_trips + [trip]
+
+    # K8: Max number of duty gaps
+    num_gaps = 0
+    for i in range(len(test_trips) - 1):
+        t1_end = test_trips[i].get("end_minutes", 0)
+        t2_start = test_trips[i + 1].get("start_minutes", 0)
+        if t2_start < t1_end:
+            t2_start += 1440
+
+        if (t2_start - t1_end) >= params.min_gap_minutes:
+            num_gaps += 1
+
+    if num_gaps > params.max_duty_gaps:
+        errors.append(f"max_gaps_exceeded: {num_gaps} > {params.max_duty_gaps}")
+        return False, errors
 
     first_start = test_trips[0].get("start_minutes", 0)
     last_end = test_trips[-1].get("end_minutes", 0)

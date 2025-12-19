@@ -22,9 +22,9 @@ class SAWeights:
 @dataclass(frozen=True)
 class SAConfig:
     max_iters: int = 4000
-    start_temp: float = 50.0
+    start_temp: float = 100.0
     end_temp: float = 0.5
-    cooling: float = 0.999
+    cooling: float = 0.9
     moves_per_temp: int = 50
     seed: Optional[int] = 7
     log_every: int = 200
@@ -161,22 +161,11 @@ def _is_legal_sequence(
 ) -> bool:
     if not trips:
         return True
-    
+
     sorted_trips = sorted(trips, key=lambda x: x.get("start_minutes", 0))
-    first_trip = sorted_trips[0]
-    current_station = resource.get("currentStation", "")
-    first_trip_station = first_trip.get("startStation", "")
-    
-    if current_station and first_trip_station and current_station != first_trip_station:
-        return False
-    
+
     assigned: List[Dict[str, Any]] = []
     for i, t in enumerate(sorted_trips):
-        if i > 0:
-            prev_end_station = sorted_trips[i-1].get("endStation", "")
-            curr_start_station = t.get("startStation", "")
-            if prev_end_station and curr_start_station and prev_end_station != curr_start_station:
-                return False
         ok, _ = check_assignment_legality(
             t,
             resource,
