@@ -43,10 +43,9 @@ def solve(req: SolveRequest = SolveRequest()):
         cooling=req.sa_cooling,
     )
     weights = SAWeights(
-        duty_balance=req.w_fairness,
-        overtime_over_8h=req.w_over8h,
-        idle_time=req.w_idle,
-        unused_bus=req.w_unused,
+        fairness_term=req.w_fairness,
+        overtime_minutes=req.w_over8h,
+        idle_minutes=req.w_idle,
     )
 
     return optimize_with_simulated_annealing(

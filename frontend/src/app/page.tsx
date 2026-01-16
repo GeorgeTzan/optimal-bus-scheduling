@@ -58,6 +58,14 @@ interface BusState {
   currentStation: string;
   availableAt: number;
   assignedTrips: string[];
+  transfers: Array<{
+    type: string;
+    fromStation: string;
+    toStation: string;
+    startMinutes: number;
+    endMinutes: number;
+    duration: number;
+  }>;
   totalIdleTime: number;
   totalDrivingTime: number;
 }
@@ -75,6 +83,8 @@ interface SolutionMetrics {
   busesUsed: number;
   totalIdleTime: number;
   totalDrivingTime: number;
+  totalTransferTime?: number;
+  baseMismatchCount?: number;
   sequencesProcessed: number;
 }
 
@@ -830,10 +840,19 @@ export default function HomePage() {
                     <div className="text-3xl font-bold text-orange-300">{solution.metrics.unassigned}</div>
                   </div>
                   <div className="bg-gradient-to-br from-cyan-600/20 to-cyan-700/20 backdrop-blur-sm rounded-lg p-3 border border-cyan-500/20">
-                    <div className="text-slate-400 text-xs mb-1.5 uppercase tracking-wide">Avg Trips/Bus</div>
-                    <div className="text-2xl font-bold text-cyan-300">{solution.metrics.busesUsed > 0 ? (solution.metrics.assigned / solution.metrics.busesUsed).toFixed(1) : 0}</div>
+                    <div className="text-slate-400 text-xs mb-1.5 uppercase tracking-wide">Transfer Time</div>
+                    <div className="text-2xl font-bold text-cyan-300">{formatDuration(solution.metrics.totalTransferTime || 0)}</div>
                   </div>
                 </div>
+
+                {solution.metrics.baseMismatchCount !== undefined && solution.metrics.baseMismatchCount > 0 && (
+                  <div className="bg-red-500/10 border border-red-500/20 p-2 rounded-lg text-xs text-red-300 flex items-center gap-2">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                    Warning: {solution.metrics.baseMismatchCount} buses do not finish at their Home Station.
+                  </div>
+                )}
 
                 <div className="bg-slate-900/80 backdrop-blur-sm rounded-lg p-4 border border-white/10">
                   <h3 className="text-lg font-semibold text-white mb-3">Bus Schedules</h3>
@@ -888,6 +907,24 @@ export default function HomePage() {
                                     title="Click for details"
                                   >
                                     <span className="truncate px-1 text-xs">{trip.id}</span>
+                                  </div>
+                                );
+                              })}
+                              {bus.transfers?.map((transfer, tIdx) => {
+                                const leftPercent = timeToPixels(transfer.startMinutes);
+                                const widthPercent = timeToPixels(transfer.duration);
+                                return (
+                                  <div
+                                    key={`v-${tIdx}`}
+                                    className="absolute top-1 bottom-1 rounded text-[10px] flex items-center justify-center text-white/50 font-bold border border-black/50 bg-black/60 shadow-inner overflow-hidden"
+                                    style={{
+                                      left: `${leftPercent}%`,
+                                      width: `${Math.max(widthPercent, 1.5)}%`,
+                                      zIndex: 5
+                                    }}
+                                    title={`Virtual Drom (Transfer): Stn ${transfer.fromStation} -> Stn ${transfer.toStation} (${transfer.duration}m)`}
+                                  >
+                                    <span className="truncate px-0.5">V</span>
                                   </div>
                                 );
                               })}

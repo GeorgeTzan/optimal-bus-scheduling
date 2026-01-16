@@ -178,6 +178,8 @@ def run_solver_with_logs(data: dict, verbose: bool = True) -> dict:
     Logger.metric("Trips Unassigned", metrics.get("unassigned", 0))
     Logger.metric("Buses Used", metrics.get("busesUsed", 0))
     Logger.metric("Total Idle Time", metrics.get("totalIdleTime", 0), "min")
+    Logger.metric("Total Transfer Time", metrics.get("totalTransferTime", 0), "min")
+    Logger.metric("Base Mismatch Count", metrics.get("baseMismatchCount", 0))
     Logger.metric("Total Driving Time", metrics.get("totalDrivingTime", 0), "min")
     Logger.metric("Chains Processed", metrics.get("chainsProcessed", 0))
     Logger.metric("Solver Time", f"{elapsed:.3f}", "sec")
@@ -304,7 +306,7 @@ Examples:
     parser.add_argument(
         "--sa-cooling",
         type=float,
-        default=0.999,
+        default=0.99,
         help="Simulated annealing cooling multiplier",
     )
 
@@ -339,10 +341,9 @@ Examples:
             max_iters=args.sa_iters, start_temp=args.sa_temp, cooling=args.sa_cooling
         )
         sa_weights = SAWeights(
-            duty_balance=1.0,
-            overtime_over_8h=4.0,
-            idle_time=1.0,
-            unused_bus=250.0,
+            fairness_term=1.0,
+            overtime_minutes=4.0,
+            idle_minutes=1.0,
         )
 
         params = SolverParameters.from_data(data)
@@ -368,7 +369,10 @@ Examples:
         best_m = sa_extra.get("bestMetrics", {})
         Logger.metric("SA Fairness", f"{best_m.get('fairness', 0):.1f}")
         Logger.metric("SA Over 8h", best_m.get("totalOver8h", 0), "min")
+        Logger.metric("SA Transfer", best_m.get("totalTransfer", 0), "min")
+        Logger.metric("SA Base Mismatch", best_m.get("baseMismatch", 0))
         Logger.metric("SA Unused Buses", best_m.get("unusedBuses", 0))
+        Logger.metric("SA Unassigned Trips", best_m.get("unassignedCount", 0))
 
         result = sa_result
 

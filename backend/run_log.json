@@ -1,0 +1,1133 @@
+[
+  {
+    "timestamp": "2026-01-09T20:17:04.857911",
+    "version": "v1.2-Heuristic-Targeted",
+    "best_cost": 100430.04,
+    "config": {
+      "max_iters": 5000,
+      "start_temp": 50.0,
+      "end_temp": 0.1,
+      "cooling": 0.99,
+      "moves_per_temp": 50,
+      "seed": 7,
+      "log_every": 200,
+      "unassigned_move_prob": 0.1,
+      "reheat_threshold": 1000,
+      "reheat_temp_ratio": 0.4
+    },
+    "weights": {
+      "duty_balance": 1.0,
+      "overtime_over_8h": 4.0,
+      "idle_time": 1.0,
+      "unused_bus": 250.0,
+      "unassigned_trip": 1000.0,
+      "transfer_time": 0.5,
+      "return_to_base_penalty": 500.0
+    },
+    "metrics": {
+      "fairness": 20615.041473765432,
+      "totalIdle": 20300,
+      "totalOver8h": 10430,
+      "totalTransfer": 1590,
+      "baseMismatch": 34,
+      "unusedBuses": 0,
+      "usedBuses": 72,
+      "unassignedCount": 0
+    }
+  },
+  {
+    "timestamp": "2026-01-09T20:19:42.777851",
+    "version": "v1.3-Parallel-Tempering",
+    "best_cost": 72256.04,
+    "config": {
+      "max_iters": 10000,
+      "start_temp": 50.0,
+      "end_temp": 0.1,
+      "cooling": 0.99,
+      "moves_per_temp": 50,
+      "seed": 7,
+      "log_every": 200,
+      "unassigned_move_prob": 0.1,
+      "reheat_threshold": 1000,
+      "reheat_temp_ratio": 0.4
+    },
+    "weights": {
+      "duty_balance": 1.0,
+      "overtime_over_8h": 4.0,
+      "idle_time": 1.0,
+      "unused_bus": 250.0,
+      "unassigned_trip": 1000.0,
+      "transfer_time": 0.5,
+      "return_to_base_penalty": 500.0
+    },
+    "metrics": {
+      "fairness": 13251.036844135802,
+      "totalIdle": 17125,
+      "totalOver8h": 6695,
+      "totalTransfer": 1200,
+      "baseMismatch": 29,
+      "unusedBuses": 0,
+      "usedBuses": 72,
+      "unassignedCount": 0
+    }
+  },
+  {
+    "timestamp": "2026-01-09T18:22:33.987786",
+    "version": "v1.3-Parallel-Tempering",
+    "best_cost": 79879.68,
+    "config": {
+      "max_iters": 4000,
+      "start_temp": 50.0,
+      "end_temp": 0.1,
+      "cooling": 0.999,
+      "moves_per_temp": 50,
+      "seed": 7,
+      "log_every": 200,
+      "unassigned_move_prob": 0.1,
+      "reheat_threshold": 1000,
+      "reheat_temp_ratio": 0.4
+    },
+    "weights": {
+      "duty_balance": 1.0,
+      "overtime_over_8h": 4.0,
+      "idle_time": 1.0,
+      "unused_bus": 250.0,
+      "unassigned_trip": 1000.0,
+      "transfer_time": 0.5,
+      "return_to_base_penalty": 500.0
+    },
+    "metrics": {
+      "fairness": 15034.678819444445,
+      "totalIdle": 17765,
+      "totalOver8h": 7525,
+      "totalTransfer": 960,
+      "baseMismatch": 33,
+      "unusedBuses": 0,
+      "usedBuses": 72,
+      "unassignedCount": 0
+    }
+  },
+  {
+    "timestamp": "2026-01-09T18:27:00.069152",
+    "version": "v1.3-Parallel-Tempering",
+    "best_cost": 79867.75,
+    "config": {
+      "max_iters": 4000,
+      "start_temp": 50.0,
+      "end_temp": 0.1,
+      "cooling": 0.97,
+      "moves_per_temp": 50,
+      "seed": 7,
+      "log_every": 200,
+      "unassigned_move_prob": 0.1,
+      "reheat_threshold": 1000,
+      "reheat_temp_ratio": 0.4
+    },
+    "weights": {
+      "duty_balance": 1.0,
+      "overtime_over_8h": 4.0,
+      "idle_time": 1.0,
+      "unused_bus": 250.0,
+      "unassigned_trip": 1000.0,
+      "transfer_time": 0.5,
+      "return_to_base_penalty": 500.0
+    },
+    "metrics": {
+      "fairness": 15407.749807098764,
+      "totalIdle": 17965,
+      "totalOver8h": 7765,
+      "totalTransfer": 870,
+      "baseMismatch": 30,
+      "unusedBuses": 0,
+      "usedBuses": 72,
+      "unassignedCount": 0
+    }
+  },
+  {
+    "timestamp": "2026-01-09T18:27:07.593777",
+    "version": "v1.3-Parallel-Tempering",
+    "best_cost": 77303.59,
+    "config": {
+      "max_iters": 4000,
+      "start_temp": 50.0,
+      "end_temp": 0.1,
+      "cooling": 0.99,
+      "moves_per_temp": 50,
+      "seed": 7,
+      "log_every": 200,
+      "unassigned_move_prob": 0.1,
+      "reheat_threshold": 1000,
+      "reheat_temp_ratio": 0.4
+    },
+    "weights": {
+      "duty_balance": 1.0,
+      "overtime_over_8h": 4.0,
+      "idle_time": 1.0,
+      "unused_bus": 250.0,
+      "unassigned_trip": 1000.0,
+      "transfer_time": 0.5,
+      "return_to_base_penalty": 500.0
+    },
+    "metrics": {
+      "fairness": 14673.591820987656,
+      "totalIdle": 17650,
+      "totalOver8h": 7265,
+      "totalTransfer": 840,
+      "baseMismatch": 31,
+      "unusedBuses": 0,
+      "usedBuses": 72,
+      "unassignedCount": 0
+    }
+  },
+  {
+    "timestamp": "2026-01-09T18:27:11.448812",
+    "version": "v1.3-Parallel-Tempering",
+    "best_cost": 77303.59,
+    "config": {
+      "max_iters": 4000,
+      "start_temp": 50.0,
+      "end_temp": 0.1,
+      "cooling": 0.99,
+      "moves_per_temp": 50,
+      "seed": 7,
+      "log_every": 200,
+      "unassigned_move_prob": 0.1,
+      "reheat_threshold": 1000,
+      "reheat_temp_ratio": 0.4
+    },
+    "weights": {
+      "duty_balance": 1.0,
+      "overtime_over_8h": 4.0,
+      "idle_time": 1.0,
+      "unused_bus": 250.0,
+      "unassigned_trip": 1000.0,
+      "transfer_time": 0.5,
+      "return_to_base_penalty": 500.0
+    },
+    "metrics": {
+      "fairness": 14673.591820987656,
+      "totalIdle": 17650,
+      "totalOver8h": 7265,
+      "totalTransfer": 840,
+      "baseMismatch": 31,
+      "unusedBuses": 0,
+      "usedBuses": 72,
+      "unassignedCount": 0
+    }
+  },
+  {
+    "timestamp": "2026-01-09T18:27:13.547545",
+    "version": "v1.3-Parallel-Tempering",
+    "best_cost": 77303.59,
+    "config": {
+      "max_iters": 4000,
+      "start_temp": 50.0,
+      "end_temp": 0.1,
+      "cooling": 0.99,
+      "moves_per_temp": 50,
+      "seed": 7,
+      "log_every": 200,
+      "unassigned_move_prob": 0.1,
+      "reheat_threshold": 1000,
+      "reheat_temp_ratio": 0.4
+    },
+    "weights": {
+      "duty_balance": 1.0,
+      "overtime_over_8h": 4.0,
+      "idle_time": 1.0,
+      "unused_bus": 250.0,
+      "unassigned_trip": 1000.0,
+      "transfer_time": 0.5,
+      "return_to_base_penalty": 500.0
+    },
+    "metrics": {
+      "fairness": 14673.591820987656,
+      "totalIdle": 17650,
+      "totalOver8h": 7265,
+      "totalTransfer": 840,
+      "baseMismatch": 31,
+      "unusedBuses": 0,
+      "usedBuses": 72,
+      "unassignedCount": 0
+    }
+  },
+  {
+    "timestamp": "2026-01-09T18:27:15.307591",
+    "version": "v1.3-Parallel-Tempering",
+    "best_cost": 77303.59,
+    "config": {
+      "max_iters": 4000,
+      "start_temp": 50.0,
+      "end_temp": 0.1,
+      "cooling": 0.99,
+      "moves_per_temp": 50,
+      "seed": 7,
+      "log_every": 200,
+      "unassigned_move_prob": 0.1,
+      "reheat_threshold": 1000,
+      "reheat_temp_ratio": 0.4
+    },
+    "weights": {
+      "duty_balance": 1.0,
+      "overtime_over_8h": 4.0,
+      "idle_time": 1.0,
+      "unused_bus": 250.0,
+      "unassigned_trip": 1000.0,
+      "transfer_time": 0.5,
+      "return_to_base_penalty": 500.0
+    },
+    "metrics": {
+      "fairness": 14673.591820987656,
+      "totalIdle": 17650,
+      "totalOver8h": 7265,
+      "totalTransfer": 840,
+      "baseMismatch": 31,
+      "unusedBuses": 0,
+      "usedBuses": 72,
+      "unassignedCount": 0
+    }
+  },
+  {
+    "timestamp": "2026-01-09T18:27:17.151940",
+    "version": "v1.3-Parallel-Tempering",
+    "best_cost": 77303.59,
+    "config": {
+      "max_iters": 4000,
+      "start_temp": 50.0,
+      "end_temp": 0.1,
+      "cooling": 0.99,
+      "moves_per_temp": 50,
+      "seed": 7,
+      "log_every": 200,
+      "unassigned_move_prob": 0.1,
+      "reheat_threshold": 1000,
+      "reheat_temp_ratio": 0.4
+    },
+    "weights": {
+      "duty_balance": 1.0,
+      "overtime_over_8h": 4.0,
+      "idle_time": 1.0,
+      "unused_bus": 250.0,
+      "unassigned_trip": 1000.0,
+      "transfer_time": 0.5,
+      "return_to_base_penalty": 500.0
+    },
+    "metrics": {
+      "fairness": 14673.591820987656,
+      "totalIdle": 17650,
+      "totalOver8h": 7265,
+      "totalTransfer": 840,
+      "baseMismatch": 31,
+      "unusedBuses": 0,
+      "usedBuses": 72,
+      "unassignedCount": 0
+    }
+  },
+  {
+    "timestamp": "2026-01-09T18:27:18.960941",
+    "version": "v1.3-Parallel-Tempering",
+    "best_cost": 77303.59,
+    "config": {
+      "max_iters": 4000,
+      "start_temp": 50.0,
+      "end_temp": 0.1,
+      "cooling": 0.99,
+      "moves_per_temp": 50,
+      "seed": 7,
+      "log_every": 200,
+      "unassigned_move_prob": 0.1,
+      "reheat_threshold": 1000,
+      "reheat_temp_ratio": 0.4
+    },
+    "weights": {
+      "duty_balance": 1.0,
+      "overtime_over_8h": 4.0,
+      "idle_time": 1.0,
+      "unused_bus": 250.0,
+      "unassigned_trip": 1000.0,
+      "transfer_time": 0.5,
+      "return_to_base_penalty": 500.0
+    },
+    "metrics": {
+      "fairness": 14673.591820987656,
+      "totalIdle": 17650,
+      "totalOver8h": 7265,
+      "totalTransfer": 840,
+      "baseMismatch": 31,
+      "unusedBuses": 0,
+      "usedBuses": 72,
+      "unassignedCount": 0
+    }
+  },
+  {
+    "timestamp": "2026-01-09T18:27:24.059954",
+    "version": "v1.3-Parallel-Tempering",
+    "best_cost": 79879.68,
+    "config": {
+      "max_iters": 4000,
+      "start_temp": 50.0,
+      "end_temp": 0.1,
+      "cooling": 0.99999,
+      "moves_per_temp": 50,
+      "seed": 7,
+      "log_every": 200,
+      "unassigned_move_prob": 0.1,
+      "reheat_threshold": 1000,
+      "reheat_temp_ratio": 0.4
+    },
+    "weights": {
+      "duty_balance": 1.0,
+      "overtime_over_8h": 4.0,
+      "idle_time": 1.0,
+      "unused_bus": 250.0,
+      "unassigned_trip": 1000.0,
+      "transfer_time": 0.5,
+      "return_to_base_penalty": 500.0
+    },
+    "metrics": {
+      "fairness": 15034.678819444445,
+      "totalIdle": 17765,
+      "totalOver8h": 7525,
+      "totalTransfer": 960,
+      "baseMismatch": 33,
+      "unusedBuses": 0,
+      "usedBuses": 72,
+      "unassignedCount": 0
+    }
+  },
+  {
+    "timestamp": "2026-01-09T18:27:28.455208",
+    "version": "v1.3-Parallel-Tempering",
+    "best_cost": 81230.06,
+    "config": {
+      "max_iters": 4000,
+      "start_temp": 50.0,
+      "end_temp": 0.1,
+      "cooling": 0.9,
+      "moves_per_temp": 50,
+      "seed": 7,
+      "log_every": 200,
+      "unassigned_move_prob": 0.1,
+      "reheat_threshold": 1000,
+      "reheat_temp_ratio": 0.4
+    },
+    "weights": {
+      "duty_balance": 1.0,
+      "overtime_over_8h": 4.0,
+      "idle_time": 1.0,
+      "unused_bus": 250.0,
+      "unassigned_trip": 1000.0,
+      "transfer_time": 0.5,
+      "return_to_base_penalty": 500.0
+    },
+    "metrics": {
+      "fairness": 17370.061728395063,
+      "totalIdle": 18220,
+      "totalOver8h": 7885,
+      "totalTransfer": 1200,
+      "baseMismatch": 27,
+      "unusedBuses": 0,
+      "usedBuses": 72,
+      "unassignedCount": 0
+    }
+  },
+  {
+    "timestamp": "2026-01-09T18:27:34.439847",
+    "version": "v1.3-Parallel-Tempering",
+    "best_cost": 79879.68,
+    "config": {
+      "max_iters": 4000,
+      "start_temp": 50.0,
+      "end_temp": 0.1,
+      "cooling": 0.999999,
+      "moves_per_temp": 50,
+      "seed": 7,
+      "log_every": 200,
+      "unassigned_move_prob": 0.1,
+      "reheat_threshold": 1000,
+      "reheat_temp_ratio": 0.4
+    },
+    "weights": {
+      "duty_balance": 1.0,
+      "overtime_over_8h": 4.0,
+      "idle_time": 1.0,
+      "unused_bus": 250.0,
+      "unassigned_trip": 1000.0,
+      "transfer_time": 0.5,
+      "return_to_base_penalty": 500.0
+    },
+    "metrics": {
+      "fairness": 15034.678819444445,
+      "totalIdle": 17765,
+      "totalOver8h": 7525,
+      "totalTransfer": 960,
+      "baseMismatch": 33,
+      "unusedBuses": 0,
+      "usedBuses": 72,
+      "unassignedCount": 0
+    }
+  },
+  {
+    "timestamp": "2026-01-09T18:27:40.260484",
+    "version": "v1.3-Parallel-Tempering",
+    "best_cost": 78519.83,
+    "config": {
+      "max_iters": 4000,
+      "start_temp": 100.0,
+      "end_temp": 0.1,
+      "cooling": 0.999999,
+      "moves_per_temp": 50,
+      "seed": 7,
+      "log_every": 200,
+      "unassigned_move_prob": 0.1,
+      "reheat_threshold": 1000,
+      "reheat_temp_ratio": 0.4
+    },
+    "weights": {
+      "duty_balance": 1.0,
+      "overtime_over_8h": 4.0,
+      "idle_time": 1.0,
+      "unused_bus": 250.0,
+      "unassigned_trip": 1000.0,
+      "transfer_time": 0.5,
+      "return_to_base_penalty": 500.0
+    },
+    "metrics": {
+      "fairness": 15384.833140432098,
+      "totalIdle": 17605,
+      "totalOver8h": 7350,
+      "totalTransfer": 1260,
+      "baseMismatch": 31,
+      "unusedBuses": 0,
+      "usedBuses": 72,
+      "unassignedCount": 0
+    }
+  },
+  {
+    "timestamp": "2026-01-09T18:27:56.488176",
+    "version": "v1.3-Parallel-Tempering",
+    "best_cost": 56436.18,
+    "config": {
+      "max_iters": 50000,
+      "start_temp": 100.0,
+      "end_temp": 0.1,
+      "cooling": 0.999999,
+      "moves_per_temp": 50,
+      "seed": 7,
+      "log_every": 200,
+      "unassigned_move_prob": 0.1,
+      "reheat_threshold": 1000,
+      "reheat_temp_ratio": 0.4
+    },
+    "weights": {
+      "duty_balance": 1.0,
+      "overtime_over_8h": 4.0,
+      "idle_time": 1.0,
+      "unused_bus": 250.0,
+      "unassigned_trip": 1000.0,
+      "transfer_time": 0.5,
+      "return_to_base_penalty": 500.0
+    },
+    "metrics": {
+      "fairness": 8921.175733024691,
+      "totalIdle": 15675,
+      "totalOver8h": 5170,
+      "totalTransfer": 1320,
+      "baseMismatch": 21,
+      "unusedBuses": 0,
+      "usedBuses": 72,
+      "unassignedCount": 0
+    }
+  },
+  {
+    "timestamp": "2026-01-09T18:29:04.516510",
+    "version": "v1.3-Parallel-Tempering",
+    "best_cost": 42107.18,
+    "config": {
+      "max_iters": 200000,
+      "start_temp": 100.0,
+      "end_temp": 0.1,
+      "cooling": 0.999999,
+      "moves_per_temp": 50,
+      "seed": 7,
+      "log_every": 200,
+      "unassigned_move_prob": 0.1,
+      "reheat_threshold": 1000,
+      "reheat_temp_ratio": 0.4
+    },
+    "weights": {
+      "duty_balance": 1.0,
+      "overtime_over_8h": 4.0,
+      "idle_time": 1.0,
+      "unused_bus": 250.0,
+      "unassigned_trip": 1000.0,
+      "transfer_time": 0.5,
+      "return_to_base_penalty": 500.0
+    },
+    "metrics": {
+      "fairness": 4397.178819444444,
+      "totalIdle": 14315,
+      "totalOver8h": 3900,
+      "totalTransfer": 1590,
+      "baseMismatch": 14,
+      "unusedBuses": 0,
+      "usedBuses": 72,
+      "unassignedCount": 0
+    }
+  },
+  {
+    "timestamp": "2026-01-09T20:33:03.570652",
+    "version": "v1.3-Parallel-Tempering",
+    "best_cost": 47983.5,
+    "config": {
+      "max_iters": 200000,
+      "start_temp": 50.0,
+      "end_temp": 0.1,
+      "cooling": 0.99,
+      "moves_per_temp": 50,
+      "seed": 7,
+      "log_every": 200,
+      "unassigned_move_prob": 0.1,
+      "reheat_threshold": 1000,
+      "reheat_temp_ratio": 0.4
+    },
+    "weights": {
+      "duty_balance": 1.0,
+      "overtime_over_8h": 4.0,
+      "idle_time": 1.0,
+      "unused_bus": 250.0,
+      "unassigned_trip": 1000.0,
+      "transfer_time": 0.5,
+      "return_to_base_penalty": 500.0
+    },
+    "metrics": {
+      "fairness": 4863.498263888889,
+      "totalIdle": 14495,
+      "totalOver8h": 4075,
+      "totalTransfer": 1650,
+      "baseMismatch": 23,
+      "unusedBuses": 0,
+      "usedBuses": 72,
+      "unassignedCount": 0
+    }
+  },
+  {
+    "timestamp": "2026-01-09T20:38:00.655882",
+    "version": "v1.3-Parallel-Tempering",
+    "best_cost": 44516.53,
+    "config": {
+      "max_iters": 200000,
+      "start_temp": 50.0,
+      "end_temp": 0.1,
+      "cooling": 0.9999,
+      "moves_per_temp": 50,
+      "seed": 7,
+      "log_every": 200,
+      "unassigned_move_prob": 0.1,
+      "reheat_threshold": 1000,
+      "reheat_temp_ratio": 0.4
+    },
+    "weights": {
+      "duty_balance": 1.0,
+      "overtime_over_8h": 4.0,
+      "idle_time": 1.0,
+      "unused_bus": 250.0,
+      "unassigned_trip": 1000.0,
+      "transfer_time": 0.5,
+      "return_to_base_penalty": 500.0
+    },
+    "metrics": {
+      "fairness": 5446.527777777777,
+      "totalIdle": 14540,
+      "totalOver8h": 4055,
+      "totalTransfer": 1620,
+      "baseMismatch": 15,
+      "unusedBuses": 0,
+      "usedBuses": 72,
+      "unassignedCount": 0
+    }
+  },
+  {
+    "timestamp": "2026-01-09T20:42:42.352973",
+    "version": "v1.3-Parallel-Tempering",
+    "best_cost": 44516.53,
+    "config": {
+      "max_iters": 200000,
+      "start_temp": 50.0,
+      "end_temp": 0.1,
+      "cooling": 0.9999,
+      "moves_per_temp": 50,
+      "seed": 7,
+      "log_every": 200,
+      "unassigned_move_prob": 0.1,
+      "reheat_threshold": 1000,
+      "reheat_temp_ratio": 0.4
+    },
+    "weights": {
+      "duty_balance": 1.0,
+      "overtime_over_8h": 4.0,
+      "idle_time": 1.0,
+      "unused_bus": 250.0,
+      "unassigned_trip": 1000.0,
+      "transfer_time": 0.5,
+      "return_to_base_penalty": 500.0
+    },
+    "metrics": {
+      "fairness": 5446.527777777777,
+      "totalIdle": 14540,
+      "totalOver8h": 4055,
+      "totalTransfer": 1620,
+      "baseMismatch": 15,
+      "unusedBuses": 0,
+      "usedBuses": 72,
+      "unassignedCount": 0
+    }
+  },
+  {
+    "timestamp": "2026-01-09T20:46:24.162839",
+    "version": "v1.3-Parallel-Tempering",
+    "best_cost": 77788.92,
+    "config": {
+      "max_iters": 200000,
+      "start_temp": 50.0,
+      "end_temp": 0.1,
+      "cooling": 0.9999,
+      "moves_per_temp": 50,
+      "seed": 7,
+      "log_every": 200,
+      "unassigned_move_prob": 0.1,
+      "reheat_threshold": 1000,
+      "reheat_temp_ratio": 0.4
+    },
+    "weights": {
+      "duty_balance": 1.0,
+      "overtime_over_8h": 4.0,
+      "idle_time": 1.0,
+      "unused_bus": 250.0,
+      "unassigned_trip": 1000.0,
+      "transfer_time": 0.5,
+      "return_to_base_penalty": 500.0
+    },
+    "metrics": {
+      "fairness": 30078.915895061727,
+      "totalIdle": 12730,
+      "totalOver8h": 5455,
+      "totalTransfer": 1320,
+      "baseMismatch": 25,
+      "unusedBuses": 0,
+      "usedBuses": 72,
+      "unassignedCount": 0
+    }
+  },
+  {
+    "timestamp": "2026-01-09T20:48:59.583665",
+    "version": "v1.4-Perf-InPlace-Incremental",
+    "best_cost": 52459.22,
+    "config": {
+      "max_iters": 200000,
+      "start_temp": 50.0,
+      "end_temp": 0.1,
+      "cooling": 0.9999,
+      "moves_per_temp": 50,
+      "seed": 7,
+      "log_every": 200,
+      "unassigned_move_prob": 0.1,
+      "reheat_threshold": 1000,
+      "reheat_temp_ratio": 0.4
+    },
+    "weights": {
+      "duty_balance": 1.0,
+      "overtime_over_8h": 4.0,
+      "idle_time": 1.0,
+      "unused_bus": 250.0,
+      "unassigned_trip": 1000.0,
+      "transfer_time": 0.5,
+      "return_to_base_penalty": 500.0
+    },
+    "metrics": {
+      "fairness": 20659.94888117284,
+      "totalIdle": 11385,
+      "totalOver8h": 3915,
+      "totalTransfer": 1230,
+      "baseMismatch": 12,
+      "unusedBuses": 0,
+      "unassigned": 0
+    }
+  },
+  {
+    "timestamp": "2026-01-09T18:53:22.441835",
+    "version": "v1.4-Perf-InPlace-Incremental",
+    "best_cost": 55970.62,
+    "config": {
+      "max_iters": 200000,
+      "start_temp": 100.0,
+      "end_temp": 0.1,
+      "cooling": 0.999,
+      "moves_per_temp": 50,
+      "seed": 7,
+      "log_every": 200,
+      "unassigned_move_prob": 0.1,
+      "reheat_threshold": 1000,
+      "reheat_temp_ratio": 0.4
+    },
+    "weights": {
+      "duty_balance": 1.0,
+      "overtime_over_8h": 4.0,
+      "idle_time": 1.0,
+      "unused_bus": 250.0,
+      "unassigned_trip": 1000.0,
+      "transfer_time": 0.5,
+      "return_to_base_penalty": 500.0
+    },
+    "metrics": {
+      "fairness": 23098.837770061727,
+      "totalIdle": 11655,
+      "totalOver8h": 4130,
+      "totalTransfer": 1110,
+      "baseMismatch": 16,
+      "unusedBuses": 0,
+      "unassigned": 0
+    }
+  },
+  {
+    "timestamp": "2026-01-09T19:00:00.219056",
+    "version": "v1.4-Perf-InPlace-Incremental",
+    "best_cost": 55970.62,
+    "config": {
+      "max_iters": 200000,
+      "start_temp": 100.0,
+      "end_temp": 0.1,
+      "cooling": 0.999,
+      "moves_per_temp": 50,
+      "seed": 7,
+      "log_every": 200,
+      "unassigned_move_prob": 0.1,
+      "reheat_threshold": 1000,
+      "reheat_temp_ratio": 0.4
+    },
+    "weights": {
+      "duty_balance": 1.0,
+      "overtime_over_8h": 4.0,
+      "idle_time": 1.0,
+      "unused_bus": 250.0,
+      "unassigned_trip": 1000.0,
+      "transfer_time": 0.5,
+      "return_to_base_penalty": 500.0
+    },
+    "metrics": {
+      "fairness": 23098.837770061727,
+      "totalIdle": 11655,
+      "totalOver8h": 4130,
+      "totalTransfer": 1110,
+      "baseMismatch": 16,
+      "unusedBuses": 0,
+      "unassigned": 0
+    }
+  },
+  {
+    "timestamp": "2026-01-09T19:03:19.995077",
+    "version": "v1.4-Perf-InPlace-Incremental",
+    "best_cost": 54261.4,
+    "config": {
+      "max_iters": 200000,
+      "start_temp": 100.0,
+      "end_temp": 0.1,
+      "cooling": 0.999999,
+      "moves_per_temp": 50,
+      "seed": 7,
+      "log_every": 200,
+      "unassigned_move_prob": 0.1,
+      "reheat_threshold": 1000,
+      "reheat_temp_ratio": 0.4
+    },
+    "weights": {
+      "duty_balance": 1.0,
+      "overtime_over_8h": 4.0,
+      "idle_time": 1.0,
+      "unused_bus": 250.0,
+      "unassigned_trip": 1000.0,
+      "transfer_time": 0.5,
+      "return_to_base_penalty": 500.0
+    },
+    "metrics": {
+      "fairness": 21499.305555555555,
+      "totalIdle": 11300,
+      "totalOver8h": 3790,
+      "totalTransfer": 1050,
+      "baseMismatch": 17,
+      "unusedBuses": 0,
+      "unassigned": 0
+    }
+  },
+  {
+    "timestamp": "2026-01-09T19:11:48.736051",
+    "version": "v1.5-Performance-Math-Aligned",
+    "best_cost": 290973.82,
+    "config": {
+      "max_iters": 200000,
+      "start_temp": 100.0,
+      "end_temp": 0.1,
+      "cooling": 0.999999,
+      "moves_per_temp": 50,
+      "seed": 7,
+      "log_every": 200,
+      "unassigned_move_prob": 0.1,
+      "reheat_threshold": 1000,
+      "reheat_temp_ratio": 0.4
+    },
+    "weights": {
+      "duty_balance": 1.0,
+      "overtime_over_8h": 4.0,
+      "idle_time": 1.0,
+      "unused_bus": 250.0,
+      "unassigned_trip": 1000.0,
+      "transfer_time": 0.5,
+      "return_to_base_penalty": 500.0
+    },
+    "metrics": {
+      "fairness": 17487.379436728395,
+      "totalIdle": 11145,
+      "totalOver8h": 3320,
+      "totalTransfer": 840,
+      "baseMismatch": 27,
+      "unusedBuses": 0,
+      "unassigned": 2
+    }
+  },
+  {
+    "timestamp": "2026-01-09T19:25:09.201351",
+    "version": "v1.6-Turbo-Fairness",
+    "best_cost": 112622.5,
+    "config": {
+      "max_iters": 200000,
+      "moves_per_temp": 1,
+      "start_temp": 100.0,
+      "end_temp": 0.1,
+      "cooling": 0.999999,
+      "log_every": 1000,
+      "seed": 42,
+      "reheat_threshold": 5000,
+      "reheat_temp_ratio": 0.5
+    },
+    "weights": {
+      "unassigned_trip": 100000000.0,
+      "overtime_minutes": 4.0,
+      "idle_minutes": 1.0,
+      "speed_violation": 50.0,
+      "fairness_term": 1.0,
+      "return_to_base_penalty": 1000.0
+    },
+    "metrics": {
+      "fairness": 12440.504436728394,
+      "totalIdle": 13855,
+      "totalOver8h": 4325,
+      "totalTransfer": 2310,
+      "baseMismatch": 17,
+      "unusedBuses": 2,
+      "unassigned": 0
+    }
+  },
+  {
+    "timestamp": "2026-01-09T19:26:51.779755",
+    "version": "v1.6-Turbo-Fairness",
+    "best_cost": 289752.5,
+    "config": {
+      "max_iters": 4000,
+      "moves_per_temp": 1,
+      "start_temp": 50.0,
+      "end_temp": 0.1,
+      "cooling": 0.999,
+      "log_every": 1000,
+      "seed": 42,
+      "reheat_threshold": 5000,
+      "reheat_temp_ratio": 0.5
+    },
+    "weights": {
+      "unassigned_trip": 100000000.0,
+      "overtime_minutes": 4.0,
+      "idle_minutes": 1.0,
+      "speed_violation": 50.0,
+      "fairness_term": 1.0,
+      "return_to_base_penalty": 1000.0
+    },
+    "metrics": {
+      "fairness": 39802.65721450617,
+      "totalIdle": 16515,
+      "totalOver8h": 8505,
+      "totalTransfer": 1020,
+      "baseMismatch": 30,
+      "unusedBuses": 5,
+      "unassigned": 0
+    }
+  },
+  {
+    "timestamp": "2026-01-09T19:36:15.658984",
+    "version": "v1.7-AllBuses-LowTransfer",
+    "best_cost": 99179.0,
+    "config": {
+      "max_iters": 200000,
+      "moves_per_temp": 1,
+      "start_temp": 100.0,
+      "end_temp": 0.1,
+      "cooling": 0.999999,
+      "log_every": 1000,
+      "seed": 42,
+      "reheat_threshold": 5000,
+      "reheat_temp_ratio": 0.5
+    },
+    "weights": {
+      "unassigned_trip": 100000000.0,
+      "unused_bus": 50000.0,
+      "overtime_minutes": 4.0,
+      "idle_minutes": 1.0,
+      "transfer_penalty": 10.0,
+      "fairness_term": 1.0,
+      "return_to_base_penalty": 200.0
+    },
+    "metrics": {
+      "fairness": 6197.665895061728,
+      "totalIdle": 12870,
+      "totalOver8h": 3270,
+      "totalTransfer": 630,
+      "baseMismatch": 31,
+      "unusedBuses": 0,
+      "unassigned": 0
+    }
+  },
+  {
+    "timestamp": "2026-01-09T19:37:02.166631",
+    "version": "v1.7-AllBuses-LowTransfer",
+    "best_cost": 112945.25,
+    "config": {
+      "max_iters": 200000,
+      "moves_per_temp": 1,
+      "start_temp": 100.0,
+      "end_temp": 0.1,
+      "cooling": 0.999999,
+      "log_every": 1000,
+      "seed": 42,
+      "reheat_threshold": 5000,
+      "reheat_temp_ratio": 0.5
+    },
+    "weights": {
+      "unassigned_trip": 100000000.0,
+      "unused_bus": 50000.0,
+      "overtime_minutes": 4.0,
+      "idle_minutes": 1.0,
+      "transfer_penalty": 10.0,
+      "fairness_term": 1.0,
+      "return_to_base_penalty": 200.0
+    },
+    "metrics": {
+      "fairness": 13838.498263888889,
+      "totalIdle": 13385,
+      "totalOver8h": 4330,
+      "totalTransfer": 720,
+      "baseMismatch": 33,
+      "unusedBuses": 0,
+      "unassigned": 0
+    }
+  },
+  {
+    "timestamp": "2026-01-09T19:43:49.363704",
+    "version": "v1.8-Optimized-HotLoop",
+    "best_cost": 99179.0,
+    "config": {
+      "max_iters": 200000,
+      "moves_per_temp": 1,
+      "start_temp": 100.0,
+      "end_temp": 0.1,
+      "cooling": 0.999999,
+      "log_every": 1000,
+      "seed": 42,
+      "reheat_threshold": 5000,
+      "reheat_temp_ratio": 0.5
+    },
+    "weights": {
+      "unassigned_trip": 100000000.0,
+      "unused_bus": 50000.0,
+      "overtime_minutes": 4.0,
+      "idle_minutes": 1.0,
+      "transfer_penalty": 10.0,
+      "fairness_term": 1.0,
+      "return_to_base_penalty": 200.0
+    },
+    "metrics": {
+      "fairness": 6197.665895061728,
+      "totalIdle": 12870,
+      "totalOver8h": 3270,
+      "totalTransfer": 630,
+      "baseMismatch": 31,
+      "unusedBuses": 0,
+      "unassigned": 0
+    }
+  },
+  {
+    "timestamp": "2026-01-09T19:45:40.917090",
+    "version": "v1.8-Optimized-HotLoop",
+    "best_cost": 142684.75,
+    "config": {
+      "max_iters": 4000,
+      "moves_per_temp": 1,
+      "start_temp": 50.0,
+      "end_temp": 0.1,
+      "cooling": 0.999,
+      "log_every": 1000,
+      "seed": 42,
+      "reheat_threshold": 5000,
+      "reheat_temp_ratio": 0.5
+    },
+    "weights": {
+      "unassigned_trip": 100000000.0,
+      "unused_bus": 50000.0,
+      "overtime_minutes": 4.0,
+      "idle_minutes": 1.0,
+      "transfer_penalty": 10.0,
+      "fairness_term": 1.0,
+      "return_to_base_penalty": 200.0
+    },
+    "metrics": {
+      "fairness": 29700.99826388889,
+      "totalIdle": 15215,
+      "totalOver8h": 7165,
+      "totalTransfer": 360,
+      "baseMismatch": 36,
+      "unusedBuses": 0,
+      "unassigned": 0
+    }
+  },
+  {
+    "timestamp": "2026-01-09T19:46:43.613827",
+    "version": "v1.8-Optimized-HotLoop",
+    "best_cost": 146762.5,
+    "config": {
+      "max_iters": 4000,
+      "moves_per_temp": 1,
+      "start_temp": 100.0,
+      "end_temp": 0.1,
+      "cooling": 0.999,
+      "log_every": 1000,
+      "seed": 42,
+      "reheat_threshold": 5000,
+      "reheat_temp_ratio": 0.5
+    },
+    "weights": {
+      "unassigned_trip": 100000000.0,
+      "unused_bus": 50000.0,
+      "overtime_minutes": 4.0,
+      "idle_minutes": 1.0,
+      "transfer_penalty": 10.0,
+      "fairness_term": 1.0,
+      "return_to_base_penalty": 200.0
+    },
+    "metrics": {
+      "fairness": 35744.135802469136,
+      "totalIdle": 15100,
+      "totalOver8h": 7490,
+      "totalTransfer": 330,
+      "baseMismatch": 33,
+      "unusedBuses": 0,
+      "unassigned": 0
+    }
+  }
+]

@@ -1,0 +1,3838 @@
+{
+  "assignments": [
+    {
+      "tripId": "333001",
+      "driverId": "3897",
+      "busId": "004",
+      "idleTime": 180,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330001",
+      "driverId": "3658",
+      "busId": "042",
+      "idleTime": 10,
+      "sequenceId": null
+    },
+    {
+      "tripId": "110001",
+      "driverId": "3197",
+      "busId": "012",
+      "idleTime": 130,
+      "sequenceId": null
+    },
+    {
+      "tripId": "170008",
+      "driverId": "3998",
+      "busId": "026",
+      "idleTime": 45,
+      "sequenceId": "CHAIN_170008"
+    },
+    {
+      "tripId": "333009",
+      "driverId": "3998",
+      "busId": "026",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_170008"
+    },
+    {
+      "tripId": "333010",
+      "driverId": "3998",
+      "busId": "026",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_170008"
+    },
+    {
+      "tripId": "333031",
+      "driverId": "3998",
+      "busId": "026",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_170008"
+    },
+    {
+      "tripId": "333032",
+      "driverId": "3998",
+      "busId": "026",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_170008"
+    },
+    {
+      "tripId": "180006",
+      "driverId": "3998",
+      "busId": "026",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_170008"
+    },
+    {
+      "tripId": "331002",
+      "driverId": "3879",
+      "busId": "046",
+      "idleTime": 105,
+      "sequenceId": null
+    },
+    {
+      "tripId": "170007",
+      "driverId": "3879",
+      "busId": "046",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_170007"
+    },
+    {
+      "tripId": "333007",
+      "driverId": "3879",
+      "busId": "046",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_170007"
+    },
+    {
+      "tripId": "333015",
+      "driverId": "3879",
+      "busId": "046",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_170007"
+    },
+    {
+      "tripId": "333028",
+      "driverId": "3879",
+      "busId": "046",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_170007"
+    },
+    {
+      "tripId": "180005",
+      "driverId": "3879",
+      "busId": "046",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_170007"
+    },
+    {
+      "tripId": "170003",
+      "driverId": "3342",
+      "busId": "014",
+      "idleTime": 150,
+      "sequenceId": "CHAIN_170003"
+    },
+    {
+      "tripId": "333005",
+      "driverId": "3342",
+      "busId": "014",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_170003"
+    },
+    {
+      "tripId": "333008",
+      "driverId": "3342",
+      "busId": "014",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_170003"
+    },
+    {
+      "tripId": "333026",
+      "driverId": "3342",
+      "busId": "014",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_170003"
+    },
+    {
+      "tripId": "333027",
+      "driverId": "3342",
+      "busId": "014",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_170003"
+    },
+    {
+      "tripId": "170009",
+      "driverId": "3627",
+      "busId": "043",
+      "idleTime": 330,
+      "sequenceId": "CHAIN_170009"
+    },
+    {
+      "tripId": "333011",
+      "driverId": "3627",
+      "busId": "043",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_170009"
+    },
+    {
+      "tripId": "333017",
+      "driverId": "3627",
+      "busId": "043",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_170009"
+    },
+    {
+      "tripId": "333030",
+      "driverId": "3627",
+      "busId": "043",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_170009"
+    },
+    {
+      "tripId": "180007",
+      "driverId": "3627",
+      "busId": "043",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_170009"
+    },
+    {
+      "tripId": "140001",
+      "driverId": "3897",
+      "busId": "004",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "110002",
+      "driverId": "3877",
+      "busId": "030",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "120001",
+      "driverId": "3935",
+      "busId": "073",
+      "idleTime": 210,
+      "sequenceId": null
+    },
+    {
+      "tripId": "332003",
+      "driverId": "3449",
+      "busId": "035",
+      "idleTime": 230,
+      "sequenceId": "CHAIN_332003"
+    },
+    {
+      "tripId": "332004",
+      "driverId": "3449",
+      "busId": "035",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_332003"
+    },
+    {
+      "tripId": "330003",
+      "driverId": "3995",
+      "busId": "006",
+      "idleTime": 360,
+      "sequenceId": "CHAIN_330003"
+    },
+    {
+      "tripId": "330004",
+      "driverId": "3995",
+      "busId": "006",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_330003"
+    },
+    {
+      "tripId": "280001",
+      "driverId": "3425",
+      "busId": "068",
+      "idleTime": 240,
+      "sequenceId": null
+    },
+    {
+      "tripId": "332005",
+      "driverId": "3114",
+      "busId": "077",
+      "idleTime": 300,
+      "sequenceId": "CHAIN_332005"
+    },
+    {
+      "tripId": "332006",
+      "driverId": "3114",
+      "busId": "077",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_332005"
+    },
+    {
+      "tripId": "332001",
+      "driverId": "3656",
+      "busId": "013",
+      "idleTime": 360,
+      "sequenceId": "CHAIN_332001"
+    },
+    {
+      "tripId": "332002",
+      "driverId": "3656",
+      "busId": "013",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_332001"
+    },
+    {
+      "tripId": "331010",
+      "driverId": "3649",
+      "busId": "019",
+      "idleTime": 225,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331004",
+      "driverId": "3941",
+      "busId": "025",
+      "idleTime": 315,
+      "sequenceId": "CHAIN_331004"
+    },
+    {
+      "tripId": "331005",
+      "driverId": "3941",
+      "busId": "025",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_331004"
+    },
+    {
+      "tripId": "331007",
+      "driverId": "3941",
+      "busId": "025",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_331004"
+    },
+    {
+      "tripId": "332013",
+      "driverId": "3839",
+      "busId": "008",
+      "idleTime": 375,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330006",
+      "driverId": "3707",
+      "busId": "059",
+      "idleTime": 375,
+      "sequenceId": "CHAIN_330006"
+    },
+    {
+      "tripId": "330007",
+      "driverId": "3707",
+      "busId": "059",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_330006"
+    },
+    {
+      "tripId": "330008",
+      "driverId": "3707",
+      "busId": "059",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_330006"
+    },
+    {
+      "tripId": "331003",
+      "driverId": "3878",
+      "busId": "024",
+      "idleTime": 375,
+      "sequenceId": null
+    },
+    {
+      "tripId": "332014",
+      "driverId": "3537",
+      "busId": "005",
+      "idleTime": 380,
+      "sequenceId": "CHAIN_332014"
+    },
+    {
+      "tripId": "332015",
+      "driverId": "3537",
+      "busId": "005",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_332014"
+    },
+    {
+      "tripId": "333002",
+      "driverId": "3805",
+      "busId": "010",
+      "idleTime": 390,
+      "sequenceId": "CHAIN_333002"
+    },
+    {
+      "tripId": "333013",
+      "driverId": "3805",
+      "busId": "010",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_333002"
+    },
+    {
+      "tripId": "333018",
+      "driverId": "3805",
+      "busId": "010",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_333002"
+    },
+    {
+      "tripId": "333021",
+      "driverId": "3805",
+      "busId": "010",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_333002"
+    },
+    {
+      "tripId": "140003",
+      "driverId": "3805",
+      "busId": "010",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_333002"
+    },
+    {
+      "tripId": "120015",
+      "driverId": "3805",
+      "busId": "010",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_333002"
+    },
+    {
+      "tripId": "330010",
+      "driverId": "3708",
+      "busId": "039",
+      "idleTime": 390,
+      "sequenceId": "CHAIN_330010"
+    },
+    {
+      "tripId": "330011",
+      "driverId": "3708",
+      "busId": "039",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_330010"
+    },
+    {
+      "tripId": "330049",
+      "driverId": "3708",
+      "busId": "039",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_330010"
+    },
+    {
+      "tripId": "330012",
+      "driverId": "3708",
+      "busId": "039",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_330010"
+    },
+    {
+      "tripId": "330013",
+      "driverId": "3708",
+      "busId": "039",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_330010"
+    },
+    {
+      "tripId": "331014",
+      "driverId": "3147",
+      "busId": "049",
+      "idleTime": 390,
+      "sequenceId": "CHAIN_331014"
+    },
+    {
+      "tripId": "331048",
+      "driverId": "3147",
+      "busId": "049",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_331014"
+    },
+    {
+      "tripId": "331011",
+      "driverId": "3813",
+      "busId": "048",
+      "idleTime": 390,
+      "sequenceId": "CHAIN_331011"
+    },
+    {
+      "tripId": "331012",
+      "driverId": "3813",
+      "busId": "048",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_331011"
+    },
+    {
+      "tripId": "330014",
+      "driverId": "3945",
+      "busId": "022",
+      "idleTime": 390,
+      "sequenceId": "CHAIN_330014"
+    },
+    {
+      "tripId": "330015",
+      "driverId": "3945",
+      "busId": "022",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_330014"
+    },
+    {
+      "tripId": "330016",
+      "driverId": "3945",
+      "busId": "022",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_330014"
+    },
+    {
+      "tripId": "334001",
+      "driverId": "3605",
+      "busId": "075",
+      "idleTime": 390,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330009",
+      "driverId": "3892",
+      "busId": "069",
+      "idleTime": 390,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331016",
+      "driverId": "3949",
+      "busId": "031",
+      "idleTime": 390,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331013",
+      "driverId": "3831",
+      "busId": "021",
+      "idleTime": 390,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331015",
+      "driverId": "3756",
+      "busId": "050",
+      "idleTime": 390,
+      "sequenceId": null
+    },
+    {
+      "tripId": "335002",
+      "driverId": "3967",
+      "busId": "079",
+      "idleTime": 390,
+      "sequenceId": null
+    },
+    {
+      "tripId": "333063",
+      "driverId": "3886",
+      "busId": "015",
+      "idleTime": 405,
+      "sequenceId": "CHAIN_333063"
+    },
+    {
+      "tripId": "160002",
+      "driverId": "3886",
+      "busId": "015",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_333063"
+    },
+    {
+      "tripId": "334002",
+      "driverId": "3886",
+      "busId": "015",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_333063"
+    },
+    {
+      "tripId": "200002",
+      "driverId": "3886",
+      "busId": "015",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_333063"
+    },
+    {
+      "tripId": "280002",
+      "driverId": "3886",
+      "busId": "015",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_333063"
+    },
+    {
+      "tripId": "160007",
+      "driverId": "3886",
+      "busId": "015",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_333063"
+    },
+    {
+      "tripId": "332021",
+      "driverId": "3720",
+      "busId": "029",
+      "idleTime": 405,
+      "sequenceId": "CHAIN_332021"
+    },
+    {
+      "tripId": "332022",
+      "driverId": "3720",
+      "busId": "029",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_332021"
+    },
+    {
+      "tripId": "332024",
+      "driverId": "3720",
+      "busId": "029",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_332021"
+    },
+    {
+      "tripId": "332044",
+      "driverId": "3720",
+      "busId": "029",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_332021"
+    },
+    {
+      "tripId": "332048",
+      "driverId": "3720",
+      "busId": "029",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_332021"
+    },
+    {
+      "tripId": "332049",
+      "driverId": "3720",
+      "busId": "029",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_332021"
+    },
+    {
+      "tripId": "332050",
+      "driverId": "3720",
+      "busId": "029",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_332021"
+    },
+    {
+      "tripId": "330019",
+      "driverId": "3306",
+      "busId": "053",
+      "idleTime": 405,
+      "sequenceId": "CHAIN_330019"
+    },
+    {
+      "tripId": "330020",
+      "driverId": "3306",
+      "busId": "053",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_330019"
+    },
+    {
+      "tripId": "332019",
+      "driverId": "3895",
+      "busId": "058",
+      "idleTime": 405,
+      "sequenceId": "CHAIN_332019"
+    },
+    {
+      "tripId": "332020",
+      "driverId": "3895",
+      "busId": "058",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_332019"
+    },
+    {
+      "tripId": "332017",
+      "driverId": "3828",
+      "busId": "060",
+      "idleTime": 405,
+      "sequenceId": "CHAIN_332017"
+    },
+    {
+      "tripId": "332018",
+      "driverId": "3828",
+      "busId": "060",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_332017"
+    },
+    {
+      "tripId": "330021",
+      "driverId": "3108",
+      "busId": "066",
+      "idleTime": 415,
+      "sequenceId": "CHAIN_330021"
+    },
+    {
+      "tripId": "330022",
+      "driverId": "3108",
+      "busId": "066",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_330021"
+    },
+    {
+      "tripId": "330023",
+      "driverId": "3108",
+      "busId": "066",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_330021"
+    },
+    {
+      "tripId": "110004",
+      "driverId": "3756",
+      "busId": "050",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330025",
+      "driverId": "3543",
+      "busId": "071",
+      "idleTime": 420,
+      "sequenceId": "CHAIN_330025"
+    },
+    {
+      "tripId": "330026",
+      "driverId": "3543",
+      "busId": "071",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_330025"
+    },
+    {
+      "tripId": "330027",
+      "driverId": "3543",
+      "busId": "071",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_330025"
+    },
+    {
+      "tripId": "331025",
+      "driverId": "3954",
+      "busId": "037",
+      "idleTime": 420,
+      "sequenceId": "CHAIN_331025"
+    },
+    {
+      "tripId": "331040",
+      "driverId": "3954",
+      "busId": "037",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_331025"
+    },
+    {
+      "tripId": "331023",
+      "driverId": "3533",
+      "busId": "018",
+      "idleTime": 420,
+      "sequenceId": "CHAIN_331023"
+    },
+    {
+      "tripId": "331024",
+      "driverId": "3533",
+      "busId": "018",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_331023"
+    },
+    {
+      "tripId": "331026",
+      "driverId": "3723",
+      "busId": "051",
+      "idleTime": 420,
+      "sequenceId": "CHAIN_331026"
+    },
+    {
+      "tripId": "331027",
+      "driverId": "3723",
+      "busId": "051",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_331026"
+    },
+    {
+      "tripId": "331021",
+      "driverId": "3715",
+      "busId": "070",
+      "idleTime": 420,
+      "sequenceId": "CHAIN_331021"
+    },
+    {
+      "tripId": "331022",
+      "driverId": "3715",
+      "busId": "070",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_331021"
+    },
+    {
+      "tripId": "331028",
+      "driverId": "3992",
+      "busId": "054",
+      "idleTime": 420,
+      "sequenceId": "CHAIN_331028"
+    },
+    {
+      "tripId": "331029",
+      "driverId": "3992",
+      "busId": "054",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_331028"
+    },
+    {
+      "tripId": "330032",
+      "driverId": "3999",
+      "busId": "063",
+      "idleTime": 420,
+      "sequenceId": "CHAIN_330032"
+    },
+    {
+      "tripId": "330033",
+      "driverId": "3999",
+      "busId": "063",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_330032"
+    },
+    {
+      "tripId": "330034",
+      "driverId": "3999",
+      "busId": "063",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_330032"
+    },
+    {
+      "tripId": "330024",
+      "driverId": "3435",
+      "busId": "065",
+      "idleTime": 420,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330030",
+      "driverId": "3680",
+      "busId": "032",
+      "idleTime": 420,
+      "sequenceId": null
+    },
+    {
+      "tripId": "335003",
+      "driverId": "3967",
+      "busId": "079",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330028",
+      "driverId": "3690",
+      "busId": "007",
+      "idleTime": 420,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331032",
+      "driverId": "3551",
+      "busId": "064",
+      "idleTime": 430,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331031",
+      "driverId": "3647",
+      "busId": "057",
+      "idleTime": 430,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330036",
+      "driverId": "3148",
+      "busId": "023",
+      "idleTime": 430,
+      "sequenceId": "CHAIN_330036"
+    },
+    {
+      "tripId": "330037",
+      "driverId": "3148",
+      "busId": "023",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_330036"
+    },
+    {
+      "tripId": "331035",
+      "driverId": "3831",
+      "busId": "021",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_331035"
+    },
+    {
+      "tripId": "331036",
+      "driverId": "3831",
+      "busId": "021",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_331035"
+    },
+    {
+      "tripId": "331039",
+      "driverId": "3613",
+      "busId": "038",
+      "idleTime": 440,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331037",
+      "driverId": "3458",
+      "busId": "052",
+      "idleTime": 440,
+      "sequenceId": "CHAIN_331037"
+    },
+    {
+      "tripId": "331038",
+      "driverId": "3458",
+      "busId": "052",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_331037"
+    },
+    {
+      "tripId": "330038",
+      "driverId": "3537",
+      "busId": "005",
+      "idleTime": 5,
+      "sequenceId": null
+    },
+    {
+      "tripId": "332023",
+      "driverId": "3656",
+      "busId": "013",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "333012",
+      "driverId": "3308",
+      "busId": "076",
+      "idleTime": 440,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331041",
+      "driverId": "3949",
+      "busId": "031",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_331041"
+    },
+    {
+      "tripId": "331042",
+      "driverId": "3949",
+      "busId": "031",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_331041"
+    },
+    {
+      "tripId": "330039",
+      "driverId": "3892",
+      "busId": "069",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330029",
+      "driverId": "3690",
+      "busId": "007",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331047",
+      "driverId": "3878",
+      "busId": "024",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "333016",
+      "driverId": "3308",
+      "busId": "076",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330041",
+      "driverId": "3690",
+      "busId": "007",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "332025",
+      "driverId": "3895",
+      "busId": "058",
+      "idleTime": 5,
+      "sequenceId": null
+    },
+    {
+      "tripId": "110005",
+      "driverId": "3707",
+      "busId": "059",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "120004",
+      "driverId": "3948",
+      "busId": "017",
+      "idleTime": 195,
+      "sequenceId": null
+    },
+    {
+      "tripId": "200001",
+      "driverId": "3605",
+      "busId": "075",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330042",
+      "driverId": "3995",
+      "busId": "006",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330044",
+      "driverId": "3945",
+      "busId": "022",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330035",
+      "driverId": "3839",
+      "busId": "008",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330046",
+      "driverId": "3999",
+      "busId": "063",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330047",
+      "driverId": "3537",
+      "busId": "005",
+      "idleTime": 5,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330048",
+      "driverId": "3306",
+      "busId": "053",
+      "idleTime": 5,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331051",
+      "driverId": "3813",
+      "busId": "048",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331050",
+      "driverId": "3715",
+      "busId": "070",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330051",
+      "driverId": "3449",
+      "busId": "035",
+      "idleTime": 5,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330050",
+      "driverId": "3108",
+      "busId": "066",
+      "idleTime": 20,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331056",
+      "driverId": "3458",
+      "busId": "052",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331052",
+      "driverId": "3551",
+      "busId": "064",
+      "idleTime": 10,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331053",
+      "driverId": "3992",
+      "busId": "054",
+      "idleTime": 15,
+      "sequenceId": null
+    },
+    {
+      "tripId": "220001",
+      "driverId": "3306",
+      "busId": "053",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_220001"
+    },
+    {
+      "tripId": "220002",
+      "driverId": "3306",
+      "busId": "053",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_220001"
+    },
+    {
+      "tripId": "331057",
+      "driverId": "3878",
+      "busId": "024",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331058",
+      "driverId": "3949",
+      "busId": "031",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "130001",
+      "driverId": "3197",
+      "busId": "012",
+      "idleTime": 60,
+      "sequenceId": null
+    },
+    {
+      "tripId": "110006",
+      "driverId": "3543",
+      "busId": "071",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330054",
+      "driverId": "3949",
+      "busId": "031",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330052",
+      "driverId": "3995",
+      "busId": "006",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330053",
+      "driverId": "3458",
+      "busId": "052",
+      "idleTime": 10,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330055",
+      "driverId": "3813",
+      "busId": "048",
+      "idleTime": 20,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331061",
+      "driverId": "3108",
+      "busId": "066",
+      "idleTime": 10,
+      "sequenceId": null
+    },
+    {
+      "tripId": "333020",
+      "driverId": "3308",
+      "busId": "076",
+      "idleTime": 50,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331060",
+      "driverId": "3831",
+      "busId": "021",
+      "idleTime": 30,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331059",
+      "driverId": "3945",
+      "busId": "022",
+      "idleTime": 30,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330057",
+      "driverId": "3147",
+      "busId": "049",
+      "idleTime": 45,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331062",
+      "driverId": "3954",
+      "busId": "037",
+      "idleTime": 45,
+      "sequenceId": null
+    },
+    {
+      "tripId": "120008",
+      "driverId": "3897",
+      "busId": "004",
+      "idleTime": 40,
+      "sequenceId": null
+    },
+    {
+      "tripId": "120007",
+      "driverId": "3877",
+      "busId": "030",
+      "idleTime": 40,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330058",
+      "driverId": "3945",
+      "busId": "022",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "110007",
+      "driverId": "3954",
+      "busId": "037",
+      "idleTime": 15,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330060",
+      "driverId": "3458",
+      "busId": "052",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330059",
+      "driverId": "3813",
+      "busId": "048",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331065",
+      "driverId": "3108",
+      "busId": "066",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "333022",
+      "driverId": "3308",
+      "busId": "076",
+      "idleTime": 15,
+      "sequenceId": null
+    },
+    {
+      "tripId": "332026",
+      "driverId": "3449",
+      "busId": "035",
+      "idleTime": 45,
+      "sequenceId": "CHAIN_332026"
+    },
+    {
+      "tripId": "332027",
+      "driverId": "3449",
+      "busId": "035",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_332026"
+    },
+    {
+      "tripId": "330062",
+      "driverId": "3995",
+      "busId": "006",
+      "idleTime": 15,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331067",
+      "driverId": "3147",
+      "busId": "049",
+      "idleTime": 30,
+      "sequenceId": null
+    },
+    {
+      "tripId": "150001",
+      "driverId": "3895",
+      "busId": "058",
+      "idleTime": 150,
+      "sequenceId": "CHAIN_150001"
+    },
+    {
+      "tripId": "110008",
+      "driverId": "3895",
+      "busId": "058",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_150001"
+    },
+    {
+      "tripId": "150003",
+      "driverId": "3895",
+      "busId": "058",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_150001"
+    },
+    {
+      "tripId": "150006",
+      "driverId": "3895",
+      "busId": "058",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_150001"
+    },
+    {
+      "tripId": "120009",
+      "driverId": "3756",
+      "busId": "050",
+      "idleTime": 45,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330066",
+      "driverId": "3945",
+      "busId": "022",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331068",
+      "driverId": "3831",
+      "busId": "021",
+      "idleTime": 50,
+      "sequenceId": null
+    },
+    {
+      "tripId": "333023",
+      "driverId": "3308",
+      "busId": "076",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331072",
+      "driverId": "3878",
+      "busId": "024",
+      "idleTime": 90,
+      "sequenceId": null
+    },
+    {
+      "tripId": "332028",
+      "driverId": "3147",
+      "busId": "049",
+      "idleTime": 15,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330069",
+      "driverId": "3948",
+      "busId": "017",
+      "idleTime": 30,
+      "sequenceId": "CHAIN_330069"
+    },
+    {
+      "tripId": "330070",
+      "driverId": "3948",
+      "busId": "017",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_330069"
+    },
+    {
+      "tripId": "330067",
+      "driverId": "3605",
+      "busId": "075",
+      "idleTime": 40,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330068",
+      "driverId": "3839",
+      "busId": "008",
+      "idleTime": 150,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331071",
+      "driverId": "3533",
+      "busId": "018",
+      "idleTime": 150,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331070",
+      "driverId": "3108",
+      "busId": "066",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "160003",
+      "driverId": "3425",
+      "busId": "068",
+      "idleTime": 195,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330073",
+      "driverId": "3537",
+      "busId": "005",
+      "idleTime": 165,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331075",
+      "driverId": "3995",
+      "busId": "006",
+      "idleTime": 30,
+      "sequenceId": null
+    },
+    {
+      "tripId": "110016",
+      "driverId": "3690",
+      "busId": "007",
+      "idleTime": 170,
+      "sequenceId": "CHAIN_110016"
+    },
+    {
+      "tripId": "120013",
+      "driverId": "3690",
+      "busId": "007",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_110016"
+    },
+    {
+      "tripId": "120010",
+      "driverId": "3707",
+      "busId": "059",
+      "idleTime": 45,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330074",
+      "driverId": "3945",
+      "busId": "022",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "000001",
+      "driverId": "3831",
+      "busId": "021",
+      "idleTime": 15,
+      "sequenceId": null
+    },
+    {
+      "tripId": "332032",
+      "driverId": "3656",
+      "busId": "013",
+      "idleTime": 240,
+      "sequenceId": "CHAIN_332032"
+    },
+    {
+      "tripId": "332033",
+      "driverId": "3656",
+      "busId": "013",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_332032"
+    },
+    {
+      "tripId": "330077",
+      "driverId": "3831",
+      "busId": "021",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "110009",
+      "driverId": "3605",
+      "busId": "075",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_110009"
+    },
+    {
+      "tripId": "130002",
+      "driverId": "3605",
+      "busId": "075",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_110009"
+    },
+    {
+      "tripId": "330075",
+      "driverId": "3839",
+      "busId": "008",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330076",
+      "driverId": "3897",
+      "busId": "004",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331076",
+      "driverId": "3533",
+      "busId": "018",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "332034",
+      "driverId": "3995",
+      "busId": "006",
+      "idleTime": 15,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330078",
+      "driverId": "3813",
+      "busId": "048",
+      "idleTime": 75,
+      "sequenceId": "CHAIN_330078"
+    },
+    {
+      "tripId": "330079",
+      "driverId": "3813",
+      "busId": "048",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_330078"
+    },
+    {
+      "tripId": "330080",
+      "driverId": "3813",
+      "busId": "048",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_330078"
+    },
+    {
+      "tripId": "331079",
+      "driverId": "3537",
+      "busId": "005",
+      "idleTime": 30,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331078",
+      "driverId": "3108",
+      "busId": "066",
+      "idleTime": 35,
+      "sequenceId": null
+    },
+    {
+      "tripId": "120011",
+      "driverId": "3543",
+      "busId": "071",
+      "idleTime": 45,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330083",
+      "driverId": "3945",
+      "busId": "022",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331080",
+      "driverId": "3877",
+      "busId": "030",
+      "idleTime": 60,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330085",
+      "driverId": "3458",
+      "busId": "052",
+      "idleTime": 30,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331081",
+      "driverId": "3878",
+      "busId": "024",
+      "idleTime": 10,
+      "sequenceId": "CHAIN_331081"
+    },
+    {
+      "tripId": "331082",
+      "driverId": "3878",
+      "busId": "024",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_331081"
+    },
+    {
+      "tripId": "331083",
+      "driverId": "3878",
+      "busId": "024",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_331081"
+    },
+    {
+      "tripId": "331087",
+      "driverId": "3306",
+      "busId": "053",
+      "idleTime": 95,
+      "sequenceId": "CHAIN_331087"
+    },
+    {
+      "tripId": "331088",
+      "driverId": "3306",
+      "busId": "053",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_331087"
+    },
+    {
+      "tripId": "110010",
+      "driverId": "3839",
+      "busId": "008",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_110010"
+    },
+    {
+      "tripId": "120016",
+      "driverId": "3839",
+      "busId": "008",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_110010"
+    },
+    {
+      "tripId": "331095",
+      "driverId": "3533",
+      "busId": "018",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_331095"
+    },
+    {
+      "tripId": "331096",
+      "driverId": "3533",
+      "busId": "018",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_331095"
+    },
+    {
+      "tripId": "331097",
+      "driverId": "3533",
+      "busId": "018",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_331095"
+    },
+    {
+      "tripId": "331098",
+      "driverId": "3533",
+      "busId": "018",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_331095"
+    },
+    {
+      "tripId": "331099",
+      "driverId": "3533",
+      "busId": "018",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_331095"
+    },
+    {
+      "tripId": "331102",
+      "driverId": "3537",
+      "busId": "005",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_331102"
+    },
+    {
+      "tripId": "331103",
+      "driverId": "3537",
+      "busId": "005",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_331102"
+    },
+    {
+      "tripId": "331104",
+      "driverId": "3537",
+      "busId": "005",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_331102"
+    },
+    {
+      "tripId": "331105",
+      "driverId": "3537",
+      "busId": "005",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_331102"
+    },
+    {
+      "tripId": "330091",
+      "driverId": "3756",
+      "busId": "050",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_330091"
+    },
+    {
+      "tripId": "330092",
+      "driverId": "3756",
+      "busId": "050",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_330091"
+    },
+    {
+      "tripId": "330093",
+      "driverId": "3756",
+      "busId": "050",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_330091"
+    },
+    {
+      "tripId": "330086",
+      "driverId": "3897",
+      "busId": "004",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330088",
+      "driverId": "3948",
+      "busId": "017",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_330088"
+    },
+    {
+      "tripId": "330089",
+      "driverId": "3948",
+      "busId": "017",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_330088"
+    },
+    {
+      "tripId": "332035",
+      "driverId": "3147",
+      "busId": "049",
+      "idleTime": 30,
+      "sequenceId": null
+    },
+    {
+      "tripId": "333024",
+      "driverId": "3197",
+      "busId": "012",
+      "idleTime": 75,
+      "sequenceId": null
+    },
+    {
+      "tripId": "333025",
+      "driverId": "3308",
+      "busId": "076",
+      "idleTime": 90,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330099",
+      "driverId": "3656",
+      "busId": "013",
+      "idleTime": 25,
+      "sequenceId": "CHAIN_330099"
+    },
+    {
+      "tripId": "330112",
+      "driverId": "3656",
+      "busId": "013",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_330099"
+    },
+    {
+      "tripId": "330097",
+      "driverId": "3108",
+      "busId": "066",
+      "idleTime": 25,
+      "sequenceId": "CHAIN_330097"
+    },
+    {
+      "tripId": "330098",
+      "driverId": "3108",
+      "busId": "066",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_330097"
+    },
+    {
+      "tripId": "330101",
+      "driverId": "3949",
+      "busId": "031",
+      "idleTime": 130,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330095",
+      "driverId": "3892",
+      "busId": "069",
+      "idleTime": 285,
+      "sequenceId": "CHAIN_330095"
+    },
+    {
+      "tripId": "330096",
+      "driverId": "3892",
+      "busId": "069",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_330095"
+    },
+    {
+      "tripId": "332036",
+      "driverId": "3995",
+      "busId": "006",
+      "idleTime": 45,
+      "sequenceId": null
+    },
+    {
+      "tripId": "335004",
+      "driverId": "3967",
+      "busId": "079",
+      "idleTime": 315,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331114",
+      "driverId": "3458",
+      "busId": "052",
+      "idleTime": 15,
+      "sequenceId": "CHAIN_331114"
+    },
+    {
+      "tripId": "331115",
+      "driverId": "3458",
+      "busId": "052",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_331114"
+    },
+    {
+      "tripId": "331112",
+      "driverId": "3723",
+      "busId": "051",
+      "idleTime": 285,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331116",
+      "driverId": "3715",
+      "busId": "070",
+      "idleTime": 285,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331124",
+      "driverId": "3992",
+      "busId": "054",
+      "idleTime": 290,
+      "sequenceId": "CHAIN_331124"
+    },
+    {
+      "tripId": "331125",
+      "driverId": "3992",
+      "busId": "054",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_331124"
+    },
+    {
+      "tripId": "331126",
+      "driverId": "3992",
+      "busId": "054",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_331124"
+    },
+    {
+      "tripId": "331127",
+      "driverId": "3992",
+      "busId": "054",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_331124"
+    },
+    {
+      "tripId": "331128",
+      "driverId": "3992",
+      "busId": "054",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_331124"
+    },
+    {
+      "tripId": "331141",
+      "driverId": "3551",
+      "busId": "064",
+      "idleTime": 290,
+      "sequenceId": "CHAIN_331141"
+    },
+    {
+      "tripId": "331142",
+      "driverId": "3551",
+      "busId": "064",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_331141"
+    },
+    {
+      "tripId": "331143",
+      "driverId": "3551",
+      "busId": "064",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_331141"
+    },
+    {
+      "tripId": "331148",
+      "driverId": "3613",
+      "busId": "038",
+      "idleTime": 290,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331117",
+      "driverId": "3941",
+      "busId": "025",
+      "idleTime": 290,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331118",
+      "driverId": "3647",
+      "busId": "057",
+      "idleTime": 315,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331149",
+      "driverId": "3199",
+      "busId": "040",
+      "idleTime": 810,
+      "sequenceId": null
+    },
+    {
+      "tripId": "120012",
+      "driverId": "3954",
+      "busId": "037",
+      "idleTime": 45,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330102",
+      "driverId": "3945",
+      "busId": "022",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330111",
+      "driverId": "3147",
+      "busId": "049",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_330111"
+    },
+    {
+      "tripId": "330100",
+      "driverId": "3147",
+      "busId": "049",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_330111"
+    },
+    {
+      "tripId": "330158",
+      "driverId": "3147",
+      "busId": "049",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_330111"
+    },
+    {
+      "tripId": "330105",
+      "driverId": "3715",
+      "busId": "070",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_330105"
+    },
+    {
+      "tripId": "330106",
+      "driverId": "3715",
+      "busId": "070",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_330105"
+    },
+    {
+      "tripId": "331155",
+      "driverId": "3647",
+      "busId": "057",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_331155"
+    },
+    {
+      "tripId": "331156",
+      "driverId": "3647",
+      "busId": "057",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_331155"
+    },
+    {
+      "tripId": "330107",
+      "driverId": "3948",
+      "busId": "017",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331110",
+      "driverId": "3941",
+      "busId": "025",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_331110"
+    },
+    {
+      "tripId": "331111",
+      "driverId": "3941",
+      "busId": "025",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_331110"
+    },
+    {
+      "tripId": "331168",
+      "driverId": "3658",
+      "busId": "042",
+      "idleTime": 45,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331153",
+      "driverId": "3877",
+      "busId": "030",
+      "idleTime": 15,
+      "sequenceId": "CHAIN_331153"
+    },
+    {
+      "tripId": "331154",
+      "driverId": "3877",
+      "busId": "030",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_331153"
+    },
+    {
+      "tripId": "330108",
+      "driverId": "3999",
+      "busId": "063",
+      "idleTime": 315,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330110",
+      "driverId": "3935",
+      "busId": "073",
+      "idleTime": 315,
+      "sequenceId": null
+    },
+    {
+      "tripId": "332038",
+      "driverId": "3435",
+      "busId": "065",
+      "idleTime": 345,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331157",
+      "driverId": "3127",
+      "busId": "067",
+      "idleTime": 830,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331158",
+      "driverId": "3254",
+      "busId": "036",
+      "idleTime": 830,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331159",
+      "driverId": "3931",
+      "busId": "041",
+      "idleTime": 830,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331160",
+      "driverId": "3908",
+      "busId": "001",
+      "idleTime": 830,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331209",
+      "driverId": "3723",
+      "busId": "051",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_331209"
+    },
+    {
+      "tripId": "331210",
+      "driverId": "3723",
+      "busId": "051",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_331209"
+    },
+    {
+      "tripId": "331211",
+      "driverId": "3723",
+      "busId": "051",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_331209"
+    },
+    {
+      "tripId": "331165",
+      "driverId": "3613",
+      "busId": "038",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331166",
+      "driverId": "3458",
+      "busId": "052",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331169",
+      "driverId": "3808",
+      "busId": "020",
+      "idleTime": 835,
+      "sequenceId": null
+    },
+    {
+      "tripId": "110011",
+      "driverId": "3949",
+      "busId": "031",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330118",
+      "driverId": "3707",
+      "busId": "059",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "334003",
+      "driverId": "3425",
+      "busId": "068",
+      "idleTime": 55,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330119",
+      "driverId": "3892",
+      "busId": "069",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "332045",
+      "driverId": "3995",
+      "busId": "006",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330114",
+      "driverId": "3897",
+      "busId": "004",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330117",
+      "driverId": "3680",
+      "busId": "032",
+      "idleTime": 360,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330115",
+      "driverId": "3148",
+      "busId": "023",
+      "idleTime": 360,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330116",
+      "driverId": "3930",
+      "busId": "028",
+      "idleTime": 840,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331161",
+      "driverId": "3945",
+      "busId": "022",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "333029",
+      "driverId": "3308",
+      "busId": "076",
+      "idleTime": 15,
+      "sequenceId": null
+    },
+    {
+      "tripId": "333033",
+      "driverId": "3197",
+      "busId": "012",
+      "idleTime": 15,
+      "sequenceId": null
+    },
+    {
+      "tripId": "332039",
+      "driverId": "3449",
+      "busId": "035",
+      "idleTime": 125,
+      "sequenceId": null
+    },
+    {
+      "tripId": "332040",
+      "driverId": "3828",
+      "busId": "060",
+      "idleTime": 385,
+      "sequenceId": null
+    },
+    {
+      "tripId": "332041",
+      "driverId": "3114",
+      "busId": "077",
+      "idleTime": 385,
+      "sequenceId": null
+    },
+    {
+      "tripId": "332042",
+      "driverId": "3117",
+      "busId": "047",
+      "idleTime": 845,
+      "sequenceId": null
+    },
+    {
+      "tripId": "332043",
+      "driverId": "3837",
+      "busId": "002",
+      "idleTime": 845,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331170",
+      "driverId": "3808",
+      "busId": "020",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "335005",
+      "driverId": "3967",
+      "busId": "079",
+      "idleTime": 10,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331172",
+      "driverId": "3373",
+      "busId": "003",
+      "idleTime": 850,
+      "sequenceId": null
+    },
+    {
+      "tripId": "333034",
+      "driverId": "3197",
+      "busId": "012",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331173",
+      "driverId": "3613",
+      "busId": "038",
+      "idleTime": 5,
+      "sequenceId": null
+    },
+    {
+      "tripId": "170010",
+      "driverId": "3148",
+      "busId": "023",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_170010"
+    },
+    {
+      "tripId": "333035",
+      "driverId": "3148",
+      "busId": "023",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_170010"
+    },
+    {
+      "tripId": "140004",
+      "driverId": "3148",
+      "busId": "023",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_170010"
+    },
+    {
+      "tripId": "180004",
+      "driverId": "3308",
+      "busId": "076",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330127",
+      "driverId": "3945",
+      "busId": "022",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "332046",
+      "driverId": "3930",
+      "busId": "028",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330123",
+      "driverId": "3658",
+      "busId": "042",
+      "idleTime": 10,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330124",
+      "driverId": "3756",
+      "busId": "050",
+      "idleTime": 15,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330125",
+      "driverId": "3999",
+      "busId": "063",
+      "idleTime": 15,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330126",
+      "driverId": "3435",
+      "busId": "065",
+      "idleTime": 15,
+      "sequenceId": null
+    },
+    {
+      "tripId": "332047",
+      "driverId": "3935",
+      "busId": "073",
+      "idleTime": 15,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331174",
+      "driverId": "3306",
+      "busId": "053",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331177",
+      "driverId": "3647",
+      "busId": "057",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331180",
+      "driverId": "3127",
+      "busId": "067",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331182",
+      "driverId": "3878",
+      "busId": "024",
+      "idleTime": 10,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331183",
+      "driverId": "3373",
+      "busId": "003",
+      "idleTime": 10,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331176",
+      "driverId": "3948",
+      "busId": "017",
+      "idleTime": 10,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331178",
+      "driverId": "3458",
+      "busId": "052",
+      "idleTime": 20,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331179",
+      "driverId": "3254",
+      "busId": "036",
+      "idleTime": 20,
+      "sequenceId": null
+    },
+    {
+      "tripId": "110014",
+      "driverId": "3892",
+      "busId": "069",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330129",
+      "driverId": "3543",
+      "busId": "071",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330128",
+      "driverId": "3813",
+      "busId": "048",
+      "idleTime": 20,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331186",
+      "driverId": "3813",
+      "busId": "048",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331188",
+      "driverId": "3537",
+      "busId": "005",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330133",
+      "driverId": "3707",
+      "busId": "059",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330131",
+      "driverId": "3954",
+      "busId": "037",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331189",
+      "driverId": "3533",
+      "busId": "018",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330134",
+      "driverId": "3308",
+      "busId": "076",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "335006",
+      "driverId": "3967",
+      "busId": "079",
+      "idleTime": 75,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330135",
+      "driverId": "3627",
+      "busId": "043",
+      "idleTime": 15,
+      "sequenceId": null
+    },
+    {
+      "tripId": "110018",
+      "driverId": "3533",
+      "busId": "018",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330137",
+      "driverId": "3945",
+      "busId": "022",
+      "idleTime": 25,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331191",
+      "driverId": "3813",
+      "busId": "048",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330139",
+      "driverId": "3954",
+      "busId": "037",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331194",
+      "driverId": "3308",
+      "busId": "076",
+      "idleTime": 15,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330141",
+      "driverId": "3627",
+      "busId": "043",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "110020",
+      "driverId": "3690",
+      "busId": "007",
+      "idleTime": 30,
+      "sequenceId": null
+    },
+    {
+      "tripId": "120017",
+      "driverId": "3949",
+      "busId": "031",
+      "idleTime": 45,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330142",
+      "driverId": "3879",
+      "busId": "046",
+      "idleTime": 85,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330143",
+      "driverId": "3945",
+      "busId": "022",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_330143"
+    },
+    {
+      "tripId": "330144",
+      "driverId": "3945",
+      "busId": "022",
+      "idleTime": 0,
+      "sequenceId": "CHAIN_330143"
+    },
+    {
+      "tripId": "331195",
+      "driverId": "3813",
+      "busId": "048",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "120019",
+      "driverId": "3892",
+      "busId": "069",
+      "idleTime": 45,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330148",
+      "driverId": "3627",
+      "busId": "043",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331198",
+      "driverId": "3813",
+      "busId": "048",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331199",
+      "driverId": "3308",
+      "busId": "076",
+      "idleTime": 30,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330147",
+      "driverId": "3805",
+      "busId": "010",
+      "idleTime": 30,
+      "sequenceId": null
+    },
+    {
+      "tripId": "110022",
+      "driverId": "3839",
+      "busId": "008",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330150",
+      "driverId": "3954",
+      "busId": "037",
+      "idleTime": 75,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330151",
+      "driverId": "3707",
+      "busId": "059",
+      "idleTime": 105,
+      "sequenceId": null
+    },
+    {
+      "tripId": "120020",
+      "driverId": "3543",
+      "busId": "071",
+      "idleTime": 180,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330152",
+      "driverId": "3627",
+      "busId": "043",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331203",
+      "driverId": "3308",
+      "busId": "076",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "333036",
+      "driverId": "3605",
+      "busId": "075",
+      "idleTime": 10,
+      "sequenceId": null
+    },
+    {
+      "tripId": "332055",
+      "driverId": "3707",
+      "busId": "059",
+      "idleTime": 5,
+      "sequenceId": null
+    },
+    {
+      "tripId": "110023",
+      "driverId": "3399",
+      "busId": "033",
+      "idleTime": 1200,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330153",
+      "driverId": "3308",
+      "busId": "076",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "000002",
+      "driverId": "3949",
+      "busId": "031",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "120021",
+      "driverId": "3930",
+      "busId": "028",
+      "idleTime": 240,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330155",
+      "driverId": "3147",
+      "busId": "049",
+      "idleTime": 300,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331204",
+      "driverId": "3954",
+      "busId": "037",
+      "idleTime": 45,
+      "sequenceId": null
+    },
+    {
+      "tripId": "331205",
+      "driverId": "3949",
+      "busId": "031",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330156",
+      "driverId": "3308",
+      "busId": "076",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "120024",
+      "driverId": "3199",
+      "busId": "040",
+      "idleTime": 0,
+      "sequenceId": null
+    },
+    {
+      "tripId": "330157",
+      "driverId": "3796",
+      "busId": "056",
+      "idleTime": 1320,
+      "sequenceId": null
+    },
+    {
+      "tripId": "110016",
+      "driverId": "3836",
+      "busId": "009",
+      "idleTime": 2360,
+      "sequenceId": null
+    }
+  ],
+  "busStates": [
+    {
+      "driverId": "3878",
+      "busId": "024",
+      "homeStation": "002",
+      "currentStation": "002",
+      "assignedTrips": [
+        "331003",
+        "331047",
+        "331057",
+        "331072",
+        "331081",
+        "331082",
+        "331083",
+        "331182"
+      ],
+      "totalIdleTime": 485,
+      "totalDrivingTime": 455
+    },
+    {
+      "driverId": "3605",
+      "busId": "075",
+      "homeStation": "007",
+      "currentStation": "006",
+      "assignedTrips": [
+        "334001",
+        "200001",
+        "330067",
+        "110009",
+        "130002",
+        "333036"
+      ],
+      "totalIdleTime": 440,
+      "totalDrivingTime": 665
+    },
+    {
+      "driverId": "3308",
+      "busId": "076",
+      "homeStation": "005",
+      "currentStation": "002",
+      "assignedTrips": [
+        "333012",
+        "333016",
+        "333020",
+        "333022",
+        "333023",
+        "333025",
+        "333029",
+        "180004",
+        "330134",
+        "331194",
+        "331199",
+        "331203",
+        "330153",
+        "330156"
+      ],
+      "totalIdleTime": 655,
+      "totalDrivingTime": 635
+    },
+    {
+      "driverId": "3967",
+      "busId": "079",
+      "homeStation": "008",
+      "currentStation": "008",
+      "assignedTrips": [
+        "335002",
+        "335003",
+        "335004",
+        "335005",
+        "335006"
+      ],
+      "totalIdleTime": 790,
+      "totalDrivingTime": 215
+    },
+    {
+      "driverId": "3627",
+      "busId": "043",
+      "homeStation": "001",
+      "currentStation": "001",
+      "assignedTrips": [
+        "170009",
+        "333011",
+        "333017",
+        "333030",
+        "180007",
+        "330135",
+        "330141",
+        "330148",
+        "330152"
+      ],
+      "totalIdleTime": 345,
+      "totalDrivingTime": 515
+    },
+    {
+      "driverId": "3147",
+      "busId": "049",
+      "homeStation": "002",
+      "currentStation": "001",
+      "assignedTrips": [
+        "331014",
+        "331048",
+        "330057",
+        "331067",
+        "332028",
+        "332035",
+        "330111",
+        "330100",
+        "330158",
+        "330155"
+      ],
+      "totalIdleTime": 810,
+      "totalDrivingTime": 460
+    },
+    {
+      "driverId": "3813",
+      "busId": "048",
+      "homeStation": "002",
+      "currentStation": "002",
+      "assignedTrips": [
+        "331011",
+        "331012",
+        "331051",
+        "330055",
+        "330059",
+        "330078",
+        "330079",
+        "330080",
+        "330128",
+        "331186",
+        "331191",
+        "331195",
+        "331198"
+      ],
+      "totalIdleTime": 505,
+      "totalDrivingTime": 655
+    },
+    {
+      "driverId": "3805",
+      "busId": "010",
+      "homeStation": "006",
+      "currentStation": "002",
+      "assignedTrips": [
+        "333002",
+        "333013",
+        "333018",
+        "333021",
+        "140003",
+        "120015",
+        "330147"
+      ],
+      "totalIdleTime": 420,
+      "totalDrivingTime": 575
+    },
+    {
+      "driverId": "3995",
+      "busId": "006",
+      "homeStation": "001",
+      "currentStation": "003",
+      "assignedTrips": [
+        "330003",
+        "330004",
+        "330042",
+        "330052",
+        "330062",
+        "331075",
+        "332034",
+        "332036",
+        "332045"
+      ],
+      "totalIdleTime": 465,
+      "totalDrivingTime": 435
+    },
+    {
+      "driverId": "3949",
+      "busId": "031",
+      "homeStation": "002",
+      "currentStation": "001",
+      "assignedTrips": [
+        "331016",
+        "331041",
+        "331042",
+        "331058",
+        "330054",
+        "330101",
+        "110011",
+        "120017",
+        "000002",
+        "331205"
+      ],
+      "totalIdleTime": 565,
+      "totalDrivingTime": 695
+    },
+    {
+      "driverId": "3656",
+      "busId": "013",
+      "homeStation": "003",
+      "currentStation": "001",
+      "assignedTrips": [
+        "332001",
+        "332002",
+        "332023",
+        "332032",
+        "332033",
+        "330099",
+        "330112"
+      ],
+      "totalIdleTime": 625,
+      "totalDrivingTime": 255
+    },
+    {
+      "driverId": "3707",
+      "busId": "059",
+      "homeStation": "001",
+      "currentStation": "003",
+      "assignedTrips": [
+        "330006",
+        "330007",
+        "330008",
+        "110005",
+        "120010",
+        "330118",
+        "330133",
+        "330151",
+        "332055"
+      ],
+      "totalIdleTime": 530,
+      "totalDrivingTime": 680
+    },
+    {
+      "driverId": "3708",
+      "busId": "039",
+      "homeStation": "001",
+      "currentStation": "001",
+      "assignedTrips": [
+        "330010",
+        "330011",
+        "330049",
+        "330012",
+        "330013"
+      ],
+      "totalIdleTime": 390,
+      "totalDrivingTime": 280
+    },
+    {
+      "driverId": "3831",
+      "busId": "021",
+      "homeStation": "002",
+      "currentStation": "001",
+      "assignedTrips": [
+        "331013",
+        "331035",
+        "331036",
+        "331060",
+        "331068",
+        "000001",
+        "330077"
+      ],
+      "totalIdleTime": 485,
+      "totalDrivingTime": 715
+    },
+    {
+      "driverId": "3945",
+      "busId": "022",
+      "homeStation": "001",
+      "currentStation": "001",
+      "assignedTrips": [
+        "330014",
+        "330015",
+        "330016",
+        "330044",
+        "331059",
+        "330058",
+        "330066",
+        "330074",
+        "330083",
+        "330102",
+        "331161",
+        "330127",
+        "330137",
+        "330143",
+        "330144"
+      ],
+      "totalIdleTime": 445,
+      "totalDrivingTime": 710
+    },
+    {
+      "driverId": "3756",
+      "busId": "050",
+      "homeStation": "002",
+      "currentStation": "001",
+      "assignedTrips": [
+        "331015",
+        "110004",
+        "120009",
+        "330091",
+        "330092",
+        "330093",
+        "330124"
+      ],
+      "totalIdleTime": 450,
+      "totalDrivingTime": 480
+    },
+    {
+      "driverId": "3954",
+      "busId": "037",
+      "homeStation": "002",
+      "currentStation": "002",
+      "assignedTrips": [
+        "331025",
+        "331040",
+        "331062",
+        "110007",
+        "120012",
+        "330131",
+        "330139",
+        "330150",
+        "331204"
+      ],
+      "totalIdleTime": 645,
+      "totalDrivingTime": 645
+    },
+    {
+      "driverId": "3839",
+      "busId": "008",
+      "homeStation": "003",
+      "currentStation": "004",
+      "assignedTrips": [
+        "332013",
+        "330035",
+        "330068",
+        "330075",
+        "110010",
+        "120016",
+        "110022"
+      ],
+      "totalIdleTime": 525,
+      "totalDrivingTime": 705
+    },
+    {
+      "driverId": "3533",
+      "busId": "018",
+      "homeStation": "002",
+      "currentStation": "004",
+      "assignedTrips": [
+        "331023",
+        "331024",
+        "331071",
+        "331076",
+        "331095",
+        "331096",
+        "331097",
+        "331098",
+        "331099",
+        "331189",
+        "110018"
+      ],
+      "totalIdleTime": 570,
+      "totalDrivingTime": 585
+    },
+    {
+      "driverId": "3537",
+      "busId": "005",
+      "homeStation": "003",
+      "currentStation": "002",
+      "assignedTrips": [
+        "332014",
+        "332015",
+        "330038",
+        "330047",
+        "330073",
+        "331079",
+        "331102",
+        "331103",
+        "331104",
+        "331105",
+        "331188"
+      ],
+      "totalIdleTime": 585,
+      "totalDrivingTime": 375
+    },
+    {
+      "driverId": "3886",
+      "busId": "015",
+      "homeStation": "003",
+      "currentStation": "003",
+      "assignedTrips": [
+        "333063",
+        "160002",
+        "334002",
+        "200002",
+        "280002",
+        "160007"
+      ],
+      "totalIdleTime": 405,
+      "totalDrivingTime": 445
+    },
+    {
+      "driverId": "3723",
+      "busId": "051",
+      "homeStation": "002",
+      "currentStation": "002",
+      "assignedTrips": [
+        "331026",
+        "331027",
+        "331112",
+        "331209",
+        "331210",
+        "331211"
+      ],
+      "totalIdleTime": 705,
+      "totalDrivingTime": 235
+    },
+    {
+      "driverId": "3892",
+      "busId": "069",
+      "homeStation": "001",
+      "currentStation": "001",
+      "assignedTrips": [
+        "330009",
+        "330039",
+        "330095",
+        "330096",
+        "330119",
+        "110014",
+        "120019"
+      ],
+      "totalIdleTime": 720,
+      "totalDrivingTime": 540
+    },
+    {
+      "driverId": "3306",
+      "busId": "053",
+      "homeStation": "001",
+      "currentStation": "002",
+      "assignedTrips": [
+        "330019",
+        "330020",
+        "330048",
+        "220001",
+        "220002",
+        "331087",
+        "331088",
+        "331174"
+      ],
+      "totalIdleTime": 505,
+      "totalDrivingTime": 455
+    },
+    {
+      "driverId": "3715",
+      "busId": "070",
+      "homeStation": "002",
+      "currentStation": "001",
+      "assignedTrips": [
+        "331021",
+        "331022",
+        "331050",
+        "331116",
+        "330105",
+        "330106"
+      ],
+      "totalIdleTime": 705,
+      "totalDrivingTime": 205
+    },
+    {
+      "driverId": "3108",
+      "busId": "066",
+      "homeStation": "001",
+      "currentStation": "001",
+      "assignedTrips": [
+        "330021",
+        "330022",
+        "330023",
+        "330050",
+        "331061",
+        "331065",
+        "331070",
+        "331078",
+        "330097",
+        "330098"
+      ],
+      "totalIdleTime": 505,
+      "totalDrivingTime": 345
+    },
+    {
+      "driverId": "3543",
+      "busId": "071",
+      "homeStation": "001",
+      "currentStation": "001",
+      "assignedTrips": [
+        "330025",
+        "330026",
+        "330027",
+        "110006",
+        "120011",
+        "330129",
+        "120020"
+      ],
+      "totalIdleTime": 645,
+      "totalDrivingTime": 625
+    },
+    {
+      "driverId": "3992",
+      "busId": "054",
+      "homeStation": "002",
+      "currentStation": "002",
+      "assignedTrips": [
+        "331028",
+        "331029",
+        "331053",
+        "331124",
+        "331125",
+        "331126",
+        "331127",
+        "331128"
+      ],
+      "totalIdleTime": 725,
+      "totalDrivingTime": 205
+    },
+    {
+      "driverId": "3999",
+      "busId": "063",
+      "homeStation": "001",
+      "currentStation": "001",
+      "assignedTrips": [
+        "330032",
+        "330033",
+        "330034",
+        "330046",
+        "330108",
+        "330125"
+      ],
+      "totalIdleTime": 750,
+      "totalDrivingTime": 180
+    },
+    {
+      "driverId": "3551",
+      "busId": "064",
+      "homeStation": "002",
+      "currentStation": "002",
+      "assignedTrips": [
+        "331032",
+        "331052",
+        "331141",
+        "331142",
+        "331143"
+      ],
+      "totalIdleTime": 730,
+      "totalDrivingTime": 170
+    },
+    {
+      "driverId": "3647",
+      "busId": "057",
+      "homeStation": "002",
+      "currentStation": "002",
+      "assignedTrips": [
+        "331031",
+        "331118",
+        "331155",
+        "331156",
+        "331177"
+      ],
+      "totalIdleTime": 745,
+      "totalDrivingTime": 215
+    },
+    {
+      "driverId": "3613",
+      "busId": "038",
+      "homeStation": "002",
+      "currentStation": "002",
+      "assignedTrips": [
+        "331039",
+        "331148",
+        "331165",
+        "331173"
+      ],
+      "totalIdleTime": 735,
+      "totalDrivingTime": 195
+    },
+    {
+      "driverId": "3435",
+      "busId": "065",
+      "homeStation": "001",
+      "currentStation": "001",
+      "assignedTrips": [
+        "330024",
+        "332038",
+        "330126"
+      ],
+      "totalIdleTime": 780,
+      "totalDrivingTime": 140
+    },
+    {
+      "driverId": "3458",
+      "busId": "052",
+      "homeStation": "002",
+      "currentStation": "002",
+      "assignedTrips": [
+        "331037",
+        "331038",
+        "331056",
+        "330053",
+        "330060",
+        "330085",
+        "331114",
+        "331115",
+        "331166",
+        "331178"
+      ],
+      "totalIdleTime": 515,
+      "totalDrivingTime": 415
+    },
+    {
+      "driverId": "3199",
+      "busId": "040",
+      "homeStation": "002",
+      "currentStation": "001",
+      "assignedTrips": [
+        "331149",
+        "120024"
+      ],
+      "totalIdleTime": 810,
+      "totalDrivingTime": 600
+    },
+    {
+      "driverId": "3127",
+      "busId": "067",
+      "homeStation": "002",
+      "currentStation": "002",
+      "assignedTrips": [
+        "331157",
+        "331180"
+      ],
+      "totalIdleTime": 830,
+      "totalDrivingTime": 110
+    },
+    {
+      "driverId": "3680",
+      "busId": "032",
+      "homeStation": "001",
+      "currentStation": "001",
+      "assignedTrips": [
+        "330030",
+        "330117"
+      ],
+      "totalIdleTime": 780,
+      "totalDrivingTime": 100
+    },
+    {
+      "driverId": "3720",
+      "busId": "029",
+      "homeStation": "003",
+      "currentStation": "003",
+      "assignedTrips": [
+        "332021",
+        "332022",
+        "332024",
+        "332044",
+        "332048",
+        "332049",
+        "332050"
+      ],
+      "totalIdleTime": 405,
+      "totalDrivingTime": 370
+    },
+    {
+      "driverId": "3254",
+      "busId": "036",
+      "homeStation": "002",
+      "currentStation": "002",
+      "assignedTrips": [
+        "331158",
+        "331179"
+      ],
+      "totalIdleTime": 850,
+      "totalDrivingTime": 80
+    },
+    {
+      "driverId": "3895",
+      "busId": "058",
+      "homeStation": "003",
+      "currentStation": "003",
+      "assignedTrips": [
+        "332019",
+        "332020",
+        "332025",
+        "150001",
+        "110008",
+        "150003",
+        "150006"
+      ],
+      "totalIdleTime": 560,
+      "totalDrivingTime": 475
+    },
+    {
+      "driverId": "3931",
+      "busId": "041",
+      "homeStation": "002",
+      "currentStation": "002",
+      "assignedTrips": [
+        "331159"
+      ],
+      "totalIdleTime": 830,
+      "totalDrivingTime": 30
+    },
+    {
+      "driverId": "3828",
+      "busId": "060",
+      "homeStation": "003",
+      "currentStation": "003",
+      "assignedTrips": [
+        "332017",
+        "332018",
+        "332040"
+      ],
+      "totalIdleTime": 790,
+      "totalDrivingTime": 110
+    },
+    {
+      "driverId": "3117",
+      "busId": "047",
+      "homeStation": "003",
+      "currentStation": "003",
+      "assignedTrips": [
+        "332042"
+      ],
+      "totalIdleTime": 845,
+      "totalDrivingTime": 55
+    },
+    {
+      "driverId": "3690",
+      "busId": "007",
+      "homeStation": "001",
+      "currentStation": "004",
+      "assignedTrips": [
+        "330028",
+        "330029",
+        "330041",
+        "110016",
+        "120013",
+        "110020"
+      ],
+      "totalIdleTime": 620,
+      "totalDrivingTime": 565
+    },
+    {
+      "driverId": "3148",
+      "busId": "023",
+      "homeStation": "001",
+      "currentStation": "004",
+      "assignedTrips": [
+        "330036",
+        "330037",
+        "330115",
+        "170010",
+        "333035",
+        "140004"
+      ],
+      "totalIdleTime": 790,
+      "totalDrivingTime": 415
+    },
+    {
+      "driverId": "3930",
+      "busId": "028",
+      "homeStation": "001",
+      "currentStation": "001",
+      "assignedTrips": [
+        "330116",
+        "332046",
+        "120021"
+      ],
+      "totalIdleTime": 1080,
+      "totalDrivingTime": 270
+    },
+    {
+      "driverId": "3399",
+      "busId": "033",
+      "homeStation": "001",
+      "currentStation": "004",
+      "assignedTrips": [
+        "110023"
+      ],
+      "totalIdleTime": 1200,
+      "totalDrivingTime": 165
+    },
+    {
+      "driverId": "3908",
+      "busId": "001",
+      "homeStation": "002",
+      "currentStation": "002",
+      "assignedTrips": [
+        "331160"
+      ],
+      "totalIdleTime": 830,
+      "totalDrivingTime": 30
+    },
+    {
+      "driverId": "3796",
+      "busId": "056",
+      "homeStation": "001",
+      "currentStation": "002",
+      "assignedTrips": [
+        "330157"
+      ],
+      "totalIdleTime": 1320,
+      "totalDrivingTime": 30
+    },
+    {
+      "driverId": "3808",
+      "busId": "020",
+      "homeStation": "002",
+      "currentStation": "002",
+      "assignedTrips": [
+        "331169",
+        "331170"
+      ],
+      "totalIdleTime": 835,
+      "totalDrivingTime": 65
+    },
+    {
+      "driverId": "3373",
+      "busId": "003",
+      "homeStation": "002",
+      "currentStation": "002",
+      "assignedTrips": [
+        "331172",
+        "331183"
+      ],
+      "totalIdleTime": 860,
+      "totalDrivingTime": 80
+    },
+    {
+      "driverId": "3836",
+      "busId": "009",
+      "homeStation": "002",
+      "currentStation": "004",
+      "assignedTrips": [
+        "110016"
+      ],
+      "totalIdleTime": 2360,
+      "totalDrivingTime": 145
+    },
+    {
+      "driverId": "3837",
+      "busId": "002",
+      "homeStation": "003",
+      "currentStation": "003",
+      "assignedTrips": [
+        "332043"
+      ],
+      "totalIdleTime": 845,
+      "totalDrivingTime": 55
+    },
+    {
+      "driverId": "3114",
+      "busId": "077",
+      "homeStation": "003",
+      "currentStation": "003",
+      "assignedTrips": [
+        "332005",
+        "332006",
+        "332041"
+      ],
+      "totalIdleTime": 685,
+      "totalDrivingTime": 155
+    },
+    {
+      "driverId": "3941",
+      "busId": "025",
+      "homeStation": "002",
+      "currentStation": "002",
+      "assignedTrips": [
+        "331004",
+        "331005",
+        "331007",
+        "331117",
+        "331110",
+        "331111"
+      ],
+      "totalIdleTime": 605,
+      "totalDrivingTime": 180
+    },
+    {
+      "driverId": "3897",
+      "busId": "004",
+      "homeStation": "006",
+      "currentStation": "001",
+      "assignedTrips": [
+        "333001",
+        "140001",
+        "120008",
+        "330076",
+        "330086",
+        "330114"
+      ],
+      "totalIdleTime": 220,
+      "totalDrivingTime": 540
+    },
+    {
+      "driverId": "3425",
+      "busId": "068",
+      "homeStation": "003",
+      "currentStation": "007",
+      "assignedTrips": [
+        "280001",
+        "160003",
+        "334003"
+      ],
+      "totalIdleTime": 490,
+      "totalDrivingTime": 320
+    },
+    {
+      "driverId": "3449",
+      "busId": "035",
+      "homeStation": "003",
+      "currentStation": "003",
+      "assignedTrips": [
+        "332003",
+        "332004",
+        "330051",
+        "332026",
+        "332027",
+        "332039"
+      ],
+      "totalIdleTime": 405,
+      "totalDrivingTime": 385
+    },
+    {
+      "driverId": "3649",
+      "busId": "019",
+      "homeStation": "002",
+      "currentStation": "002",
+      "assignedTrips": [
+        "331010"
+      ],
+      "totalIdleTime": 225,
+      "totalDrivingTime": 465
+    },
+    {
+      "driverId": "3935",
+      "busId": "073",
+      "homeStation": "004",
+      "currentStation": "003",
+      "assignedTrips": [
+        "120001",
+        "330110",
+        "332047"
+      ],
+      "totalIdleTime": 540,
+      "totalDrivingTime": 220
+    },
+    {
+      "driverId": "3197",
+      "busId": "012",
+      "homeStation": "001",
+      "currentStation": "005",
+      "assignedTrips": [
+        "110001",
+        "130001",
+        "333024",
+        "333033",
+        "333034"
+      ],
+      "totalIdleTime": 280,
+      "totalDrivingTime": 430
+    },
+    {
+      "driverId": "3342",
+      "busId": "014",
+      "homeStation": "001",
+      "currentStation": "006",
+      "assignedTrips": [
+        "170003",
+        "333005",
+        "333008",
+        "333026",
+        "333027"
+      ],
+      "totalIdleTime": 150,
+      "totalDrivingTime": 270
+    },
+    {
+      "driverId": "3879",
+      "busId": "046",
+      "homeStation": "002",
+      "currentStation": "001",
+      "assignedTrips": [
+        "331002",
+        "170007",
+        "333007",
+        "333015",
+        "333028",
+        "180005",
+        "330142"
+      ],
+      "totalIdleTime": 190,
+      "totalDrivingTime": 460
+    },
+    {
+      "driverId": "3998",
+      "busId": "026",
+      "homeStation": "002",
+      "currentStation": "002",
+      "assignedTrips": [
+        "170008",
+        "333009",
+        "333010",
+        "333031",
+        "333032",
+        "180006"
+      ],
+      "totalIdleTime": 45,
+      "totalDrivingTime": 325
+    },
+    {
+      "driverId": "3948",
+      "busId": "017",
+      "homeStation": "004",
+      "currentStation": "002",
+      "assignedTrips": [
+        "120004",
+        "330069",
+        "330070",
+        "330088",
+        "330089",
+        "330107",
+        "331176"
+      ],
+      "totalIdleTime": 235,
+      "totalDrivingTime": 350
+    },
+    {
+      "driverId": "3658",
+      "busId": "042",
+      "homeStation": "001",
+      "currentStation": "001",
+      "assignedTrips": [
+        "330001",
+        "331168",
+        "330123"
+      ],
+      "totalIdleTime": 65,
+      "totalDrivingTime": 570
+    },
+    {
+      "driverId": "3877",
+      "busId": "030",
+      "homeStation": "001",
+      "currentStation": "002",
+      "assignedTrips": [
+        "110002",
+        "120007",
+        "331080",
+        "331153",
+        "331154"
+      ],
+      "totalIdleTime": 115,
+      "totalDrivingTime": 380
+    }
+  ],
+  "unusedBuses": [
+    {
+      "driverId": "3987",
+      "busId": "045",
+      "homeStation": "001",
+      "currentStation": "001",
+      "assignedTrips": [],
+      "totalIdleTime": 0,
+      "totalDrivingTime": 0
+    },
+    {
+      "driverId": "3974",
+      "busId": "011",
+      "homeStation": "002",
+      "currentStation": "002",
+      "assignedTrips": [],
+      "totalIdleTime": 0,
+      "totalDrivingTime": 0
+    },
+    {
+      "driverId": "3939",
+      "busId": "016",
+      "homeStation": "001",
+      "currentStation": "001",
+      "assignedTrips": [],
+      "totalIdleTime": 0,
+      "totalDrivingTime": 0
+    },
+    {
+      "driverId": "3207",
+      "busId": "034",
+      "homeStation": "001",
+      "currentStation": "001",
+      "assignedTrips": [],
+      "totalIdleTime": 0,
+      "totalDrivingTime": 0
+    },
+    {
+      "driverId": "3497",
+      "busId": "072",
+      "homeStation": "001",
+      "currentStation": "001",
+      "assignedTrips": [],
+      "totalIdleTime": 0,
+      "totalDrivingTime": 0
+    }
+  ],
+  "unassignedTrips": [],
+  "parameters": {
+    "maxDutyMinutes": 900,
+    "normalDutyMinutes": 600,
+    "maxWorkMinutes": 720,
+    "driveTimeToBreakMinutes": 270,
+    "minBreakMinutes": 30,
+    "transitMinutes": 30
+  },
+  "metrics": {
+    "totalTrips": 387,
+    "assigned": 387,
+    "unassigned": 0,
+    "busesUsed": 67,
+    "totalIdleTime": 41590,
+    "totalDrivingTime": 23905,
+    "chainsProcessed": 62,
+    "connectionsInData": 114
+  }
+}

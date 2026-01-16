@@ -106,6 +106,31 @@ class ConstraintsData:
         return instance
 
 
+def get_transfer_duration(
+    st1: str, st2: str, constraints_data: ConstraintsData, params: SolverParameters
+) -> int:
+    """Returns the required duration in minutes to transfer from st1 to st2."""
+    if not st1 or not st2 or st1 == st2:
+        return 0
+
+    matrix = constraints_data.station_transfer_matrix
+    if not matrix:
+        return 0
+
+    try:
+        idx1 = int(st1) - 1
+        idx2 = int(st2) - 1
+        if 0 <= idx1 < len(matrix) and 0 <= idx2 < len(matrix[0]):
+            transfer_type = matrix[idx1][idx2]
+            if transfer_type == "BREAK":
+                return params.min_break_time
+            if transfer_type == "NONE":
+                return 0
+    except (ValueError, TypeError, IndexError):
+        pass
+    return 0
+
+
 def check_assignment_legality(
     trip: Dict,
     resource: Dict,
