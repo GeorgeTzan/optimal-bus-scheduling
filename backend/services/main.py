@@ -372,7 +372,7 @@ Examples:
         Logger.metric("SA Transfer", best_m.get("totalTransfer", 0), "min")
         Logger.metric("SA Base Mismatch", best_m.get("baseMismatch", 0))
         Logger.metric("SA Unused Buses", best_m.get("unusedBuses", 0))
-        Logger.metric("SA Unassigned Trips", best_m.get("unassignedCount", 0))
+        Logger.metric("SA Unassigned Trips", best_m.get("unassigned", 0))
 
         result = sa_result
 

@@ -667,7 +667,7 @@ def optimize_with_simulated_annealing(
                     f"[SA] it={it} temp={temp:.2f} cost={best_cost:.1f} "
                     f"tr={best_metrics['totalTransfer']} mismatch={best_metrics['baseMismatch']} "
                     f"idle={best_metrics['totalIdle']} over8h={best_metrics['totalOver8h']} "
-                    f"unassigned={best_metrics['unassignedCount']} t={elapsed:.1f}s"
+                    f"unassigned={best_metrics['unassigned']} t={elapsed:.1f}s"
                 )
 
             if it >= config.max_iters:
