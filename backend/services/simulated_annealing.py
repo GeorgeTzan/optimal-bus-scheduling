@@ -869,7 +869,7 @@ def optimize_with_simulated_annealing(
 
     unassigned_ids_final = [t["id"] for t in best_unassigned]
 
-    #_save_run_log(config, weights, best_metrics, best_cost)
+    # _save_run_log(config, weights, best_metrics, best_cost)
 
     worst_drivers = _get_worst_drivers(
         driver_trips, resources, params, constraints_data, weights, target_duty
