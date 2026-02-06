@@ -333,10 +333,11 @@ def _perform_sa_move_inplace(
     temp: float,
     day_index: int,
     worst_drivers: List[str],
+    chain_map: Dict[str, List[str]],
     target_duty: float = 480.0,
 ) -> Tuple[float, bool]:
     move_type = random.random()
-    unassigned_move_prob = 0.1
+    unassigned_move_prob = 0.25 if current_unassigned else 0.0
 
     if worst_drivers and random.random() < 0.4:
         bus_a = random.choice(worst_drivers)
@@ -412,23 +413,35 @@ def _perform_sa_move_inplace(
             target_duty,
         )
 
-        trips_a = list(current[bus_a])
-        trips_b = list(current[bus_b])
-        ta, tb = trips_a[idx_a], trips_b[idx_b]
-        trips_a[idx_a], trips_b[idx_b] = tb, ta
+        ta_id = current[bus_a][idx_a].get("id", "")
+        tb_id = current[bus_b][idx_b].get("id", "")
 
-        trips_a.sort(key=lambda x: x.get("start_minutes", 0))
-        trips_b.sort(key=lambda x: x.get("start_minutes", 0))
+        chain_a = chain_map.get(ta_id, [ta_id])
+        chain_b = chain_map.get(tb_id, [tb_id])
+
+        trips_a_chain = [t for t in current[bus_a] if t.get("id", "") in chain_a]
+        trips_b_chain = [t for t in current[bus_b] if t.get("id", "") in chain_b]
+
+        trips_a_new = sorted(
+            [t for t in current[bus_a] if t.get("id", "") not in chain_a]
+            + trips_b_chain,
+            key=lambda x: x.get("start_minutes", 0),
+        )
+        trips_b_new = sorted(
+            [t for t in current[bus_b] if t.get("id", "") not in chain_b]
+            + trips_a_chain,
+            key=lambda x: x.get("start_minutes", 0),
+        )
 
         if _is_legal_sequence(
-            trips_a, resources.get(bus_a, {}), params, constraints_data, day_index
+            trips_a_new, resources.get(bus_a, {}), params, constraints_data, day_index
         ) and _is_legal_sequence(
-            trips_b, resources.get(bus_b, {}), params, constraints_data, day_index
+            trips_b_new, resources.get(bus_b, {}), params, constraints_data, day_index
         ):
             backup_a = list(current[bus_a])
             backup_b = list(current[bus_b])
-            current[bus_a] = trips_a
-            current[bus_b] = trips_b
+            current[bus_a] = trips_a_new
+            current[bus_b] = trips_b_new
         else:
             return current_cost, False
 
@@ -464,9 +477,16 @@ def _perform_sa_move_inplace(
         )
 
         trip = current[bus_a][idx_a]
-        trips_a = [t for t in current[bus_a] if t["id"] != trip["id"]]
+        trip_id = trip.get("id", "")
+
+        chain_members = chain_map.get(trip_id, [trip_id])
+
+        trips_to_move = [t for t in current[bus_a] if t.get("id", "") in chain_members]
+
+        trips_a = [t for t in current[bus_a] if t.get("id", "") not in chain_members]
+
         trips_b = sorted(
-            current[bus_b] + [trip], key=lambda x: x.get("start_minutes", 0)
+            current[bus_b] + trips_to_move, key=lambda x: x.get("start_minutes", 0)
         )
 
         if _is_legal_sequence(
@@ -518,6 +538,51 @@ def _perform_sa_move_inplace(
     return current_cost, False
 
 
+def _build_chain_mapping(full_data: Dict[str, Any]) -> Dict[str, List[str]]:
+    """
+    Build a mapping from each trip ID to its chain members.
+    Returns: {trip_id: [trip_id_1, trip_id_2, ...]} for all trips in a chain
+    """
+    chain_map: Dict[str, List[str]] = {}
+    constraints = full_data.get("constraints", {}) if full_data else {}
+
+    all_pairs = []
+
+    for seq in constraints.get("mandatorySequences", []):
+        ids = seq.get("tripIds", []) if isinstance(seq, dict) else seq
+        for i in range(len(ids) - 1):
+            all_pairs.append((ids[i], ids[i + 1]))
+
+    for joint in constraints.get("mandatoryConnections", []):
+        u_id = joint.get("incomingTripId")
+        v_id = joint.get("outgoingTripId")
+        if u_id and v_id:
+            all_pairs.append((u_id, v_id))
+
+    visited = set()
+    for start_id, _ in all_pairs:
+        if start_id in visited:
+            continue
+
+        chain = []
+        current = start_id
+        while current and current not in visited:
+            chain.append(current)
+            visited.add(current)
+            next_id = None
+            for u, v in all_pairs:
+                if u == current:
+                    next_id = v
+                    break
+            current = next_id
+
+        if chain:
+            for trip_id in chain:
+                chain_map[trip_id] = chain
+
+    return chain_map
+
+
 def optimize_with_simulated_annealing(
     full_data: Dict[str, Any],
     greedy_result: Dict[str, Any],
@@ -564,6 +629,8 @@ def optimize_with_simulated_annealing(
     target_duty = (total_work / num_drivers) * 1.2 if num_drivers > 0 else 480.0
     target_duty = max(target_duty, 300.0)
 
+    chain_map = _build_chain_mapping(full_data)
+
     best_cost, best_metrics = compute_cost(
         best, resources, params, constraints_data, weights, best_unassigned, target_duty
     )
@@ -583,6 +650,7 @@ def optimize_with_simulated_annealing(
     iters_since_best = 0
     start_ts = time.time()
     worst_drivers = []
+    last_logged_unassigned = best_metrics["unassigned"]
 
     while it < config.max_iters:
         if it % 500 == 0:
@@ -604,6 +672,7 @@ def optimize_with_simulated_annealing(
                 temp,
                 day_index,
                 worst_drivers,
+                chain_map,
                 target_duty,
             )
 
@@ -634,6 +703,7 @@ def optimize_with_simulated_annealing(
                 refiner_temp,
                 day_index,
                 worst_drivers,
+                chain_map,
                 target_duty,
             )
 
@@ -661,7 +731,17 @@ def optimize_with_simulated_annealing(
                 current_unassigned = list(best_unassigned)
                 current_cost = best_cost
 
-            if verbose and config.log_every and it % config.log_every == 0:
+            cur_unassigned = best_metrics["unassigned"]
+            unassigned_changed = cur_unassigned != last_logged_unassigned
+
+            should_log = False
+            if unassigned_changed:
+                should_log = True
+                last_logged_unassigned = cur_unassigned
+            elif cur_unassigned == 0 and it % config.log_every == 0:
+                should_log = True
+
+            if verbose and config.log_every and should_log:
                 elapsed = time.time() - start_ts
                 print(
                     f"[SA] it={it} temp={temp:.2f} cost={best_cost:.1f} "
@@ -789,7 +869,7 @@ def optimize_with_simulated_annealing(
 
     unassigned_ids_final = [t["id"] for t in best_unassigned]
 
-    _save_run_log(config, weights, best_metrics, best_cost)
+    #_save_run_log(config, weights, best_metrics, best_cost)
 
     worst_drivers = _get_worst_drivers(
         driver_trips, resources, params, constraints_data, weights, target_duty
