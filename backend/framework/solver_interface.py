@@ -4,6 +4,7 @@ from typing import Any, Dict, List, Set
 
 from framework.problem import Problem, Trip, Driver, Chain, Parameters
 from framework.solution import Solution
+from services.legality_checker import check_assignment_legality
 
 
 # Template/Blueprint
@@ -47,9 +48,30 @@ class CustomSolver(Solver):
         trip_to_chain = {tid: c for c in chains for tid in c.trip_ids}
         chained_trip_ids = {tid for c in chains for tid in c.trip_ids}
 
-        # ---------------------------------------------------------
-        # STEP 1: RUN YOUR ALGORITHM
-        # You can call your own functions or classes here.
+        print(trips[0].raw, "\n")  # Example of accessing raw data for a trip
+        print(drivers[0].raw)  # Example of accessing raw data for a driver
+
+        # To check if a trip is legal for a driver, you can use:
+        assigned = []
+        for trip in trips:
+            ok, errors = check_assignment_legality(
+                trip=trip_lookup[trip.id].raw,
+                resource=driver_lookup[drivers[0].bus_id].raw,
+                current_trips=assigned,
+                params=problem.solver_params,
+                constraints_data=problem.constraints_data,
+            )
+            print("Is legal?", ok)
+            if not ok:
+                print("Errors:", errors)
+            else:
+                assigned.append(
+                    trip.raw
+                )  # USE .raw HERE! check_assignment_legality needs dictionaries
+
+        print("Assigned trips for driver 0:", len(assigned))
+
+        # --- STEP 1: YOUR ALGORITHM ---
 
         my_results = []  # Replace with your algorithm output
         # ---------------------------------------------------------
@@ -74,8 +96,6 @@ class CustomSolver(Solver):
             )
 
         # ---------------------------------------------------------
-
-        # --- AUTO-CALCULATION OF RESULTS ---
         for bs in bus_states:
             for tid in bs.get("assignedTrips", []):
                 assigned_trip_ids.add(tid)

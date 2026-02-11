@@ -2,6 +2,7 @@ import json
 from pathlib import Path
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Tuple, Set
+from services.legality_checker import SolverParameters, ConstraintsData
 
 
 @dataclass
@@ -132,6 +133,14 @@ class Problem:
     @property
     def raw(self) -> Dict[str, Any]:
         return self._data
+
+    @property
+    def solver_params(self) -> SolverParameters:
+        return SolverParameters.from_data(self._data)
+
+    @property
+    def constraints_data(self) -> ConstraintsData:
+        return ConstraintsData.from_data(self._data)
 
     @property
     def num_trips(self) -> int:
