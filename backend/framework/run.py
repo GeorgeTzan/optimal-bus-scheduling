@@ -70,7 +70,6 @@ def main():
 
     from framework.solver_interface import CustomSolver
 
-
     try:
         custom_solver = CustomSolver()
         print(f"\n--- Running {custom_solver.name} ---")
