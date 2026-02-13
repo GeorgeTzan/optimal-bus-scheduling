@@ -54,11 +54,11 @@ def main():
 
     solutions = []
 
-    # print("\n--- Running Greedy ---")
-    # greedy = GreedySASolver(use_sa=False)
-    # greedy_sol = greedy.solve(problem)
-    # solutions.append(greedy_sol)
-    # print(f"  {greedy_sol}")
+    print("\n--- Running Greedy ---")
+    greedy = GreedySASolver(use_sa=False)
+    greedy_sol = greedy.solve(problem)
+    solutions.append(greedy_sol)
+    print(f"  {greedy_sol}")
 
     # if not args.no_sa:
     #     print("\n--- Running Greedy + SA ---")
@@ -69,6 +69,7 @@ def main():
     #     print(f"  {sa_sol}")
 
     from framework.solver_interface import CustomSolver
+
 
     try:
         custom_solver = CustomSolver()

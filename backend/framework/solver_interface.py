@@ -48,54 +48,71 @@ class CustomSolver(Solver):
         trip_to_chain = {tid: c for c in chains for tid in c.trip_ids}
         chained_trip_ids = {tid for c in chains for tid in c.trip_ids}
 
-        print(trips[0].raw, "\n")  # Example of accessing raw data for a trip
-        print(drivers[0].raw)  # Example of accessing raw data for a driver
-
-        # To check if a trip is legal for a driver, you can use:
-        assigned = []
-        for trip in trips:
-            ok, errors = check_assignment_legality(
-                trip=trip_lookup[trip.id].raw,
-                resource=driver_lookup[drivers[0].bus_id].raw,
-                current_trips=assigned,
-                params=problem.solver_params,
-                constraints_data=problem.constraints_data,
-            )
-            print("Is legal?", ok)
-            if not ok:
-                print("Errors:", errors)
-            else:
-                assigned.append(
-                    trip.raw
-                )  # USE .raw HERE! check_assignment_legality needs dictionaries
-
-        print("Assigned trips for driver 0:", len(assigned))
 
         # --- STEP 1: YOUR ALGORITHM ---
+        # naive solver: iterate over all bus_drivers, assign a random trip to each driver.
+        import random
+        
+        bus_states: List[Dict[str, Any]] = []
+        for driver in drivers:
+            a_trip = random.choice(trips)
+            trips.remove(a_trip)
+            bus_states.append({
+                "busId": driver.bus_id,
+                "driverId": driver.driver_id, # 1
+                "homeStation": driver.home_station,
+                "assignedTrips": [a_trip.id],  # List of IDs # 2
+                "totalDrivingTime": a_trip.duration_minutes,  # Minutes
+                "totalIdleTime": 0,  # Minutes
+                "baseMismatch": 1 if a_trip.end_station != driver.home_station else 0,  # 1 if ends away from home
+            })
 
-        my_results = []  # Replace with your algorithm output
+        # print(trips[0].raw, "\n")  # Example of accessing raw data for a trip
+        # print(drivers[0].raw)  # Example of accessing raw data for a driver
+
+        # To check if a trip is legal for a driver (example for driver 0), you can use:
+        # assigned = []
+        # for trip in trips:
+        #     ok, errors = check_assignment_legality(
+        #         trip=trip_lookup[trip.id].raw,
+        #         resource=driver_lookup[drivers[0].bus_id].raw,
+        #         current_trips=assigned,
+        #         params=problem.solver_params,
+        #         constraints_data=problem.constraints_data,
+        #     )
+        #     print("Is legal?", ok)
+        #     if not ok:
+        #         print("Errors:", errors)
+        #     else:
+        #         assigned.append(
+        #             trip.raw
+        #         )  # USE .raw HERE! check_assignment_legality needs dictionaries
+
+        # print("Assigned trips for driver 0:", len(assigned))
+
+
+        # my_results = []  # Replace with your algorithm output
         # ---------------------------------------------------------
         # STEP 2: REPORT RESULTS (Fill bus_states)
         # For every bus/driver used, add their assignment details.
 
-        bus_states: List[Dict[str, Any]] = []
-        assigned_trip_ids: Set[str] = set()
 
         # Loop through your results and fill this:
-        for res in my_results:
-            bus_states.append(
-                {
-                    "busId": "bus_id_here",
-                    "driverId": "driver_id_here",
-                    "homeStation": "home_station_here",
-                    "assignedTrips": ["trip_id_1", "trip_id_2"],  # List of IDs
-                    "totalDrivingTime": 0,  # Minutes
-                    "totalIdleTime": 0,  # Minutes
-                    "baseMismatch": 0,  # 1 if ends away from home
-                }
-            )
+        # for res in my_results:
+        #     bus_states.append(
+        #         {
+        #             "busId": "bus_id_here",
+        #             "driverId": "driver_id_here",
+        #             "homeStation": "home_station_here",
+        #             "assignedTrips": ["trip_id_1", "trip_id_2"],  # List of IDs
+        #             "totalDrivingTime": 0,  # Minutes
+        #             "totalIdleTime": 0,  # Minutes
+        #             "baseMismatch": 0,  # 1 if ends away from home
+        #         }
+        #     )
 
         # ---------------------------------------------------------
+        assigned_trip_ids: Set[str] = set()
         for bs in bus_states:
             for tid in bs.get("assignedTrips", []):
                 assigned_trip_ids.add(tid)
