@@ -65,20 +65,45 @@ class CustomSolver(Solver):
         # SHIFT DATA STRUCTURE: BUS_ID, List[Leg]
         def get_cost(shift):
             bus_id = shift[0]
-            legs = shift[1] # δρομολόγια
+            legs = shift[1]  # δρομολόγια
             if bus_id is None:
                 return int(10_000 / len(legs))
             if len(legs) == 0:
                 return 5_000
-            idle_cost = ...  # TODO 1:  ποιο είναι το κόστος idle για μια σειρά δρομολογίων, π.χ. 330057, 330070, 330090
-            return idle_cost
+            sorted_legs = sorted(legs, key=lambda lid: trip_lookup[lid].start_minutes)
+            first_start = trip_lookup[sorted_legs[0]].start_minutes
+            last_end = trip_lookup[sorted_legs[-1]].end_minutes
+            total_driving = sum(
+                trip_lookup[lid].duration_minutes for lid in sorted_legs
+            )
+            idle_cost = (last_end - first_start) - total_driving
+            return max(idle_cost, 0)
 
         def is_valid(shift):
             # check feasibility of shift (is bus_id with list of legs legal?)
             # να μην λαμβάνει υπόψη κανόνες που μπορούν να ικανοποιηθούν με μελλοντικές αναθέσεις (π.χ. διανυκτέρευση)
             bus_id = shift[0]
-            legs = shift[1] # δρομολόγια
-            # TODO 2: είναι έγκυρη η λίστα δρομολογίων legs για το λεωφορείο bus_id? 
+            legs = shift[1]  # δρομολόγια
+            if bus_id is None or len(legs) == 0:
+                return True, None
+            driver = driver_lookup[bus_id]
+            sorted_legs = sorted(legs, key=lambda lid: trip_lookup[lid].start_minutes)
+            assigned = []
+            for lid in sorted_legs:
+                ok, err = check_assignment_legality(
+                    trip=trip_lookup[lid].raw,
+                    resource=driver.raw,
+                    current_trips=assigned,
+                    params=problem.solver_params,
+                    constraints_data=problem.constraints_data,
+                )
+                if not ok:
+                    return (
+                        False,
+                        err,
+                    )  # valid, error = is_valid(shift3) -> if not valid: print(error)
+                assigned.append(trip_lookup[lid].raw)
+            return True, None
 
         def get_total_cost(shift_list):
             total = 0
