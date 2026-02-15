@@ -39,7 +39,7 @@ class CustomSolver(Solver):
 
     @property
     def name(self) -> str:
-        return "Custom Solver"
+        return "CV_CG Solver"
 
     def solve(self, problem: Problem) -> Solution:
         start = time.time()
@@ -63,13 +63,23 @@ class CustomSolver(Solver):
 
         # ATTEMPT 1: shifts for every bus and every leg
         # SHIFT DATA STRUCTURE: BUS_ID, List[Leg]
-        def get_cost(shift):
+
+        def get_driver(bus_id):
+            return driver_lookup[bus_id]
+
+        def get_leg(leg_id):
+            return trip_lookup[leg_id]
+
+        def get_driving_time(shift):
+            tot = 0
+            for leg_id in shift[1]:
+                leg = get_leg(leg_id)
+                tot += leg.duration_minutes
+            return tot
+
+        def get_idle_time(shift):
             bus_id = shift[0]
             legs = shift[1]  # δρομολόγια
-            if bus_id is None:
-                return int(10_000 / len(legs))
-            if len(legs) == 0:
-                return 5_000
             sorted_legs = sorted(legs, key=lambda lid: trip_lookup[lid].start_minutes)
             first_start = trip_lookup[sorted_legs[0]].start_minutes
             last_end = trip_lookup[sorted_legs[-1]].end_minutes
@@ -78,6 +88,15 @@ class CustomSolver(Solver):
             )
             idle_cost = (last_end - first_start) - total_driving
             return max(idle_cost, 0)
+
+        def get_cost(shift):
+            bus_id = shift[0]
+            legs = shift[1]  # δρομολόγια
+            if len(legs) == 0:
+                return 50_000  # bus without legs
+            if bus_id is None:
+                return 1_000_000 * len(legs)  # legs not assigned to a bus
+            return get_idle_time(shift)
 
         def is_valid(shift):
             # check feasibility of shift (is bus_id with list of legs legal?)
@@ -111,8 +130,8 @@ class CustomSolver(Solver):
                 total += get_cost(shift)
             return total
 
-        busses = []  # to be filled with bus_ids
-        legs = []  # to be filled with ΔΡΟΜΟΛΟΓΙΑ ids
+        busses = [d.bus_id for d in drivers]  # to be filled with bus_ids
+        legs = [t.id for t in trips]  # to be filled with ΔΡΟΜΟΛΟΓΙΑ ids
         shift_list = []
         for bus_id in busses:
             shift_list.append((bus_id, []))
@@ -121,10 +140,18 @@ class CustomSolver(Solver):
 
         import random
 
-        total_cost = get_total_cost()
-        print(f"{total_cost=}")
+        ITERATIONS_LIMIT = 10_000
         c = 0
+        total_cost_seq = [get_total_cost(shift_list)]
         while True:
+            c += 1
+            if c == ITERATIONS_LIMIT:
+                break
+
+            total_cost = get_total_cost(shift_list)
+            if total_cost != total_cost_seq[-1]:
+                print(f"Better solution at iteration {c+1} {total_cost=}")
+                total_cost_seq.append(total_cost)
             shift1, shift2 = random.sample(shift_list, 2)
             cost1 = get_cost(shift1)
             cost2 = get_cost(shift2)
@@ -193,54 +220,27 @@ class CustomSolver(Solver):
                         shift_list.append(shift4)
                     continue
 
-            c += 1
-            if c == 1000:
-                break
-
-        total_cost = get_total_cost()
-        print(f"{total_cost=}")
-
-        # --- YOUR ALGORITHM ---
-        # naive solver: iterate over all bus_drivers, assign one random trip to each driver.
-        # import random
-
-        # bus_states: List[Dict[str, Any]] = []
-        # for driver in drivers:
-        #     a_trip = random.choice(trips)
-        #     trips.remove(a_trip)
-        #     bus_states.append(
-        #         {
-        #             "busId": driver.bus_id,
-        #             "driverId": driver.driver_id,  # BASE DATA 1
-        #             "homeStation": driver.home_station,
-        #             "assignedTrips": [a_trip.id],  # List of IDs # BASE DATA 2
-        #             "totalDrivingTime": a_trip.duration_minutes,  # Minutes
-        #             "totalIdleTime": 0,  # Minutes
-        #             "baseMismatch": (
-        #                 1 if a_trip.end_station != driver.home_station else 0
-        #             ),  # 1 if ends away from home
-        #         }
-        #     )
-
-        # Legality check
-        # To check if a trip is legal for a driver (example for driver 0), you can use:
-        # assigned = []
-        # for trip in trips:
-        #     ok, errors = check_assignment_legality(
-        #         trip=trip_lookup[trip.id].raw,
-        #         resource=driver_lookup[drivers[0].bus_id].raw,
-        #         current_trips=assigned,
-        #         params=problem.solver_params,
-        #         constraints_data=problem.constraints_data,
-        #     )
-        #     # print("Is legal?", ok)
-        #     if not ok:
-        #         print("Errors:", errors)
-        #     else:
-        #         assigned.append(
-        #             trip.raw
-        #         )  # USE .raw HERE! check_assignment_legality needs dictionaries
-        # print("Assigned trips for driver 0:", len(assigned))
+        bus_states: List[Dict[str, Any]] = []
+        for shift in shift_list:
+            bus_id = shift[0]
+            legs = shift[1]
+            if bus_id is None:
+                continue
+            if len(legs) == 0:
+                continue
+            driver = get_driver(bus_id)
+            leg = get_leg(legs[-1])
+            bus_states.append(
+                {
+                    "busId": bus_id,
+                    "driverId": driver.driver_id,
+                    "homeStation": driver.home_station,
+                    "assignedTrips": legs,
+                    "totalDrivingTime": get_driving_time(shift),
+                    "totalIdleTime": get_idle_time(shift),
+                    "baseMismatch": 1 if leg.end_station == driver.home_station else 0,
+                }
+            )
 
         # ---------------------------------------------------------
 

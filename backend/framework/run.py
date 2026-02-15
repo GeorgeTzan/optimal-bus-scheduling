@@ -70,16 +70,22 @@ def main():
 
     from framework.solver_interface import CustomSolver
 
-    try:
-        custom_solver = CustomSolver()
-        print(f"\n--- Running {custom_solver.name} ---")
-        custom_sol = custom_solver.solve(problem)
-        solutions.append(custom_sol)
-        print(f"  {custom_sol}")
-    except NotImplementedError:
-        pass
-    except Exception as e:
-        print(f"\n[Custom Solver Error] {e}")
+    custom_solver = CustomSolver()
+    print(f"\n--- Running {custom_solver.name} ---")
+    custom_sol = custom_solver.solve(problem)
+    solutions.append(custom_sol)
+    print(f"  {custom_sol}")
+
+    # try:
+    #     custom_solver = CustomSolver()
+    #     print(f"\n--- Running {custom_solver.name} ---")
+    #     custom_sol = custom_solver.solve(problem)
+    #     solutions.append(custom_sol)
+    #     print(f"  {custom_sol}")
+    # except NotImplementedError:
+    #     pass
+    # except Exception as e:
+    #     print(f"\n[Custom Solver Error] {e}")
 
     print("\n" + compare(solutions))
 
