@@ -1,3 +1,12 @@
+# class SAWeights:
+#     unassigned_trip: float = 100_000_000.0
+#     unused_bus: float = 50_000.0
+#     overtime_minutes: float = 100.0
+#     idle_minutes: float = 1.0
+#     transfer_penalty: float = 10.0
+#     fairness_term: float = 5.0
+#     return_to_base_penalty: float = 200.0
+
 import time
 from abc import ABC, abstractmethod
 from typing import Any, Dict, List, Set
@@ -56,17 +65,20 @@ class CustomSolver(Solver):
         # SHIFT DATA STRUCTURE: BUS_ID, List[Leg]
         def get_cost(shift):
             bus_id = shift[0]
-            legs = shift[1]
+            legs = shift[1] # δρομολόγια
             if bus_id is None:
                 return int(10_000 / len(legs))
             if len(legs) == 0:
                 return 5_000
-            idle_cost = ...
+            idle_cost = ...  # TODO 1:  ποιο είναι το κόστος idle για μια σειρά δρομολογίων, π.χ. 330057, 330070, 330090
             return idle_cost
 
         def is_valid(shift):
-            # check feasibility of shift
-            ...
+            # check feasibility of shift (is bus_id with list of legs legal?)
+            # να μην λαμβάνει υπόψη κανόνες που μπορούν να ικανοποιηθούν με μελλοντικές αναθέσεις (π.χ. διανυκτέρευση)
+            bus_id = shift[0]
+            legs = shift[1] # δρομολόγια
+            # TODO 2: είναι έγκυρη η λίστα δρομολογίων legs για το λεωφορείο bus_id? 
 
         def get_total_cost(shift_list):
             total = 0
@@ -165,25 +177,25 @@ class CustomSolver(Solver):
 
         # --- YOUR ALGORITHM ---
         # naive solver: iterate over all bus_drivers, assign one random trip to each driver.
-        import random
+        # import random
 
-        bus_states: List[Dict[str, Any]] = []
-        for driver in drivers:
-            a_trip = random.choice(trips)
-            trips.remove(a_trip)
-            bus_states.append(
-                {
-                    "busId": driver.bus_id,
-                    "driverId": driver.driver_id,  # BASE DATA 1
-                    "homeStation": driver.home_station,
-                    "assignedTrips": [a_trip.id],  # List of IDs # BASE DATA 2
-                    "totalDrivingTime": a_trip.duration_minutes,  # Minutes
-                    "totalIdleTime": 0,  # Minutes
-                    "baseMismatch": (
-                        1 if a_trip.end_station != driver.home_station else 0
-                    ),  # 1 if ends away from home
-                }
-            )
+        # bus_states: List[Dict[str, Any]] = []
+        # for driver in drivers:
+        #     a_trip = random.choice(trips)
+        #     trips.remove(a_trip)
+        #     bus_states.append(
+        #         {
+        #             "busId": driver.bus_id,
+        #             "driverId": driver.driver_id,  # BASE DATA 1
+        #             "homeStation": driver.home_station,
+        #             "assignedTrips": [a_trip.id],  # List of IDs # BASE DATA 2
+        #             "totalDrivingTime": a_trip.duration_minutes,  # Minutes
+        #             "totalIdleTime": 0,  # Minutes
+        #             "baseMismatch": (
+        #                 1 if a_trip.end_station != driver.home_station else 0
+        #             ),  # 1 if ends away from home
+        #         }
+        #     )
 
         # Legality check
         # To check if a trip is legal for a driver (example for driver 0), you can use:
