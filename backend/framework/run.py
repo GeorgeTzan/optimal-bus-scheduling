@@ -75,6 +75,15 @@ def main():
     custom_sol = custom_solver.solve(problem)
     solutions.append(custom_sol)
     print(f"  {custom_sol}")
+    
+    from framework.cv_solver import CustomSolver as CVSolver
+
+    custom_solver = CVSolver()
+    print(f"\n--- Running {custom_solver.name} ---")
+    custom_sol = custom_solver.solve(problem)
+    solutions.append(custom_sol)
+    print(f"  {custom_sol}")
+
 
     # try:
     #     custom_solver = CustomSolver()
