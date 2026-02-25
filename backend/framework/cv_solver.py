@@ -9,8 +9,11 @@
 
 import time
 import random
+from collections import defaultdict
+from itertools import permutations, combinations
 
 from ortools.sat.python import cp_model
+from framework.graph import Graph
 
 from abc import ABC, abstractmethod
 from typing import Any, Dict, List, Set
@@ -104,6 +107,11 @@ class CustomSolver(Solver):
             return True, None
         driver = self.driver_lookup[bus_id]
         sorted_legs = sorted(legs, key=lambda lid: self.trip_lookup[lid].start_minutes)
+
+        for leg1, leg2 in zip(legs, legs[1:]):
+            if self.trip_lookup[leg1].end_minutes > self.trip_lookup[leg2].start_minutes:
+                return False
+
         assigned = []
         for lid in sorted_legs:
             ok, err = check_assignment_legality(
@@ -275,7 +283,7 @@ class CustomSolver(Solver):
             solve_time=time.time() - start,
         )
 
-    def k_opt(self, k=2) -> Solution:
+    def k_opt(self, k=2, iter_limit=500) -> Solution:
         start = time.time()
 
         # Access basic data
@@ -293,8 +301,11 @@ class CustomSolver(Solver):
         for leg_id in legs:
             shift_list.append((None, [leg_id]))
 
-        ITERATIONS_LIMIT = 500
-        c = 0
+        # n1 = 2 !!!, n2 = 386
+        # n1 = legs.count('110016')
+        # n2 = len(set(legs))
+
+        c = 0 # iteration counter
         total_cost_seq = [self.get_total_cost(shift_list)]
 
         while True:
@@ -313,22 +324,67 @@ class CustomSolver(Solver):
             for sh in pre_shifts:
                 pre_leg.extend(sh[1])
 
-            row_ind = {bus_leg_id:i for i,bus_leg_id in enumerate(pre_bus + pre_leg)}
-
             bus_num = len(pre_bus)
             leg_num = len(pre_leg)
 
+            if bus_num == 0 or leg_num == 0:
+                continue
+
+            # dict to have the SPP row of a bus_id or a leg_id
+            row_ind = {bus_leg_id:i for i,bus_leg_id in enumerate(pre_bus + pre_leg)}
+
             # rows of SPP -> bus_num + leg_num
-            # cols of SPP -> bus_num (shifts with only bus, no legs) + (for feasibility)
-            #               leg_num (shifts with only 1 leg, no bus) + (for feasibility)
-            #               previous shifts + (a solution to start)
-            #               new generated shifts
-            spp_shifts = [(bus_id, []) for bus_id in pre_bus]
+            # cols of SPP ->
+            #   previous shifts + (a solution to start) +
+            #   bus_num (shifts with only bus, no legs) + (for feasibility)
+            #   leg_num (shifts with only 1 leg, no bus) + (for feasibility)
+            #   new generated shifts
+            spp_shifts = pre_shifts[:]
+            spp_shifts.extend([(bus_id, []) for bus_id in pre_bus])
             spp_shifts.extend([(None, [leg_id]) for leg_id in pre_leg])
 
-            spp_shifts.extend(pre_shifts)
+            # build a graph for shifts generation
+            # Initialize the graph
+            graph = Graph()
 
+            # Add vertices for buses and legs
+            for bus_id in pre_bus:
+                graph.add_node(bus_id)
 
+            for leg_id in pre_leg:
+                graph.add_node(leg_id)
+
+            # Add edges between buses and legs
+            for bus_id in pre_bus:
+                for leg_id in pre_leg:
+                    if self.is_valid((bus_id, [leg_id])):  # Check if the bus can handle the leg
+                        # cost = self.get_cost((bus_id, [leg_id]))
+                        graph.add_edge(bus_id, leg_id)
+
+            # next_legs = defaultdict(int)
+            for (leg1, leg2) in permutations(pre_leg, 2):
+                # if next_legs[leg1] > 3:
+                    # continue
+                # if self.trip_lookup[leg1].end_minutes > self.trip_lookup[leg2].start_minutes:
+                    # continue
+                if self.is_valid((None, [leg1, leg2])):
+                    graph.add_edge(leg1, leg2)
+                    # next_legs[leg1] += 1
+
+            # Find all valid paths from buses in pre_bus
+            # print(f'generating... {bus_num=} {leg_num=}')
+            all_paths = graph.find_paths_from_buses(pre_bus, max_bus_paths=30)
+            if not all_paths:
+                continue
+
+            for path in all_paths:
+                bus_id = path[0]
+                legs = path[1:]
+                new_shift = (bus_id, legs)
+                if self.is_valid(new_shift):
+                    spp_shifts.append(new_shift)
+
+            # ---
             model = cp_model.CpModel()
 
             # a binary var for each shift
@@ -346,41 +402,45 @@ class CustomSolver(Solver):
                 for i,sh in enumerate(spp_shifts):
                     for leg_id in sh[1]:
                         if row_ind[leg_id]==bus_num + row:
-                            v_list.append(x_vars[i] )
+                            v_list.append(x_vars[i])
+                            break
                 model.add(sum(v_list) == 1)
 
+            # hints for previous shifts
+            for i,sh in enumerate(pre_shifts):
+                model.add_hint(x_vars[i], 1)
+
+            # objective
             obj = sum(self.get_cost(sh)*x_vars[i] for i,sh in enumerate(spp_shifts))
             model.Minimize(obj)
 
+            # print(f'solving... {bus_num=} {leg_num=} {len(spp_shifts)=} {len(all_paths)=}')
             solver = cp_model.CpSolver()
             status = solver.Solve(model)
+            # status = solver.Solve(model, solution_callback=cp_model.ObjectiveSolutionPrinter())
 
             if status == cp_model.OPTIMAL or status == cp_model.FEASIBLE:
                 new_cost = int(solver.ObjectiveValue())
-                print(f'Συνολικό Κόστος Λύσης: {new_cost=} {pre_cost=} improve={pre_cost-new_cost}')
+                if new_cost < pre_cost:
+                    # print(f'k-opt: {new_cost=} {pre_cost=} improve={pre_cost-new_cost}')
+                    for sh in pre_shifts:
+                        shift_list.remove(sh)
+                    for i,sh in enumerate(spp_shifts):
+                        if solver.value(x_vars[i]) == 1:
+                            shift_list.append(sh)
             else:
-                print('no solution')
-
-
-            # # 1. check if all legs of shift1 can be appended at the start of shift2 ==> shift3, shift4
-            # shift3 = (shift1[0], shift1[1] + shift2[1])
-            # shift4 = (shift2[0], [])
-            # if self.is_valid(shift3):
-            #     cost3 = self.get_cost(shift3)
-            #     cost4 = self.get_cost(shift4)
-
-            #     if cost3 + cost4 < cost1 + cost2:
-            #         shift_list.remove(shift1)
-            #         shift_list.remove(shift2)
-            #         if shift3[0] is not None or len(shift3[1]) > 0:
-            #             shift_list.append(shift3)
-            #         if shift4[0] is not None or len(shift4[1]) > 0:
-            #             shift_list.append(shift4)
-            #         continue
-
+                print(f'no solution, {solver.status_name(status)}')
+                # print(f'{row_ind=}')
+                # print(f'{pre_bus=} {pre_leg=}')
+                # print('pre_shifts')
+                # for sh in pre_shifts:
+                #     print(sh)
+                # print('spp_shifts')
+                # for sh in spp_shifts:
+                #     print(sh)
 
             c += 1
-            if c == ITERATIONS_LIMIT:
+            if c == iter_limit:
                 break
 
         bus_states: List[Dict[str, Any]] = []
@@ -436,7 +496,8 @@ class CustomSolver(Solver):
 
     # --------------------------------------------
     def solve(self, problem: Problem) -> Solution:
+        random.seed(123)
         self.set_problem(problem)
 
         # return self.two_opt()
-        return self.k_opt(3)
+        return self.k_opt(k=3, iter_limit=3_000)

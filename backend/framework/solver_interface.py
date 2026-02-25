@@ -107,6 +107,11 @@ class CustomSolver(Solver):
                 return True, None
             driver = driver_lookup[bus_id]
             sorted_legs = sorted(legs, key=lambda lid: trip_lookup[lid].start_minutes)
+
+            for leg1, leg2 in zip(legs, legs[1:]):
+                if trip_lookup[leg1].end_minutes > trip_lookup[leg2].start_minutes:
+                    return False
+
             assigned = []
             for lid in sorted_legs:
                 ok, err = check_assignment_legality(
