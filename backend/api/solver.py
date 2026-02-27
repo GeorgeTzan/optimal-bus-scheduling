@@ -1,5 +1,7 @@
 from fastapi import APIRouter
 from pydantic import BaseModel, Field
+from typing import Optional
+import os
 
 from dat_parser import parse_trips, parse_drivers, get_full_data
 from services.solver import run_constructive_heuristic
@@ -9,6 +11,8 @@ from services.simulated_annealing import (
     SAWeights,
 )
 from services.legality_checker import SolverParameters, ConstraintsData
+from services.legacy_loader import load_legacy_solution
+from services.lahc import optimize_with_lahc, LAHCConfig
 
 router = APIRouter(tags=["Solver"])
 
@@ -55,5 +59,48 @@ def solve(req: SolveRequest = SolveRequest()):
         constraints_data=constraints,
         config=config,
         weights=weights,
+        verbose=False,
+    )
+
+
+@router.post("/solve/legacy")
+def solve_legacy():
+    shifts_path = "/app/shifts.dat"
+
+    if not os.path.exists(shifts_path):
+        local_path = os.path.join(
+            os.path.dirname(os.path.dirname(__file__)), "shifts.dat"
+        )
+        if os.path.exists(local_path):
+            shifts_path = local_path
+
+    if not os.path.exists(shifts_path):
+        return {
+            "error": f"Legacy shifts file not found at {shifts_path}",
+            "metrics": None,
+        }
+
+    return load_legacy_solution(shifts_path)
+
+
+class LAHCRequest(BaseModel):
+    previous_solution: Optional[dict] = Field(default=None)
+
+
+@router.post("/solve/lahc")
+def solve_lahc(req: LAHCRequest = LAHCRequest()):
+    full_data = get_full_data()
+    params = SolverParameters.from_data(full_data)
+    constraints = ConstraintsData.from_data(full_data)
+    config = LAHCConfig()
+    weights = SAWeights()
+
+    return optimize_with_lahc(
+        full_data=full_data,
+        params=params,
+        constraints_data=constraints,
+        config=config,
+        weights=weights,
+        previous_solution=req.previous_solution,
         verbose=False,
     )

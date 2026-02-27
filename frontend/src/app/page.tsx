@@ -287,6 +287,8 @@ export default function HomePage() {
   const [saIters, setSaIters] = useState(4000);
   const [saTemp, setSaTemp] = useState(50);
   const [saCooling, setSaCooling] = useState(0.999);
+  const [solutionHistory, setSolutionHistory] = useState<{ name: string; solution: Solution }[]>([]);
+  const [lahcSolution, setLahcSolution] = useState<Solution | null>(null);
 
   const runConstructiveHeuristic = async () => {
     setIsSolving(true);
@@ -303,8 +305,47 @@ export default function HomePage() {
       });
       const data = await response.json();
       setSolution(data);
+      setSolutionHistory(prev => [...prev.filter(s => s.name !== solverMode), { name: solverMode === 'sa' ? 'Simulated Annealing' : 'Greedy Heuristic', solution: data }]);
     } catch (err) {
       console.error("Failed to run solver:", err);
+    } finally {
+      setIsSolving(false);
+    }
+  };
+
+  const loadLegacySolution = async () => {
+    setIsSolving(true);
+    try {
+      const response = await fetch("/api/solve/legacy", { method: "POST" });
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.status}`);
+      }
+      const data = await response.json();
+      setSolution(data);
+      setSolutionHistory(prev => [...prev.filter(s => s.name !== 'Legacy CV'), { name: 'Legacy CV', solution: data }]);
+    } catch (err) {
+      console.error("Failed to load legacy solution:", err);
+    } finally {
+      setIsSolving(false);
+    }
+  };
+
+  const runLAHC = async (fromCurrent = false) => {
+    setIsSolving(true);
+    try {
+      const body = fromCurrent && lahcSolution ? { previous_solution: lahcSolution } : {};
+      const response = await fetch("/api/solve/lahc", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      if (!response.ok) throw new Error(`Server error: ${response.status}`);
+      const data = await response.json();
+      setLahcSolution(data);
+      setSolution(data);
+      setSolutionHistory(prev => [...prev.filter(s => s.name !== 'LAHC'), { name: 'LAHC', solution: data }]);
+    } catch (err) {
+      console.error("Failed to run LAHC:", err);
     } finally {
       setIsSolving(false);
     }
@@ -817,8 +858,106 @@ export default function HomePage() {
                     </>
                   )}
                 </button>
+
+                <button
+                  onClick={loadLegacySolution}
+                  disabled={isSolving || trips.length === 0 || drivers.length === 0}
+                  className="px-6 py-2.5 rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:from-blue-500 hover:to-blue-600 transition text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                >
+                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
+                   </svg>
+                   Load CV (Legacy)
+                </button>
+
+                <button
+                  onClick={() => runLAHC(false)}
+                  disabled={isSolving || trips.length === 0 || drivers.length === 0}
+                  className="px-6 py-2.5 rounded-lg bg-gradient-to-r from-violet-600 to-violet-700 text-white hover:from-violet-500 hover:to-violet-600 transition text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                >
+                  {isSolving ? (
+                    <>
+                      <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Solving...
+                    </>
+                  ) : (
+                    <>
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                      </svg>
+                      Run LAHC
+                    </>
+                  )}
+                </button>
+
+                {lahcSolution && (
+                  <button
+                    onClick={() => runLAHC(true)}
+                    disabled={isSolving}
+                    className="px-6 py-2.5 rounded-lg bg-gradient-to-r from-amber-600 to-amber-700 text-white hover:from-amber-500 hover:to-amber-600 transition text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                  >
+                    {isSolving ? (
+                      <>
+                        <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Solving...
+                      </>
+                    ) : (
+                      <>
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                        Re-solve (LAHC)
+                      </>
+                    )}
+                  </button>
+                )}
               </div>
             </div>
+
+            {solutionHistory.length > 1 && (
+              <div className="bg-slate-900/80 backdrop-blur-sm rounded-lg p-4 border border-white/10">
+                <h3 className="text-lg font-semibold text-white mb-3">Solution Comparison</h3>
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead className="bg-slate-950/90 border-b border-white/10">
+                      <tr>
+                        <th className="px-3 py-2 text-left text-slate-300 text-xs font-semibold uppercase tracking-wide">Heuristic</th>
+                        <th className="px-3 py-2 text-right text-slate-300 text-xs font-semibold uppercase tracking-wide">Assigned</th>
+                        <th className="px-3 py-2 text-right text-slate-300 text-xs font-semibold uppercase tracking-wide">Idle Time</th>
+                        <th className="px-3 py-2 text-right text-slate-300 text-xs font-semibold uppercase tracking-wide">Buses Used</th>
+                        <th className="px-3 py-2 text-right text-slate-300 text-xs font-semibold uppercase tracking-wide">Base Mismatches</th>
+                        <th className="px-3 py-2 text-center text-slate-300 text-xs font-semibold uppercase tracking-wide">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {solutionHistory.map((hist, idx) => (
+                        <tr key={idx} className={`border-b border-white/5 hover:bg-white/5 transition ${solution?.metrics === hist.solution.metrics ? 'bg-blue-500/10' : ''}`}>
+                          <td className="px-3 py-3 text-white font-medium text-sm">{hist.name}</td>
+                          <td className="px-3 py-3 text-right text-blue-300 font-mono text-sm">{hist.solution.metrics.assigned}</td>
+                          <td className="px-3 py-3 text-right text-purple-300 font-mono text-sm">{formatDuration(hist.solution.metrics.totalIdleTime)}</td>
+                          <td className="px-3 py-3 text-right text-green-300 font-mono text-sm">{hist.solution.metrics.busesUsed}</td>
+                          <td className="px-3 py-3 text-right text-red-300 font-mono text-sm">{hist.solution.metrics.baseMismatchCount || 0}</td>
+                          <td className="px-3 py-3 text-center">
+                            <button 
+                              onClick={() => setSolution(hist.solution)}
+                              className="px-2 py-1 bg-white/10 hover:bg-white/20 text-white rounded text-xs transition"
+                            >
+                              View
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
 
             {solution && (
               <>
@@ -910,24 +1049,7 @@ export default function HomePage() {
                                   </div>
                                 );
                               })}
-                              {bus.transfers?.map((transfer, tIdx) => {
-                                const leftPercent = timeToPixels(transfer.startMinutes);
-                                const widthPercent = timeToPixels(transfer.duration);
-                                return (
-                                  <div
-                                    key={`v-${tIdx}`}
-                                    className="absolute top-1 bottom-1 rounded text-[10px] flex items-center justify-center text-white/50 font-bold border border-black/50 bg-black/60 shadow-inner overflow-hidden"
-                                    style={{
-                                      left: `${leftPercent}%`,
-                                      width: `${Math.max(widthPercent, 1.5)}%`,
-                                      zIndex: 5
-                                    }}
-                                    title={`Virtual Drom (Transfer): Stn ${transfer.fromStation} -> Stn ${transfer.toStation} (${transfer.duration}m)`}
-                                  >
-                                    <span className="truncate px-0.5">V</span>
-                                  </div>
-                                );
-                              })}
+
                             </div>
                           </div>
                         );
@@ -1002,49 +1124,6 @@ export default function HomePage() {
                   </div>
                 )}
 
-                <div className="bg-slate-900/80 backdrop-blur-sm rounded-lg p-4 border border-white/10">
-                  <h3 className="text-lg font-semibold text-white mb-3">Assignment Details</h3>
-                  <div className="overflow-x-auto">
-                    <table className="w-full">
-                      <thead className="bg-slate-950/90 border-b border-white/10">
-                        <tr>
-                          <th className="px-3 py-2.5 text-left text-slate-300 text-xs font-semibold uppercase tracking-wide">Trip ID</th>
-                          <th className="px-3 py-2.5 text-left text-slate-300 text-xs font-semibold uppercase tracking-wide">Bus ID</th>
-                          <th className="px-3 py-2.5 text-left text-slate-300 text-xs font-semibold uppercase tracking-wide">Route</th>
-                          <th className="px-3 py-2.5 text-left text-slate-300 text-xs font-semibold uppercase tracking-wide">Time</th>
-                          <th className="px-3 py-2.5 text-left text-slate-300 text-xs font-semibold uppercase tracking-wide">Idle Before</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {solution.assignments.slice(0, 20).map((assignment, idx) => {
-                          const trip = trips.find(t => t.id === assignment.tripId);
-                          return (
-                            <tr key={idx} className="border-b border-white/5 hover:bg-white/5 transition">
-                              <td className="px-3 py-2 text-white font-mono text-xs">{assignment.tripId}</td>
-                              <td className="px-3 py-2 text-slate-300 font-mono text-xs">{assignment.busId}</td>
-                              <td className="px-3 py-2 text-slate-300 text-xs">
-                                Stn {trip?.startStation} → Stn {trip?.endStation}
-                              </td>
-                              <td className="px-3 py-2 text-slate-300 text-xs font-mono">
-                                {trip?.time.start} - {trip?.time.end}
-                              </td>
-                              <td className="px-3 py-2 text-xs">
-                                <span className={assignment.idleTime === 0 ? "text-green-300" : "text-orange-300"}>
-                                  {formatDuration(assignment.idleTime)}
-                                </span>
-                              </td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
-                    {solution.assignments.length > 20 && (
-                      <div className="text-center text-slate-400 text-xs py-2">
-                        Showing first 20 of {solution.assignments.length} assignments
-                      </div>
-                    )}
-                  </div>
-                </div>
               </>
             )}
 
