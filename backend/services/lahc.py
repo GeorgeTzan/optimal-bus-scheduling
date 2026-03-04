@@ -29,7 +29,7 @@ class LAHCConfig:
     L: int = 1000
     log_every: int = 5000
     restart_threshold: int = 20000
-    max_coverage_seconds: int = 240
+    max_seconds: int = 240
 
 
 def _build_empty_state(
@@ -121,15 +121,26 @@ def _perform_lahc_move(
 
     if move_type < unassigned_move_prob and current_unassigned:
         trip = random.choice(current_unassigned)
-        candidate = sorted(
-            current[bus_a] + [trip], key=lambda x: x.get("start_minutes", 0)
-        )
-        if not _is_legal_sequence(
-            candidate, resources.get(bus_a, {}), params, constraints_data, day_index
-        ):
+        bus_ids = list(current.keys())
+        random.shuffle(bus_ids)
+        found = False
+        for try_bus in bus_ids:
+            candidate = sorted(
+                current[try_bus] + [trip], key=lambda x: x.get("start_minutes", 0)
+            )
+            if _is_legal_sequence(
+                candidate, resources.get(try_bus, {}), params, constraints_data, day_index
+            ):
+                bus_a = try_bus
+                old_a_cost = _compute_driver_cost(
+                    current[bus_a], resources.get(bus_a, {}), params, constraints_data, weights, target_duty
+                )
+                new_a = candidate
+                new_unassigned = [t for t in current_unassigned if t["id"] != trip["id"]]
+                found = True
+                break
+        if not found:
             return None, None, 0.0
-        new_a = candidate
-        new_unassigned = [t for t in current_unassigned if t["id"] != trip["id"]]
 
     elif move_type < 0.5:
         if current[bus_a]:
@@ -350,10 +361,10 @@ def optimize_with_lahc(
                 iters_since_best = 0
                 history = [current_cost] * config.L
                 v = 0
-            elif time.time() - start_ts > config.max_coverage_seconds:
+            elif time.time() - start_ts > config.max_seconds:
                 break
         else:
-            if it - all_assigned_at >= config.max_iters:
+            if it - all_assigned_at >= config.max_iters and time.time() - start_ts > config.max_seconds:
                 break
         if it % 500 == 0:
             worst_drivers = _get_worst_drivers(
@@ -380,7 +391,9 @@ def optimize_with_lahc(
 
         candidate_cost = current_cost + delta
 
-        if candidate_cost <= history[v]:
+        reduces_unassigned = new_unassigned is not None and len(new_unassigned) < len(current_unassigned)
+
+        if reduces_unassigned or candidate_cost <= history[v]:
             current[result_state["bus_a"]] = result_state["new_a"]
             if result_state["bus_b"] and result_state["new_b"] is not None:
                 current[result_state["bus_b"]] = result_state["new_b"]
