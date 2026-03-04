@@ -343,59 +343,10 @@ def check_assignment_legality(
         trip_start_station = trip.get("startStation")
 
         if last_end_station != trip_start_station:
-            # Virtual Drom / Transfer Logic
-            matrix = constraints_data.station_transfer_matrix
-            if not matrix:
-                errors.append(
-                    f"station_mismatch: Last ended at {last_end_station}, next starts at {trip_start_station} (No transfer matrix)"
-                )
-                return False, errors
-
-            try:
-                idx1 = int(last_end_station) - 1
-                idx2 = int(trip_start_station) - 1
-
-                if 0 <= idx1 < len(matrix) and 0 <= idx2 < len(matrix[0]):
-                    transfer_type = matrix[idx1][idx2]
-
-                    if transfer_type == "OVERNIGHT":
-                        errors.append(
-                            f"transfer_forbidden_same_duty: {last_end_station} -> {trip_start_station} (OVERNIGHT)"
-                        )
-                        return False, errors
-
-                    effective_last_end = last_end
-                    effective_trip_start = trip_start
-                    if trip_start < last_end and last_end > 1200 and trip_start < 300:
-                        effective_trip_start = trip_start + 1440
-
-                    gap = effective_trip_start - effective_last_end
-
-                    if transfer_type == "BREAK":
-                        if gap < params.min_break_time:
-                            errors.append(
-                                f"transfer_requires_break: {gap} < {params.min_break_time}"
-                            )
-                            return False, errors
-                    elif transfer_type == "NONE":
-                        if gap < 0:
-                            errors.append("insufficient_time_gap")
-                            return False, errors
-                    elif transfer_type == "UNKNOWN":
-                        errors.append(
-                            f"transfer_unknown: {last_end_station} -> {trip_start_station}"
-                        )
-                        return False, errors
-                else:
-                    errors.append(
-                        f"station_index_out_of_bounds: {last_end_station} or {trip_start_station}"
-                    )
-                    return False, errors
-            except (ValueError, TypeError):
-                errors.append(
-                    f"invalid_station_code: {last_end_station} or {trip_start_station}"
-                )
-                return False, errors
+            errors.append(
+                f"station_mismatch: Last ended at {last_end_station}, next starts at {trip_start_station}"
+            )
+            return False, errors
         else:
             effective_last_end = last_end
             effective_trip_start = trip_start

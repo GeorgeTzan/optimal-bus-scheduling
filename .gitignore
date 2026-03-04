@@ -44,6 +44,8 @@ yarn-error.log*
 .env
 .env*.local
 
+/Legacy Software/
+
 *.pdf
 *.pyc
 *.csv

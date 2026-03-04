@@ -1,11 +1,9 @@
-import random
 from typing import List, Dict, Any, Set, Tuple
 from services.legality_checker import (
     check_assignment_legality,
     check_driver_wish_bonus,
     SolverParameters,
     ConstraintsData,
-    get_transfer_duration,
 )
 
 
@@ -284,65 +282,10 @@ def run_constructive_heuristic(
 
         initial_idle = best_match["idle"]
 
-        if not best_candidate["assignedTrips"]:
-            home_st = best_candidate["homeStation"]
-            task_start_st = task["startStation"]
-            if home_st and task_start_st != home_st:
-                dur = get_transfer_duration(
-                    home_st, task_start_st, constraints_data, params
-                )
-                best_candidate["transfers"].append(
-                    {
-                        "type": "VIRTUAL",
-                        "fromStation": home_st,
-                        "toStation": task_start_st,
-                        "startMinutes": task["start_minutes"] - dur,
-                        "endMinutes": task["start_minutes"],
-                        "duration": dur,
-                    }
-                )
-        else:
-            prev_end_st = best_candidate["currentStation"]
-            curr_start_st = task["startStation"]
-            if prev_end_st != curr_start_st:
-                dur = get_transfer_duration(
-                    prev_end_st, curr_start_st, constraints_data, params
-                )
-                best_candidate["transfers"].append(
-                    {
-                        "type": "VIRTUAL",
-                        "fromStation": prev_end_st,
-                        "toStation": curr_start_st,
-                        "startMinutes": task["start_minutes"] - dur,
-                        "endMinutes": task["start_minutes"],
-                        "duration": dur,
-                    }
-                )
-
         for i, sub_trip in enumerate(task["sub_trips"]):
             sub_trip_id = sub_trip.get("id", "")
             sub_end = sub_trip.get("end_minutes", 0)
             sub_start = sub_trip.get("start_minutes", 0)
-
-            if i > 0:
-                prev_trip = task["sub_trips"][i - 1]
-                if prev_trip.get("endStation") != sub_trip.get("startStation"):
-                    dur = get_transfer_duration(
-                        prev_trip.get("endStation"),
-                        sub_trip.get("startStation"),
-                        constraints_data,
-                        params,
-                    )
-                    best_candidate["transfers"].append(
-                        {
-                            "type": "VIRTUAL",
-                            "fromStation": prev_trip.get("endStation"),
-                            "toStation": sub_trip.get("startStation"),
-                            "startMinutes": sub_start - dur,
-                            "endMinutes": sub_start,
-                            "duration": dur,
-                        }
-                    )
 
             adjusted_sub_end = sub_end + 1440 if sub_end < sub_start else sub_end
             sub_duration = sub_trip.get("time", {}).get("durationMinutes", 0)
@@ -393,9 +336,7 @@ def run_constructive_heuristic(
     unused_buses = [b for b in bus_results if len(b["assignedTrips"]) == 0]
     total_idle_time = sum(b["totalIdleTime"] for b in used_buses)
     total_driving_time = sum(b["totalDrivingTime"] for b in used_buses)
-    total_transfer_time = sum(
-        sum(t["duration"] for t in b["transfers"]) for b in used_buses
-    )
+    total_transfer_time = 0
     total_mismatch = sum(b["baseMismatch"] for b in used_buses)
 
     chain_count = sum(1 for t in tasks if t["is_sequence"])

@@ -11,7 +11,6 @@ from services.legality_checker import (
     SolverParameters,
     ConstraintsData,
     check_assignment_legality,
-    get_transfer_duration,
 )
 
 
@@ -37,9 +36,8 @@ class SAWeights:
     unused_bus: float = 50_000.0
     overtime_minutes: float = 100.0
     idle_minutes: float = 1.0
-    transfer_penalty: float = 10.0
     fairness_term: float = 5.0
-    return_to_base_penalty: float = 200.0
+    return_to_base_penalty: float = 2000.0
 
 
 _STATION_MAP = {}
@@ -130,37 +128,13 @@ def _overtime_over_8h_minutes(duty_minutes: int) -> int:
     return max(0, duty_minutes - 8 * 60)
 
 
-def _transfer_minutes_and_mismatch(
-    trips: List[Dict[str, Any]],
-    resource: Dict[str, Any],
-    params: SolverParameters,
-    constraints: ConstraintsData,
-) -> Tuple[int, int]:
+def _base_mismatch(trips: List[Dict[str, Any]], resource: Dict[str, Any]) -> int:
     if not trips:
-        return 0, 0
-
-    transfer_time = 0
+        return 0
     home_station = resource.get("homeStation")
-    first_trip = trips[0]
-    if home_station and first_trip.get("startStation") != home_station:
-        transfer_time += get_transfer_duration(
-            home_station, first_trip.get("startStation"), constraints, params
-        )
-
-    for a, b in zip(trips, trips[1:]):
-        a_end_st = a.get("endStation")
-        b_start_st = b.get("startStation")
-        if a_end_st != b_start_st:
-            transfer_time += get_transfer_duration(
-                a_end_st, b_start_st, constraints, params
-            )
-
-    mismatch = 0
-    last_end_station = trips[-1].get("endStation")
-    if home_station and last_end_station != home_station:
-        mismatch = 1
-
-    return transfer_time, mismatch
+    if home_station and trips[-1].get("endStation") != home_station:
+        return 1
+    return 0
 
 
 def _fairness_penalty(duties: List[int]) -> float:
@@ -201,17 +175,9 @@ def _compute_driver_cost(
 
     cost += idle_minutes * weights.idle_minutes
 
-    # Transfer/Virtual Drom penalty
     home = resource.get("homeStation", "")
-    if home:
-        if trips[0].get("startStation") != home:
-            cost += weights.transfer_penalty * 30
-        if trips[-1].get("endStation") != home:
-            cost += weights.return_to_base_penalty
-
-    for i in range(len(trips) - 1):
-        if trips[i].get("endStation") != trips[i + 1].get("startStation"):
-            cost += weights.transfer_penalty * 30
+    if home and trips[-1].get("endStation") != home:
+        cost += weights.return_to_base_penalty
 
     deviation = duty_minutes - target_duty
     cost += (deviation**2) * weights.fairness_term / 100.0
@@ -234,7 +200,6 @@ def compute_cost(
     all_duties = []
     total_idle = 0
     total_overtime = 0
-    total_transfer = 0
     total_mismatch = 0
     used_buses = 0
 
@@ -248,11 +213,7 @@ def compute_cost(
         all_duties.append(duty)
         if trips:
             used_buses += 1
-            trans_min, mismatch = _transfer_minutes_and_mismatch(
-                trips, res, params, constraints
-            )
-            total_transfer += trans_min
-            total_mismatch += mismatch
+            total_mismatch += _base_mismatch(trips, res)
             total_idle += _idle_minutes(trips, params.transit_minutes)
             total_overtime += _overtime_over_8h_minutes(duty)
 
@@ -267,7 +228,7 @@ def compute_cost(
         "fairness": _fairness_penalty(all_duties),
         "totalIdle": total_idle,
         "totalOver8h": total_overtime,
-        "totalTransfer": total_transfer,
+        "totalTransfer": 0,
         "baseMismatch": total_mismatch,
         "unusedBuses": unused_count,
         "unassigned": num_unassigned,
@@ -745,7 +706,7 @@ def optimize_with_simulated_annealing(
                 elapsed = time.time() - start_ts
                 print(
                     f"[SA] it={it} temp={temp:.2f} cost={best_cost:.1f} "
-                    f"tr={best_metrics['totalTransfer']} mismatch={best_metrics['baseMismatch']} "
+                    f"mismatch={best_metrics['baseMismatch']} "
                     f"idle={best_metrics['totalIdle']} over8h={best_metrics['totalOver8h']} "
                     f"unassigned={best_metrics['unassigned']} t={elapsed:.1f}s"
                 )
@@ -783,66 +744,7 @@ def optimize_with_simulated_annealing(
         driving = sum(t.get("time", {}).get("durationMinutes", 0) for t in trips)
         idle = _idle_minutes(trips, params.transit_minutes)
 
-        transfers = []
         home_station = res.get("homeStation")
-
-        if home_station and trips:
-            first_trip = trips[0]
-            if first_trip.get("startStation") != home_station:
-                dur = get_transfer_duration(
-                    home_station,
-                    first_trip.get("startStation"),
-                    constraints_data,
-                    params,
-                )
-                transfers.append(
-                    {
-                        "type": "VIRTUAL",
-                        "fromStation": home_station,
-                        "toStation": first_trip.get("startStation"),
-                        "startMinutes": first_trip.get("start_minutes", 0) - dur,
-                        "endMinutes": first_trip.get("start_minutes", 0),
-                        "duration": dur,
-                    }
-                )
-
-        for a, b in zip(trips, trips[1:]):
-            a_end_st = a.get("endStation")
-            b_start_st = b.get("startStation")
-            if a_end_st != b_start_st:
-                dur = get_transfer_duration(
-                    a_end_st, b_start_st, constraints_data, params
-                )
-                transfers.append(
-                    {
-                        "type": "VIRTUAL",
-                        "fromStation": a_end_st,
-                        "toStation": b_start_st,
-                        "startMinutes": b.get("start_minutes", 0) - dur,
-                        "endMinutes": b.get("start_minutes", 0),
-                        "duration": dur,
-                    }
-                )
-
-        if home_station and trips:
-            last_trip = trips[-1]
-            if last_trip.get("endStation") != home_station:
-                dur = get_transfer_duration(
-                    last_trip.get("endStation"),
-                    home_station,
-                    constraints_data,
-                    params,
-                )
-                transfers.append(
-                    {
-                        "type": "VIRTUAL",
-                        "fromStation": last_trip.get("endStation"),
-                        "toStation": home_station,
-                        "startMinutes": last_trip.get("end_minutes", 0),
-                        "endMinutes": last_trip.get("end_minutes", 0) + dur,
-                        "duration": dur,
-                    }
-                )
 
         bus_states.append(
             {
@@ -855,7 +757,7 @@ def optimize_with_simulated_annealing(
                     else res.get("currentStation", "")
                 ),
                 "assignedTrips": assigned_ids,
-                "transfers": transfers,
+                "transfers": [],
                 "totalIdleTime": idle,
                 "totalDrivingTime": driving,
             }
