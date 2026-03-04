@@ -103,14 +103,14 @@ class CustomSolver(Solver):
         # να μην λαμβάνει υπόψη κανόνες που μπορούν να ικανοποιηθούν με μελλοντικές αναθέσεις (π.χ. διανυκτέρευση)
         bus_id = shift[0]
         legs = shift[1]  # δρομολόγια
-        if bus_id is None or len(legs) == 0:
-            return True, None
+        if bus_id is None and len(legs) == 0:
+            return False, "No driver, no legs"
         driver = self.driver_lookup[bus_id]
         sorted_legs = sorted(legs, key=lambda lid: self.trip_lookup[lid].start_minutes)
 
-        for leg1, leg2 in zip(legs, legs[1:]):
+        for leg1, leg2 in zip(sorted_legs, sorted_legs[1:]):
             if self.trip_lookup[leg1].end_minutes > self.trip_lookup[leg2].start_minutes:
-                return False
+                return False, None
 
         assigned = []
         for lid in sorted_legs:
@@ -168,7 +168,8 @@ class CustomSolver(Solver):
             # 1. check if all legs of shift1 can be appended at the start of shift2 ==> shift3, shift4
             shift3 = (shift1[0], shift1[1] + shift2[1])
             shift4 = (shift2[0], [])
-            if self.is_valid(shift3):
+            success, error = self.is_valid(shift3)
+            if success:
                 cost3 = self.get_cost(shift3)
                 cost4 = self.get_cost(shift4)
 
@@ -184,7 +185,8 @@ class CustomSolver(Solver):
             # 2. check if all legs of shift1 can be appended at the finish of shift2 ==> shift3, shift4
             shift3 = (shift1[0], shift2[1] + shift1[1])
             shift4 = (shift2[0], [])
-            if self.is_valid(shift3):
+            success, error = self.is_valid(shift3)
+            if success:
                 cost3 = self.get_cost(shift3)
                 cost4 = self.get_cost(shift4)
 
@@ -200,7 +202,8 @@ class CustomSolver(Solver):
             # 3. check if all legs of shift2 can be appended at the start of shift 1 ==> shift3, shift4
             shift3 = (shift1[0], [])
             shift4 = (shift2[0], shift2[1] + shift1[1])
-            if self.is_valid(shift4):
+            success, error = self.is_valid(shift4)
+            if success:
                 cost3 = self.get_cost(shift3)
                 cost4 = self.get_cost(shift4)
 
@@ -216,7 +219,8 @@ class CustomSolver(Solver):
             # 2. check if all legs of shift3 can be appended at the finish of shift1 ==> shift3, shift4
             shift3 = (shift1[0], [])
             shift4 = (shift2[0], shift1[1] + shift2[1])
-            if self.is_valid(shift4):
+            success, error = self.is_valid(shift4)
+            if success:
                 cost3 = self.get_cost(shift3)
                 cost4 = self.get_cost(shift4)
 
@@ -368,7 +372,8 @@ class CustomSolver(Solver):
             # Add edges between buses and legs
             for bus_id in pre_bus:
                 for leg_id in pre_leg:
-                    if self.is_valid((bus_id, [leg_id])):  # Check if the bus can handle the leg
+                    success, error = self.is_valid((bus_id, [leg_id]))
+                    if success:  # Check if the bus can handle the leg
                         # cost = self.get_cost((bus_id, [leg_id]))
                         graph.add_edge(bus_id, leg_id)
 
@@ -377,8 +382,9 @@ class CustomSolver(Solver):
                 # if next_legs[leg1] > 3:
                     # continue
                 # if self.trip_lookup[leg1].end_minutes > self.trip_lookup[leg2].start_minutes:
-                    # continue
-                if self.is_valid((None, [leg1, leg2])):
+                #     continue
+                success, error = self.is_valid((None, [leg1, leg2]))
+                if success:
                     graph.add_edge(leg1, leg2)
                     # next_legs[leg1] += 1
 
@@ -392,7 +398,8 @@ class CustomSolver(Solver):
                 bus_id = path[0]
                 legs = path[1:]
                 new_shift = (bus_id, legs)
-                if self.is_valid(new_shift):
+                success, error = self.is_valid(new_shift)
+                if success:
                     spp_shifts.append(new_shift)
 
             # ---
@@ -511,4 +518,4 @@ class CustomSolver(Solver):
         self.set_problem(problem)
 
         # return self.two_opt()
-        return self.k_opt(k=2, iter_limit=10_000)
+        return self.k_opt(k=2, iter_limit=15_000)
