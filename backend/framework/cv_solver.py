@@ -314,7 +314,18 @@ class CustomSolver(Solver):
                 print(f"Better solution at iteration {c+1} {total_cost=}")
                 total_cost_seq.append(total_cost)
 
+            # choose k random shifts
             pre_shifts = random.sample(shift_list, k)
+
+            # add some shifts with no bus (only legs)
+            num, max_num = 0, 1
+            for sh in shift_list:
+                if sh[0] is None and sh not in pre_shifts:
+                    pre_shifts.append(sh)
+                    num += 1
+                    if num == max_num:
+                        break
+
             pre_cost = sum(self.get_cost(sh) for sh in pre_shifts)
 
             # generate shifts for all busses for legs in shift1, shift2
@@ -500,4 +511,4 @@ class CustomSolver(Solver):
         self.set_problem(problem)
 
         # return self.two_opt()
-        return self.k_opt(k=3, iter_limit=3_000)
+        return self.k_opt(k=2, iter_limit=10_000)
