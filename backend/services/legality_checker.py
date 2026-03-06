@@ -133,7 +133,7 @@ def get_transfer_duration(
 
 def check_assignment_legality(
     trip: Dict,
-    resource: Dict,
+    resource: Optional[Dict],
     current_trips: List[Dict],
     params: SolverParameters = None,
     day_index: int = 0,
@@ -158,6 +158,8 @@ def check_assignment_legality(
     - K13: Prohibited routes for driver check
     - K14: Prohibited routes for bus check
     - K15: Days to Repo check
+
+    If resource is None, checks only time-based overlaps between current_trips and the new trip.
     """
     if params is None:
         params = SolverParameters()
@@ -168,6 +170,68 @@ def check_assignment_legality(
     errors = []
 
     trip_id = trip.get("id", "")
+
+    if resource is None:
+        new_start = trip.get("startMinutes", 0)
+        new_end = trip.get("endMinutes", 0)
+        new_start_station = trip.get("startStation", "")
+        new_end_station = trip.get("endStation", "")
+
+        for ct in current_trips:
+            ct_start = ct.get("startMinutes", 0)
+            ct_end = ct.get("endMinutes", 0)
+            ct_start_station = ct.get("startStation", "")
+            ct_end_station = ct.get("endStation", "")
+
+            # Overlap check
+            if not (new_end <= ct_start or new_start >= ct_end):
+                errors.append(f"trip_overlap: {trip_id} overlaps with {ct.get('id')}")
+                return False, errors
+
+        # Station check (A->B, B->C)
+        if current_trips:
+            sorted_current = sorted(
+                current_trips, key=lambda x: x.get("startMinutes", 0)
+            )
+
+            predecessor = None
+            for ct in reversed(sorted_current):
+                if ct.get("end_minutes", 0) <= new_start:
+                    predecessor = ct
+                    break
+
+            if predecessor:
+                pred_end_station = predecessor.get("endStation", "")
+                if (
+                    pred_end_station
+                    and new_start_station
+                    and pred_end_station != new_start_station
+                ):
+                    errors.append(
+                        f"station_mismatch: Predecessor ended at {pred_end_station}, new starts at {new_start_station}"
+                    )
+                    return False, errors
+
+            successor = None
+            for ct in sorted_current:
+                if ct.get("start_minutes", 0) >= new_end:
+                    successor = ct
+                    break
+
+            if successor:
+                succ_start_station = successor.get("startStation", "")
+                if (
+                    new_end_station
+                    and succ_start_station
+                    and new_end_station != succ_start_station
+                ):
+                    errors.append(
+                        f"station_mismatch: New ends at {new_end_station}, successor starts at {succ_start_station}"
+                    )
+                    return False, errors
+
+        return True, []
+
     bus_attr = resource.get("busAttributes", {})
     bus_type = bus_attr.get("type", "01")
     bus_id = resource.get("busId", "")
@@ -338,6 +402,13 @@ def check_assignment_legality(
 
         last_end = last_trip.get("end_minutes", 0)
         trip_start = trip.get("start_minutes", 0)
+
+        effective_start = trip_start
+        if trip_start < last_end and last_end > 1200 and trip_start < 300:
+            effective_start = trip_start + 1440
+        if effective_start < last_end:
+            errors.append("insufficient_time_gap")
+            return False, errors
 
         last_end_station = last_trip.get("endStation")
         trip_start_station = trip.get("startStation")

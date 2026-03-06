@@ -103,20 +103,25 @@ class CustomSolver(Solver):
         # να μην λαμβάνει υπόψη κανόνες που μπορούν να ικανοποιηθούν με μελλοντικές αναθέσεις (π.χ. διανυκτέρευση)
         bus_id = shift[0]
         legs = shift[1]  # δρομολόγια
-        if bus_id is None and len(legs) == 0:
-            return False, "No driver, no legs"
-        driver = self.driver_lookup[bus_id]
+
+        driver_raw = None
+        if bus_id is not None:
+            driver_raw = self.driver_lookup[bus_id].raw
+
         sorted_legs = sorted(legs, key=lambda lid: self.trip_lookup[lid].start_minutes)
 
         for leg1, leg2 in zip(sorted_legs, sorted_legs[1:]):
-            if self.trip_lookup[leg1].end_minutes > self.trip_lookup[leg2].start_minutes:
+            if (
+                self.trip_lookup[leg1].end_minutes
+                > self.trip_lookup[leg2].start_minutes
+            ):
                 return False, None
 
         assigned = []
         for lid in sorted_legs:
             ok, err = check_assignment_legality(
                 trip=self.trip_lookup[lid].raw,
-                resource=driver.raw,
+                resource=driver_raw,
                 current_trips=assigned,
                 params=self.problem.solver_params,
                 constraints_data=self.problem.constraints_data,
@@ -266,7 +271,9 @@ class CustomSolver(Solver):
             for tid in bs.get("assignedTrips", []):
                 assigned_trip_ids.add(tid)
 
-        unassigned: List[str] = [t.id for t in self.trips if t.id not in assigned_trip_ids]
+        unassigned: List[str] = [
+            t.id for t in self.trips if t.id not in assigned_trip_ids
+        ]
         total_driving = sum(bs.get("totalDrivingTime", 0) for bs in bus_states)
         total_idle = sum(bs.get("totalIdleTime", 0) for bs in bus_states)
         total_mismatch = sum(bs.get("baseMismatch", 0) for bs in bus_states)
@@ -309,7 +316,7 @@ class CustomSolver(Solver):
         # n1 = legs.count('110016')
         # n2 = len(set(legs))
 
-        c = 0 # iteration counter
+        c = 0  # iteration counter
         total_cost_seq = [self.get_total_cost(shift_list)]
 
         while True:
@@ -334,7 +341,7 @@ class CustomSolver(Solver):
 
             # generate shifts for all busses for legs in shift1, shift2
             # choose shifts solving a SPP
-            pre_bus = [sh[0] for sh in pre_shifts if sh[0] is not None ]
+            pre_bus = [sh[0] for sh in pre_shifts if sh[0] is not None]
             pre_leg = []
             for sh in pre_shifts:
                 pre_leg.extend(sh[1])
@@ -346,7 +353,7 @@ class CustomSolver(Solver):
                 continue
 
             # dict to have the SPP row of a bus_id or a leg_id
-            row_ind = {bus_leg_id:i for i,bus_leg_id in enumerate(pre_bus + pre_leg)}
+            row_ind = {bus_leg_id: i for i, bus_leg_id in enumerate(pre_bus + pre_leg)}
 
             # rows of SPP -> bus_num + leg_num
             # cols of SPP ->
@@ -378,9 +385,9 @@ class CustomSolver(Solver):
                         graph.add_edge(bus_id, leg_id)
 
             # next_legs = defaultdict(int)
-            for (leg1, leg2) in permutations(pre_leg, 2):
+            for leg1, leg2 in permutations(pre_leg, 2):
                 # if next_legs[leg1] > 3:
-                    # continue
+                # continue
                 # if self.trip_lookup[leg1].end_minutes > self.trip_lookup[leg2].start_minutes:
                 #     continue
                 success, error = self.is_valid((None, [leg1, leg2]))
@@ -406,30 +413,33 @@ class CustomSolver(Solver):
             model = cp_model.CpModel()
 
             # a binary var for each shift
-            x_vars = [model.NewBoolVar(f'x_{i}') for i in range(len(spp_shifts))]
+            x_vars = [model.NewBoolVar(f"x_{i}") for i in range(len(spp_shifts))]
 
             # every bus must be used by exactly one shift
             for row in range(bus_num):
-                v_list = [x_vars[i] for i,sh in enumerate(spp_shifts)
-                                    if sh[0] is not None and row_ind[sh[0]]==row]
+                v_list = [
+                    x_vars[i]
+                    for i, sh in enumerate(spp_shifts)
+                    if sh[0] is not None and row_ind[sh[0]] == row
+                ]
                 model.add(sum(v_list) == 1)
 
             # every leg must be used by exactly one shift
             for row in range(leg_num):
                 v_list = []
-                for i,sh in enumerate(spp_shifts):
+                for i, sh in enumerate(spp_shifts):
                     for leg_id in sh[1]:
-                        if row_ind[leg_id]==bus_num + row:
+                        if row_ind[leg_id] == bus_num + row:
                             v_list.append(x_vars[i])
                             break
                 model.add(sum(v_list) == 1)
 
             # hints for previous shifts
-            for i,sh in enumerate(pre_shifts):
+            for i, sh in enumerate(pre_shifts):
                 model.add_hint(x_vars[i], 1)
 
             # objective
-            obj = sum(self.get_cost(sh)*x_vars[i] for i,sh in enumerate(spp_shifts))
+            obj = sum(self.get_cost(sh) * x_vars[i] for i, sh in enumerate(spp_shifts))
             model.Minimize(obj)
 
             # print(f'solving... {bus_num=} {leg_num=} {len(spp_shifts)=} {len(all_paths)=}')
@@ -443,11 +453,11 @@ class CustomSolver(Solver):
                     # print(f'k-opt: {new_cost=} {pre_cost=} improve={pre_cost-new_cost}')
                     for sh in pre_shifts:
                         shift_list.remove(sh)
-                    for i,sh in enumerate(spp_shifts):
+                    for i, sh in enumerate(spp_shifts):
                         if solver.value(x_vars[i]) == 1:
                             shift_list.append(sh)
             else:
-                print(f'no solution, {solver.status_name(status)}')
+                print(f"no solution, {solver.status_name(status)}")
                 # print(f'{row_ind=}')
                 # print(f'{pre_bus=} {pre_leg=}')
                 # print('pre_shifts')
@@ -490,7 +500,9 @@ class CustomSolver(Solver):
             for tid in bs.get("assignedTrips", []):
                 assigned_trip_ids.add(tid)
 
-        unassigned: List[str] = [t.id for t in self.trips if t.id not in assigned_trip_ids]
+        unassigned: List[str] = [
+            t.id for t in self.trips if t.id not in assigned_trip_ids
+        ]
         total_driving = sum(bs.get("totalDrivingTime", 0) for bs in bus_states)
         total_idle = sum(bs.get("totalIdleTime", 0) for bs in bus_states)
         total_mismatch = sum(bs.get("baseMismatch", 0) for bs in bus_states)
@@ -510,7 +522,6 @@ class CustomSolver(Solver):
             },
             solve_time=time.time() - start,
         )
-
 
     # --------------------------------------------
     def solve(self, problem: Problem) -> Solution:
