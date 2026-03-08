@@ -21,6 +21,7 @@ from typing import Any, Dict, List, Set
 from framework.problem import Problem, Trip, Driver, Chain, Parameters
 from framework.solution import Solution
 from services.legality_checker import check_assignment_legality
+from framework.greedy_sa_solver import GreedySASolver
 
 
 # Template/Blueprint
@@ -108,7 +109,7 @@ class CustomSolver(Solver):
         if bus_id is not None:
             driver_raw = self.driver_lookup[bus_id].raw
 
-        sorted_legs = sorted(legs, key=lambda lid: self.trip_lookup[lid].start_minutes)
+        sorted_legs = legs #sorted(legs, key=lambda lid: self.trip_lookup[lid].start_minutes)
 
         for leg1, leg2 in zip(sorted_legs, sorted_legs[1:]):
             if (
@@ -294,7 +295,7 @@ class CustomSolver(Solver):
             solve_time=time.time() - start,
         )
 
-    def k_opt(self, k=2, iter_limit=500) -> Solution:
+    def k_opt(self, k=2, iter_limit=500, sol:Solution=None) -> tuple[Solution, int]:
         start = time.time()
 
         # Access basic data
@@ -306,15 +307,38 @@ class CustomSolver(Solver):
 
         busses = [d.bus_id for d in self.drivers]  # to be filled with bus_ids
         legs = [t.id for t in self.trips]  # to be filled with ΔΡΟΜΟΛΟΓΙΑ ids
+
+        # initial solution: (buses, no legs) and (no bus, one leg)
         shift_list = []
-        for bus_id in busses:
-            shift_list.append((bus_id, []))
-        for leg_id in legs:
-            shift_list.append((None, [leg_id]))
+        if sol is None:
+            for bus_id in busses:
+                shift_list.append((bus_id, []))
+            for leg_id in legs:
+                shift_list.append((None, [leg_id]))
+
+        # initial solution from greedy solver
+        else:
+            busses_used = []
+            for assi in sol.assignments:
+                shift = (assi.bus_id, assi.assigned_trip_ids)
+                success, error = self.is_valid(shift)
+                if success:
+                    shift_list.append(shift)
+                    busses_used.append(assi.bus_id)
+                else:
+                    print(f'not valid: {error=} {shift=}')
+                    for leg_id in assi.assigned_trip_ids:
+                        shift_list.append((None, [leg_id]))
+
+            for bus_id in busses:
+                if bus_id not in busses_used:
+                    shift_list.append((bus_id, []))
+            for leg_id in sol.unassigned_trips:
+                shift_list.append((None, [leg_id]))
 
         # n1 = 2 !!!, n2 = 386
-        # n1 = legs.count('110016')
-        # n2 = len(set(legs))
+        n1 = legs.count('110016')
+        n2 = len(set(legs))
 
         c = 0  # iteration counter
         total_cost_seq = [self.get_total_cost(shift_list)]
@@ -326,10 +350,20 @@ class CustomSolver(Solver):
                 total_cost_seq.append(total_cost)
 
             # choose k random shifts
-            pre_shifts = random.sample(shift_list, k)
+            # pre_shifts = random.sample(shift_list, k)
+            pre_shifts = random.sample(shift_list, random.randint(k, 2*k))
+
+            # add some shifts with no legs (only bus)
+            num, max_num = 0, 2
+            for sh in shift_list:
+                if len(sh[1]) == 0 and sh not in pre_shifts:
+                    pre_shifts.append(sh)
+                    num += 1
+                    if num == max_num:
+                        break
 
             # add some shifts with no bus (only legs)
-            num, max_num = 0, 1
+            num, max_num = 0, 2
             for sh in shift_list:
                 if sh[0] is None and sh not in pre_shifts:
                     pre_shifts.append(sh)
@@ -384,20 +418,16 @@ class CustomSolver(Solver):
                         # cost = self.get_cost((bus_id, [leg_id]))
                         graph.add_edge(bus_id, leg_id)
 
-            # next_legs = defaultdict(int)
             for leg1, leg2 in permutations(pre_leg, 2):
-                # if next_legs[leg1] > 3:
-                # continue
                 # if self.trip_lookup[leg1].end_minutes > self.trip_lookup[leg2].start_minutes:
-                #     continue
+                    # continue
                 success, error = self.is_valid((None, [leg1, leg2]))
                 if success:
                     graph.add_edge(leg1, leg2)
-                    # next_legs[leg1] += 1
 
             # Find all valid paths from buses in pre_bus
             # print(f'generating... {bus_num=} {leg_num=}')
-            all_paths = graph.find_paths_from_buses(pre_bus, max_bus_paths=30)
+            all_paths = graph.find_paths_from_buses(pre_bus, max_bus_paths=30, max_bus_legs=15)#30)
             if not all_paths:
                 continue
 
@@ -521,12 +551,23 @@ class CustomSolver(Solver):
                 "fairness": 0.0,
             },
             solve_time=time.time() - start,
-        )
+        ), total_cost_seq[-1]
 
     # --------------------------------------------
-    def solve(self, problem: Problem) -> Solution:
-        random.seed(123)
+    def solve(self, problem: Problem, iterations=5) -> Solution:
+        # random.seed(123)
         self.set_problem(problem)
 
         # return self.two_opt()
-        return self.k_opt(k=2, iter_limit=15_000)
+        sol_best, cost_best = None, float('inf')
+        for i in range(iterations):
+            print(f'--- iter {i+1}/{iterations} {cost_best=} ---')
+            greedy = GreedySASolver(use_sa=False)
+            sol = greedy.solve(self.problem)
+
+            sol_cost = self.k_opt(k=3, iter_limit=1_000, sol=sol)
+
+            if sol_cost[1] < cost_best:
+                sol_best, cost_best = sol_cost
+
+        return sol_best

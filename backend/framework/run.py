@@ -68,14 +68,14 @@ def main():
     #     solutions.append(sa_sol)
     #     print(f"  {sa_sol}")
 
-    from framework.solver_interface import CustomSolver
+    # from framework.solver_interface import CustomSolver
 
-    custom_solver = CustomSolver()
-    print(f"\n--- Running {custom_solver.name} ---")
-    custom_sol = custom_solver.solve(problem)
-    solutions.append(custom_sol)
-    print(f"  {custom_sol}")
-    
+    # custom_solver = CustomSolver()
+    # print(f"\n--- Running {custom_solver.name} ---")
+    # custom_sol = custom_solver.solve(problem)
+    # solutions.append(custom_sol)
+    # print(f"  {custom_sol}")
+
     from framework.cv_solver import CustomSolver as CVSolver
 
     custom_solver = CVSolver()
