@@ -4,9 +4,9 @@ WORKDIR /app
 
 COPY pyproject.toml ./
 
-RUN pip install uv && uv venv /app/.venv && . /app/.venv/bin/activate && uv pip install -e .
+RUN pip install uv && uv pip install --system fastapi uvicorn sentry-sdk[fastapi] sqlalchemy psycopg2-binary alembic python-jose[cryptography] passlib[bcrypt] python-multipart pydantic[email] python-dotenv ortools
 
-ENV PATH="/app/.venv/bin:$PATH"
+# ENV PATH="/app/.venv/bin:$PATH"
 
 COPY . .
 

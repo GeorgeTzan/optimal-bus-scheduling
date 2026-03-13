@@ -1,10 +1,13 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 from typing import Optional
 import os
+import traceback
 
 from dat_parser import parse_trips, parse_drivers, get_full_data
 from services.solver import run_constructive_heuristic
+from framework.problem import Problem
+from framework.cv_solver import CustomSolver
 from services.simulated_annealing import (
     optimize_with_simulated_annealing,
     SAConfig,
@@ -104,3 +107,69 @@ def solve_lahc(req: LAHCRequest = LAHCRequest()):
         previous_solution=req.previous_solution,
         verbose=False,
     )
+
+
+class CVSolveRequest(BaseModel):
+    iterations: int = Field(default=5, ge=1, le=50)
+
+
+@router.post("/solve/cv")
+def solve_cv(req: CVSolveRequest = CVSolveRequest()):
+    try:
+        print(f"Starting CV Solver with {req.iterations} iterations...")
+        full_data = get_full_data()
+        problem = Problem(full_data)
+        solver = CustomSolver()
+        solution = solver.solve(problem, iterations=req.iterations)
+
+        if solution is None:
+            raise ValueError(
+                "Solver returned no solution (all iterations failed to improve)"
+            )
+
+        result = {
+            "assignments": [
+                {
+                    "tripId": tid,
+                    "busId": a.bus_id,
+                    "idleTime": a.total_idle_time / max(1, len(a.assigned_trip_ids)),
+                }
+                for a in solution.assignments
+                for tid in a.assigned_trip_ids
+            ],
+            "busStates": [
+                {
+                    "busId": a.bus_id,
+                    "driverId": a.driver_id,
+                    "homeStation": a.home_station,
+                    "assignedTrips": a.assigned_trip_ids,
+                    "totalIdleTime": a.total_idle_time,
+                    "totalDrivingTime": a.total_driving_time,
+                    "baseMismatch": a.base_mismatch,
+                }
+                for a in solution.assignments
+                if a.is_used
+            ],
+            "unassignedTrips": solution.unassigned_trips,
+            "metrics": {
+                "totalTrips": solution.total_trips,
+                "assigned": solution.num_assigned,
+                "unassigned": solution.num_unassigned,
+                "busesUsed": solution.buses_used,
+                "totalIdleTime": solution.total_idle,
+                "totalDrivingTime": solution.total_driving,
+                "totalTransferTime": solution.total_transfer,
+                "baseMismatchCount": solution.base_mismatch,
+            },
+            "solveTime": solution.solve_time,
+            "solverName": solution.solver_name,
+        }
+        print("CV Solver finished, returning result")
+        return result
+
+    except Exception as e:
+        err = traceback.format_exc()
+        print(f"CV Solver error:\n{err}")
+        raise HTTPException(
+            status_code=500, detail=f"{type(e).__name__}: {str(e)}\n\n{err}"
+        )
