@@ -8196,7 +8196,7 @@
       }
     },
     {
-      "id": "110016",
+      "id": "110016_1",
       "startStation": "002",
       "endStation": "004",
       "start_time": "11:20",
@@ -15018,7 +15018,7 @@
       }
     },
     {
-      "id": "110016",
+      "id": "110016_2",
       "startStation": "002",
       "endStation": "004",
       "start_time": "15:20",
@@ -15061,7 +15061,7 @@
       {
         "description": "Specific connection times required between trips.",
         "incomingTripId": "120007",
-        "outgoingTripId": "110016",
+        "outgoingTripId": "110016_2",
         "time": 3920
       },
       {
@@ -15744,7 +15744,7 @@
       },
       {
         "description": "Specific connection times required between trips.",
-        "incomingTripId": "110016",
+        "incomingTripId": "110016_1",
         "outgoingTripId": "120013",
         "time": 1430
       }
