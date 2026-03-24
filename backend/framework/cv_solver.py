@@ -566,24 +566,29 @@ class CustomSolver(Solver):
         self.set_problem(problem)
 
         # return self.two_opt()
-        sol_best, cost_best = None, float('inf')
+        sol_best, cost_best = None, float("inf")
         for i in range(iterations):
-            print(f'--- iter {i+1}/{iterations} {cost_best=} ---')
-            if i == 0 and previous_solution is not None:
-                sol = Solution(
-                    solver_name=previous_solution.get("solverName", "Previous"),
-                    bus_states=previous_solution.get("busStates", []),
-                    unassigned_trips=previous_solution.get("unassignedTrips", []),
-                    metrics=previous_solution.get("metrics", {}),
-                    solve_time=previous_solution.get("solveTime", 0.0),
-                )
+            print(f"--- iter {i+1}/{iterations} {cost_best=} ---")
+            if i == 0:
+                if previous_solution is not None:
+                    sol = Solution(
+                        solver_name=previous_solution.get("solverName", "Previous"),
+                        bus_states=previous_solution.get("busStates", []),
+                        unassigned_trips=previous_solution.get("unassignedTrips", []),
+                        metrics=previous_solution.get("metrics", {}),
+                        solve_time=previous_solution.get("solveTime", 0.0),
+                    )
+                else:
+                    greedy = GreedySASolver(use_sa=False)
+                    sol = greedy.solve(self.problem)
             else:
-                greedy = GreedySASolver(use_sa=False)
-                sol = greedy.solve(self.problem)
+                sol = sol_best
 
             sol_cost = self.k_opt(k=3, iter_limit=1_000, sol=sol)
 
             if sol_cost[1] < cost_best:
+                sol_best, cost_best = sol_cost
+            elif sol_best is None:
                 sol_best, cost_best = sol_cost
 
         return sol_best
