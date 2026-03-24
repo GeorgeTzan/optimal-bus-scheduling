@@ -289,6 +289,7 @@ export default function HomePage() {
   const [saCooling, setSaCooling] = useState(0.9999);
   const [solutionHistory, setSolutionHistory] = useState<{ name: string; solution: Solution }[]>([]);
   const [lahcSolution, setLahcSolution] = useState<Solution | null>(null);
+  const [cvLastSolution, setCvLastSolution] = useState<Solution | null>(null);
   const [cvIterations, setCvIterations] = useState(1);
 
   const runConstructiveHeuristic = async () => {
@@ -355,12 +356,16 @@ export default function HomePage() {
   const runCVSolver = async () => {
     setIsSolving(true);
     try {
+      const body: any = {
+        iterations: cvIterations,
+      };
+      if (cvLastSolution) {
+        body.previous_solution = cvLastSolution;
+      }
       const response = await fetch("/api/solve/cv", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          iterations: cvIterations,
-        }),
+        body: JSON.stringify(body),
       });
       if (!response.ok) {
         const errBody = await response.json().catch(() => ({}));
@@ -368,6 +373,7 @@ export default function HomePage() {
       }
       const data = await response.json();
       setSolution(data);
+      setCvLastSolution(data);
       setSolutionHistory(prev => [...prev.filter(s => s.name !== 'CV Solver'), { name: 'CV Solver', solution: data }]);
     } catch (err) {
       console.error("Failed to run CV Solver:", err);

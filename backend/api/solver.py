@@ -111,16 +111,23 @@ def solve_lahc(req: LAHCRequest = LAHCRequest()):
 
 class CVSolveRequest(BaseModel):
     iterations: int = Field(default=5, ge=1, le=50)
+    previous_solution: Optional[dict] = Field(default=None)
 
 
 @router.post("/solve/cv")
 def solve_cv(req: CVSolveRequest = CVSolveRequest()):
     try:
         print(f"Starting CV Solver with {req.iterations} iterations...")
+        if req.previous_solution is None:
+            print("CV Solver run mode: fresh")
+        else:
+            print("CV Solver run mode: from previous solution")
         full_data = get_full_data()
         problem = Problem(full_data)
         solver = CustomSolver()
-        solution = solver.solve(problem, iterations=req.iterations)
+        solution = solver.solve(
+            problem, iterations=req.iterations, previous_solution=req.previous_solution
+        )
 
         if solution is None:
             raise ValueError(

@@ -109,7 +109,9 @@ class CustomSolver(Solver):
         if bus_id is not None:
             driver_raw = self.driver_lookup[bus_id].raw
 
-        sorted_legs = legs #sorted(legs, key=lambda lid: self.trip_lookup[lid].start_minutes)
+        sorted_legs = (
+            legs  # sorted(legs, key=lambda lid: self.trip_lookup[lid].start_minutes)
+        )
 
         for leg1, leg2 in zip(sorted_legs, sorted_legs[1:]):
             if (
@@ -295,7 +297,7 @@ class CustomSolver(Solver):
             solve_time=time.time() - start,
         )
 
-    def k_opt(self, k=2, iter_limit=500, sol:Solution=None) -> tuple[Solution, int]:
+    def k_opt(self, k=2, iter_limit=500, sol: Solution = None) -> tuple[Solution, int]:
         start = time.time()
 
         # Access basic data
@@ -326,7 +328,7 @@ class CustomSolver(Solver):
                     shift_list.append(shift)
                     busses_used.append(assi.bus_id)
                 else:
-                    print(f'not valid: {error=} {shift=}')
+                    print(f"not valid: {error=} {shift=}")
                     for leg_id in assi.assigned_trip_ids:
                         shift_list.append((None, [leg_id]))
 
@@ -337,7 +339,7 @@ class CustomSolver(Solver):
                 shift_list.append((None, [leg_id]))
 
         # n1 = 2 !!!, n2 = 386
-        n1 = legs.count('110016')
+        n1 = legs.count("110016")
         n2 = len(set(legs))
 
         c = 0  # iteration counter
@@ -351,7 +353,7 @@ class CustomSolver(Solver):
 
             # choose k random shifts
             # pre_shifts = random.sample(shift_list, k)
-            pre_shifts = random.sample(shift_list, random.randint(k, 2*k))
+            pre_shifts = random.sample(shift_list, random.randint(k, 2 * k))
 
             # add some shifts with no legs (only bus)
             num, max_num = 0, 2
@@ -420,14 +422,16 @@ class CustomSolver(Solver):
 
             for leg1, leg2 in permutations(pre_leg, 2):
                 # if self.trip_lookup[leg1].end_minutes > self.trip_lookup[leg2].start_minutes:
-                    # continue
+                # continue
                 success, error = self.is_valid((None, [leg1, leg2]))
                 if success:
                     graph.add_edge(leg1, leg2)
 
             # Find all valid paths from buses in pre_bus
             # print(f'generating... {bus_num=} {leg_num=}')
-            all_paths = graph.find_paths_from_buses(pre_bus, max_bus_paths=30, max_bus_legs=15)#30)
+            all_paths = graph.find_paths_from_buses(
+                pre_bus, max_bus_paths=30, max_bus_legs=15
+            )  # 30)
             if not all_paths:
                 continue
 
@@ -537,24 +541,27 @@ class CustomSolver(Solver):
         total_idle = sum(bs.get("totalIdleTime", 0) for bs in bus_states)
         total_mismatch = sum(bs.get("baseMismatch", 0) for bs in bus_states)
 
-        return Solution(
-            solver_name=self.name,
-            bus_states=bus_states,
-            unassigned_trips=unassigned,
-            metrics={
-                "totalTrips": len(self.trips),
-                "totalIdleTime": total_idle,
-                "totalDrivingTime": total_driving,
-                "totalTransferTime": 0,
-                "baseMismatchCount": total_mismatch,
-                "totalOver8h": 0,
-                "fairness": 0.0,
-            },
-            solve_time=time.time() - start,
-        ), total_cost_seq[-1]
+        return (
+            Solution(
+                solver_name=self.name,
+                bus_states=bus_states,
+                unassigned_trips=unassigned,
+                metrics={
+                    "totalTrips": len(self.trips),
+                    "totalIdleTime": total_idle,
+                    "totalDrivingTime": total_driving,
+                    "totalTransferTime": 0,
+                    "baseMismatchCount": total_mismatch,
+                    "totalOver8h": 0,
+                    "fairness": 0.0,
+                },
+                solve_time=time.time() - start,
+            ),
+            total_cost_seq[-1],
+        )
 
     # --------------------------------------------
-    def solve(self, problem: Problem, iterations=5) -> Solution:
+    def solve(self, problem: Problem, iterations=5, previous_solution=None) -> Solution:
         # random.seed(123)
         self.set_problem(problem)
 
@@ -562,8 +569,17 @@ class CustomSolver(Solver):
         sol_best, cost_best = None, float('inf')
         for i in range(iterations):
             print(f'--- iter {i+1}/{iterations} {cost_best=} ---')
-            greedy = GreedySASolver(use_sa=False)
-            sol = greedy.solve(self.problem)
+            if i == 0 and previous_solution is not None:
+                sol = Solution(
+                    solver_name=previous_solution.get("solverName", "Previous"),
+                    bus_states=previous_solution.get("busStates", []),
+                    unassigned_trips=previous_solution.get("unassignedTrips", []),
+                    metrics=previous_solution.get("metrics", {}),
+                    solve_time=previous_solution.get("solveTime", 0.0),
+                )
+            else:
+                greedy = GreedySASolver(use_sa=False)
+                sol = greedy.solve(self.problem)
 
             sol_cost = self.k_opt(k=3, iter_limit=1_000, sol=sol)
 
