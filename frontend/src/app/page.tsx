@@ -198,6 +198,16 @@ export default function HomePage() {
     linkElement.click();
   };
 
+  const downloadSolution = (solution: Solution, name: string) => {
+    const dataStr = JSON.stringify(solution, null, 2);
+    const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
+    const fileName = `solution_${name.toLowerCase().replace(/\s+/g, '_')}.json`;
+    const linkElement = document.createElement('a');
+    linkElement.setAttribute('href', dataUri);
+    linkElement.setAttribute('download', fileName);
+    linkElement.click();
+  };
+
   const stationColor = (station: string): string => {
     const stationColors = {
       blue: "#3b82f6",
@@ -1008,12 +1018,20 @@ export default function HomePage() {
                           <td className="px-3 py-3 text-right text-green-300 font-mono text-sm">{hist.solution.metrics.busesUsed}</td>
                           <td className="px-3 py-3 text-right text-red-300 font-mono text-sm">{hist.solution.metrics.baseMismatchCount || 0}</td>
                           <td className="px-3 py-3 text-center">
-                            <button 
-                              onClick={() => setSolution(hist.solution)}
-                              className="px-2 py-1 bg-white/10 hover:bg-white/20 text-white rounded text-xs transition"
-                            >
-                              View
-                            </button>
+                            <div className="flex items-center justify-center gap-2">
+                              <button 
+                                onClick={() => setSolution(hist.solution)}
+                                className="px-2 py-1 bg-white/10 hover:bg-white/20 text-white rounded text-xs transition"
+                              >
+                                View
+                              </button>
+                              <button 
+                                onClick={() => downloadSolution(hist.solution, hist.name)}
+                                className="px-2 py-1 bg-violet-600/80 hover:bg-violet-600 text-white rounded text-xs transition"
+                              >
+                                Save JSON
+                              </button>
+                            </div>
                           </td>
                         </tr>
                       ))}
@@ -1025,6 +1043,24 @@ export default function HomePage() {
 
             {solution && (
               <>
+                <div className="flex items-center justify-between bg-slate-900/40 border border-white/5 p-3 rounded-lg">
+                  <h4 className="text-white text-sm font-semibold">
+                    Active Solution: {solutionHistory.find(h => h.solution.metrics === solution.metrics)?.name ?? "Current Run"}
+                  </h4>
+                  <button
+                    onClick={() => {
+                      const activeName = solutionHistory.find(h => h.solution.metrics === solution.metrics)?.name ?? "current_run";
+                      downloadSolution(solution, activeName);
+                    }}
+                    className="px-3 py-1.5 bg-violet-600 hover:bg-violet-700 text-white text-xs font-semibold rounded-lg transition flex items-center gap-1.5"
+                  >
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                    Save JSON
+                  </button>
+                </div>
+
                 <div className="grid grid-cols-5 gap-3">
                   <div className="bg-gradient-to-br from-blue-600/20 to-blue-700/20 backdrop-blur-sm rounded-lg p-3 border border-blue-500/20">
                     <div className="text-slate-400 text-xs mb-1.5 uppercase tracking-wide">Trips Assigned</div>
