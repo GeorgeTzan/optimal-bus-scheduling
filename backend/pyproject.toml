@@ -17,4 +17,19 @@ dependencies = [
     "pydantic[email]>=2.0.0",
     "python-dotenv>=1.0.0",
     "ortools>=9.15.6755",
+    "openpyxl==3.1.5",
+    "defusedxml>=0.7.1,<0.8",
 ]
+
+[dependency-groups]
+dev = [
+    "httpx>=0.28.1",
+    "pytest>=9.2.0",
+    "pytest-asyncio>=1.4.1",
+    "python-calamine>=0.8.3,<0.9",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+asyncio_default_fixture_loop_scope = "function"

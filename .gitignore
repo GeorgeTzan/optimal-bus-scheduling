@@ -9,7 +9,11 @@
 /coverage
 
 /.venv
+/.venv*
 /backend/.venv
+/backend/.venv*
+.worktrees/
+worktrees/
 
 data_loader.py
 problem_generator.py
@@ -58,3 +62,6 @@ yarn-error.log*
 
 # idea files
 .idea
+# local tooling
+.codegraph/
+.antigravitycli/
