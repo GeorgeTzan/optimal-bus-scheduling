@@ -8,6 +8,7 @@ services:
       - /app/node_modules
     environment:
       - NODE_ENV=development
+      - BACKEND_URL=http://backend:8000
     user: "1000:1000"
     networks:
       - bus_network
@@ -27,16 +28,34 @@ services:
     environment:
       - PYTHONPATH=/app
       - UV_CACHE_DIR=/tmp/uv-cache
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/scheduling
     command: ["python", "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
     networks:
       - bus_network
     depends_on:
       - db
 
+  cv-worker:
+    build: ./backend
+    volumes:
+      - ./backend:/app:Z
+    env_file:
+      - ./backend/.env
+    environment:
+      - PYTHONPATH=/app
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/scheduling
+    command: ["python", "-m", "app.domain.jobs.worker", "--tenant-id", "1"]
+    networks:
+      - bus_network
+    depends_on:
+      - db
+    restart: unless-stopped
+
   db:
     image: postgres:16-alpine
+    # Bind to localhost loopback only, never expose on public network interface
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres

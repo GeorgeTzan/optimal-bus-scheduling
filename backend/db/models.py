@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, DateTime, JSON
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, DateTime, JSON, Index, func
 from sqlalchemy.orm import relationship
 from datetime import datetime, timezone
 from db.database import Base
@@ -10,6 +10,7 @@ class KTEL(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, unique=True, index=True)
     region = Column(String)
+    timezone = Column(String, nullable=False, default="Europe/Athens")
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
     users = relationship("User", back_populates="ktel")
@@ -27,6 +28,8 @@ class User(Base):
     is_admin = Column(Boolean, default=False)
     ktel_id = Column(Integer, ForeignKey("ktels.id"))
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+
+    __table_args__ = (Index("uq_users_email_casefold", func.lower(func.trim(email)), unique=True),)
 
     ktel = relationship("KTEL", back_populates="users")
 
@@ -53,6 +56,7 @@ class Trip(Base):
     __tablename__ = "trips"
 
     id = Column(Integer, primary_key=True, index=True)
+    ktel_id = Column(Integer, ForeignKey("ktels.id"), index=True, default=1)
     trip_code = Column(String, index=True)
     start_station = Column(String)
     end_station = Column(String)
@@ -61,6 +65,7 @@ class Trip(Base):
     schedule_id = Column(Integer, ForeignKey("schedules.id"))
     properties = Column(JSON, default={})
 
+    ktel = relationship("KTEL")
     schedule = relationship("Schedule", back_populates="trips")
 
 
@@ -68,12 +73,14 @@ class Driver(Base):
     __tablename__ = "drivers"
 
     id = Column(Integer, primary_key=True, index=True)
+    ktel_id = Column(Integer, ForeignKey("ktels.id"), index=True, default=1)
     driver_code = Column(String, index=True)
     bus_id = Column(String)
     home_station = Column(String)
     schedule_id = Column(Integer, ForeignKey("schedules.id"))
     properties = Column(JSON, default={})
 
+    ktel = relationship("KTEL")
     schedule = relationship("Schedule", back_populates="drivers")
 
 
@@ -81,6 +88,7 @@ class Solution(Base):
     __tablename__ = "solutions"
 
     id = Column(Integer, primary_key=True, index=True)
+    ktel_id = Column(Integer, ForeignKey("ktels.id"), index=True, default=1)
     schedule_id = Column(Integer, ForeignKey("schedules.id"), unique=True)
     assignments = Column(JSON)
     bus_states = Column(JSON)
@@ -88,4 +96,5 @@ class Solution(Base):
     buses_used = Column(Integer)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
+    ktel = relationship("KTEL")
     schedule = relationship("Schedule", back_populates="solution")
