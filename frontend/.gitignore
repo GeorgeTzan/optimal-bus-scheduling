@@ -49,3 +49,5 @@ __pycache__/
 
 # idea files
 .idea
+/test-results/
+/playwright-report/

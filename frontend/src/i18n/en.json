@@ -1,0 +1,61 @@
+{
+  "app": {
+    "title": "KTEL Operations Platform",
+    "tagline": "Optimal Schedule Planning & Fleet Management System",
+    "theme": {
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System"
+    },
+    "language": {
+      "el": "Ελληνικά",
+      "en": "English"
+    }
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "scheduling": "Schedule Studio",
+    "timeline": "Gantt Timeline",
+    "workforce": "Workforce & Drivers",
+    "fleet": "Fleet Vehicles",
+    "optimization": "CV Optimization",
+    "incidents": "Incidents & Recovery",
+    "imports": "Data Imports",
+    "audit": "Audit Logs",
+    "settings": "Organization Settings"
+  },
+  "roles": {
+    "admin": "System Administrator",
+    "dispatcher": "Dispatcher / Planner",
+    "driver": "Driver",
+    "fleet_manager": "Fleet Manager",
+    "management": "Executive Management"
+  },
+  "auth": {
+    "login": "Sign In",
+    "logout": "Sign Out",
+    "email": "Email Address",
+    "password": "Password",
+    "invitationCode": "Invitation Code",
+    "register": "Register with Invitation"
+  },
+  "status": {
+    "draft": "Draft",
+    "in_progress": "In Progress",
+    "pending_approval": "Pending Approval",
+    "approved": "Approved",
+    "published": "Published",
+    "cancelled": "Cancelled"
+  },
+  "common": {
+    "loading": "Loading data...",
+    "empty": "No records found",
+    "error": "An error occurred during processing",
+    "retry": "Retry",
+    "save": "Save",
+    "cancel": "Cancel",
+    "apply": "Apply",
+    "filter": "Filter",
+    "search": "Search..."
+  }
+}
