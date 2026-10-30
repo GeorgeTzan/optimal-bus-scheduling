@@ -10,9 +10,16 @@ export async function POST(request: NextRequest) {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 300000); 
     
-    const response = await fetch('http://backend:8000/solve', {
+    const backendUrl = process.env.BACKEND_URL || "http://127.0.0.1:8000";
+    const authHeader = request.headers.get("authorization");
+    const headers: Record<string, string> = { "Content-Type": "application/json" };
+    if (authHeader) {
+      headers.authorization = authHeader;
+    }
+
+    const response = await fetch(`${backendUrl}/solve`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers,
       body: JSON.stringify(body),
       signal: controller.signal,
     });

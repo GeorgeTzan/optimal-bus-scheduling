@@ -3,13 +3,21 @@ import { NextRequest, NextResponse } from 'next/server';
 export const maxDuration = 300;
 export const dynamic = 'force-dynamic';
 
-export async function POST(_request: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 290000);
 
-    const response = await fetch('http://backend:8000/solve/legacy', {
+    const backendUrl = process.env.BACKEND_URL || "http://127.0.0.1:8000";
+    const authHeader = request.headers.get("authorization");
+    const headers: Record<string, string> = {};
+    if (authHeader) {
+      headers.authorization = authHeader;
+    }
+
+    const response = await fetch(`${backendUrl}/solve/legacy`, {
       method: 'POST',
+      headers,
       signal: controller.signal,
     });
 

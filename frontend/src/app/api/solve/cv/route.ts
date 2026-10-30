@@ -8,16 +8,18 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const payload = JSON.stringify(body);
 
+    const backendUrl = new URL(process.env.BACKEND_URL || "http://127.0.0.1:8000");
     const proxied = await new Promise<{ status: number; body: string }>((resolve, reject) => {
       const request = httpRequest(
         {
-          hostname: "backend",
-          port: 8000,
+          hostname: backendUrl.hostname,
+          port: backendUrl.port ? Number(backendUrl.port) : 8000,
           path: "/solve/cv",
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             "Content-Length": Buffer.byteLength(payload),
+            ...(req.headers.get("authorization") ? { authorization: req.headers.get("authorization")! } : {}),
           },
         },
         (response) => {

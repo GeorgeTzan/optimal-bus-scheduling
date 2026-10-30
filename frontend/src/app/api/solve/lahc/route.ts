@@ -4,17 +4,23 @@ import http from 'http';
 export const maxDuration = 600;
 export const dynamic = 'force-dynamic';
 
-function backendPost(path: string, payload: string): Promise<{ status: number; body: string }> {
+function backendPost(path: string, payload: string, authHeader?: string | null): Promise<{ status: number; body: string }> {
+  const backendUrl = new URL(process.env.BACKEND_URL || "http://127.0.0.1:8000");
   return new Promise((resolve, reject) => {
+    const headers: Record<string, string | number> = {
+      'Content-Type': 'application/json',
+      'Content-Length': Buffer.byteLength(payload),
+    };
+    if (authHeader) {
+      headers.authorization = authHeader;
+    }
+
     const options: http.RequestOptions = {
-      hostname: 'backend',
-      port: 8000,
+      hostname: backendUrl.hostname,
+      port: backendUrl.port ? Number(backendUrl.port) : 8000,
       path,
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Content-Length': Buffer.byteLength(payload),
-      },
+      headers,
       timeout: 590000,
     };
 
@@ -40,7 +46,8 @@ export async function POST(request: NextRequest) {
       body = {};
     }
 
-    const { status, body: rawBody } = await backendPost('/solve/lahc', JSON.stringify(body));
+    const authHeader = request.headers.get("authorization");
+    const { status, body: rawBody } = await backendPost('/solve/lahc', JSON.stringify(body), authHeader);
 
     if (status < 200 || status >= 300) {
       return NextResponse.json(
