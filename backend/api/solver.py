@@ -1,9 +1,12 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel, Field
 from typing import Optional
 import os
 import traceback
 
+from app.domain.identity.permissions import require_permission
+from api.deps import get_current_user
+from db.models import User
 from dat_parser import parse_trips, parse_drivers, get_full_data
 from services.solver import run_constructive_heuristic
 from framework.problem import Problem
@@ -32,7 +35,7 @@ class SolveRequest(BaseModel):
 
 
 @router.post("/solve")
-def solve(req: SolveRequest = SolveRequest()):
+def solve(req: SolveRequest = SolveRequest(), current_user: User = Depends(require_permission('optimization.run'))):
     trips = parse_trips()
     drivers = parse_drivers()
     full_data = get_full_data()
@@ -67,7 +70,7 @@ def solve(req: SolveRequest = SolveRequest()):
 
 
 @router.post("/solve/legacy")
-def solve_legacy():
+def solve_legacy(current_user: User = Depends(require_permission('optimization.run'))):
     shifts_path = "/app/shifts.dat"
 
     if not os.path.exists(shifts_path):
@@ -91,7 +94,7 @@ class LAHCRequest(BaseModel):
 
 
 @router.post("/solve/lahc")
-def solve_lahc(req: LAHCRequest = LAHCRequest()):
+def solve_lahc(req: LAHCRequest = LAHCRequest(), current_user: User = Depends(require_permission('optimization.run'))):
     full_data = get_full_data()
     params = SolverParameters.from_data(full_data)
     constraints = ConstraintsData.from_data(full_data)
@@ -115,7 +118,7 @@ class CVSolveRequest(BaseModel):
 
 
 @router.post("/solve/cv")
-def solve_cv(req: CVSolveRequest = CVSolveRequest()):
+def solve_cv(req: CVSolveRequest = CVSolveRequest(), current_user: User = Depends(require_permission('optimization.run'))):
     try:
         print(f"Starting CV Solver with {req.iterations} iterations...")
         if req.previous_solution is None:
