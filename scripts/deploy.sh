@@ -13,7 +13,7 @@ set -euo pipefail
 dir=$1 revision=$2
 cd ~
 test -f "$dir/secrets/app.env" || { echo "missing ~/$dir/secrets; first install is manual" >&2; exit 1; }
-compose() { docker compose -f docker-compose.prod.yml -p ktel "$@"; }
+compose() { docker compose -f docker-compose.prod.yml -p ktel "$@" < /dev/null; }
 mkdir -p ~/ktel-backups
 if (cd "$dir" && compose ps --status running --services | grep -qx db); then
   (cd "$dir" && compose exec -T db sh -c 'pg_dump -U "$POSTGRES_USER" "$POSTGRES_DB"') | gzip > ~/ktel-backups/ktel-$(date +%Y%m%d-%H%M%S).sql.gz
