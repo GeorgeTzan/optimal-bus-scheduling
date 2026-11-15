@@ -1,10 +1,10 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { ChevronRight, Sun, Moon, LogOut } from "lucide-react";
+import { ChevronRight, Sun, Moon, LogOut, Menu } from "lucide-react";
 import { useI18n } from "../../i18n/context";
 import { useAuth } from "../../features/auth/AuthContext";
 import type { ShellTab } from "./Shell";
-export function Navbar({ currentTab }: { currentTab: ShellTab }) {
+export function Navbar({ currentTab, onMenu }: { currentTab: ShellTab; onMenu: () => void }) {
   const { locale, setLocale } = useI18n();
   const { user, logout, error } = useAuth();
   const [dark, setDark] = useState(false);
@@ -35,6 +35,9 @@ export function Navbar({ currentTab }: { currentTab: ShellTab }) {
   };
   return (
     <header className="app-topbar">
+      <button className="icon-button menu-button" onClick={onMenu} aria-label={locale === "el" ? "Άνοιγμα μενού" : "Open menu"}>
+        <Menu size={20} />
+      </button>
       <div className="breadcrumb">
         <span>{locale === "el" ? "Χώρος εργασίας" : "Workspace"}</span>
         <ChevronRight size={13} />

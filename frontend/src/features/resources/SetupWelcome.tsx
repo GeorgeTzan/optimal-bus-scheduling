@@ -79,7 +79,7 @@ export function SetupWelcome({
               : "Import many records from Excel/CSV"
           }
         />
-        <p className="resource-help">
+        <p className="resource-help setup-import-help">
           {el
             ? "Δεν χρειάζεται καταχώριση ένα προς ένα. Χρησιμοποιήστε τις σύντομες φόρμες για λίγες προσθήκες ή διορθώσεις."
             : "No need to enter every record individually. Use the short forms for small additions or corrections."}
@@ -197,7 +197,7 @@ export function SetupWelcome({
               <p>{step.detail}</p>
               {step.count !== undefined && step.count > 0 && (
                 <small>
-                  {step.count} {el ? "αποθηκευμένες εγγραφές" : "saved records"}
+                  {step.count} {el ? (step.count === 1 ? "αποθηκευμένη εγγραφή" : "αποθηκευμένες εγγραφές") : (step.count === 1 ? "saved record" : "saved records")}
                 </small>
               )}
             </div>

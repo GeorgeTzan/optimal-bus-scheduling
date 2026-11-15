@@ -133,8 +133,8 @@ export function LoginForm({ onSuccess }: { onSuccess?: () => void }) {
       </form>
       <p className="auth-footnote">
         {el
-          ? "Λάβατε πρόσκληση; Ανοίξτε τον σύνδεσμο στο email σας για να δημιουργήσετε λογαριασμό."
-          : "Received an invitation? Open the link in your email to create your account."}
+          ? "Λάβατε πρόσκληση; Ανοίξτε τον σύνδεσμο πρόσκλησης για να δημιουργήσετε λογαριασμό."
+          : "Received an invitation? Open the invitation link to create your account."}
       </p>
     </AuthShell>
   );

@@ -3035,3 +3035,43 @@ input.rule-invalid {
 .work-findings small { color: var(--muted); font-size: 10px; }
 .work-findings .status-pill { flex: none; }
 .change-emergency { display: flex; align-items: center; gap: 8px; }
+.app-sidebar { overflow-y: auto; }
+.app-sidebar > * { flex-shrink: 0; }
+.sidebar-advanced summary { display: flex; align-items: center; gap: 12px; list-style: none; }
+.sidebar-advanced summary::-webkit-details-marker { display: none; }
+.sidebar-collapsed .sidebar-advanced summary { justify-content: center; }
+.setup-import-help { margin-top: 14px; }
+.import-guidance h3 { margin: 0 0 8px; }
+.menu-button, .sidebar-backdrop { display: none; }
+@media (max-width: 1000px) {
+  .sidebar-advanced { padding: 12px 0; }
+  .sidebar-advanced summary { justify-content: center; }
+}
+@media (max-width: 600px) {
+  .menu-button { display: inline-flex; }
+  .app-sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    z-index: 60;
+    width: min(280px, 82vw);
+    padding: 0 12px;
+    transform: translateX(-100%);
+    transition: transform 0.2s ease;
+  }
+  .menu-open .app-sidebar { transform: none; box-shadow: 0 0 40px rgb(0 0 0 / 0.35); }
+  .sidebar-backdrop { display: block; position: fixed; inset: 0; z-index: 55; background: rgb(8 20 35 / 0.45); }
+  .menu-open .sidebar-copy,
+  .menu-open .brand-type,
+  .menu-open .nav-caption { display: revert; }
+  .menu-open .brand { padding: 0 12px; justify-content: flex-start; }
+  .menu-open .nav-item { justify-content: flex-start; padding: 0 13px; height: 46px; }
+  .menu-open .sidebar-advanced { padding: 12px 13px; }
+  .menu-open .sidebar-advanced summary { justify-content: flex-start; font-size: 12px; }
+  .collapse-button { display: none; }
+  .topbar-actions { gap: 4px; }
+  .icon-button { width: 40px; height: 40px; }
+  .locale-switch button { min-width: 36px; min-height: 36px; }
+}
+@media (max-width: 600px) and (prefers-reduced-motion: reduce) {
+  .app-sidebar { transition: none; }
+}

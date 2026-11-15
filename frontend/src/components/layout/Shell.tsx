@@ -13,6 +13,7 @@ import {
   Route,
   ClipboardList,
   Scale,
+  Ellipsis,
 } from "lucide-react";
 import { useAuth } from "../../features/auth/AuthContext";
 import { Navbar } from "./Navbar";
@@ -44,6 +45,8 @@ export function Shell({
   const { user } = useAuth();
   const el = locale === "el";
   const [collapsed, setCollapsed] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const go = (tab: ShellTab) => { setMenuOpen(false); onTabChange(tab); };
   const items = [
     {
       id: "dashboard",
@@ -73,7 +76,8 @@ export function Shell({
     { id: "imports", icon: Upload, el: "Εισαγωγές", en: "Data imports" },
   ] as const;
   return (
-    <div className={`app-shell ${collapsed ? "sidebar-collapsed" : ""}`}>
+    <div className={`app-shell ${collapsed ? "sidebar-collapsed" : ""} ${menuOpen ? "menu-open" : ""}`}>
+      {menuOpen && <div className="sidebar-backdrop" onClick={() => setMenuOpen(false)} aria-hidden="true" />}
       <aside className="app-sidebar">
         <div className="brand">
           <div className="brand-mark">
@@ -106,7 +110,7 @@ export function Shell({
               key={item.id}
               aria-current={currentTab === item.id ? "page" : undefined}
               title={el ? item.el : item.en}
-              onClick={() => onTabChange(item.id)}
+              onClick={() => go(item.id)}
               className={`nav-item ${currentTab === item.id ? "active" : ""}`}
             >
               <item.icon size={18} />
@@ -116,10 +120,10 @@ export function Shell({
           ))}
         </nav>
         {user?.permissions.includes("schedule.read") && <details className="sidebar-advanced">
-          <summary>{el ? "Περισσότερα" : "More"}</summary>
+          <summary title={el ? "Περισσότερα" : "More"}><Ellipsis size={18} /><span className="sidebar-copy">{el ? "Περισσότερα" : "More"}</span></summary>
           <button
             className={`nav-item ${currentTab === "archive" ? "active" : ""}`}
-            onClick={() => onTabChange("archive")}
+            onClick={() => go("archive")}
             title={el ? "Αρχείο αναφοράς" : "Reference archive"}
           >
             <CalendarRange size={18} />
@@ -155,7 +159,7 @@ export function Shell({
         </div>
       </aside>
       <div className="app-main">
-        <Navbar currentTab={currentTab} />
+        <Navbar currentTab={currentTab} onMenu={() => setMenuOpen(true)} />
         <main>{children}</main>
       </div>
     </div>
