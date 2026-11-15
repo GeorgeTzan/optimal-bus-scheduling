@@ -62,7 +62,7 @@ def test_customer_inputs_create_a_persisted_initially_unassigned_revision(
             "/api/v1/scheduling/revisions/active?service_date=2026-06-01",
             headers=headers,
         ).status_code
-        == 404
+        == 204
     )
     response = client.post(
         "/api/v1/scheduling/revisions",
@@ -88,7 +88,7 @@ def test_customer_inputs_create_a_persisted_initially_unassigned_revision(
             "/api/v1/scheduling/revisions/active?service_date=2026-06-02",
             headers=headers,
         ).status_code
-        == 404
+        == 204
     )
     other = {
         "Authorization": "Bearer "
@@ -98,7 +98,7 @@ def test_customer_inputs_create_a_persisted_initially_unassigned_revision(
         client.get(
             "/api/v1/scheduling/revisions/active?service_date=2026-06-01", headers=other
         ).status_code
-        == 404
+        == 204
     )
     assert (
         client.post(
@@ -148,7 +148,7 @@ def test_unprepared_service_day_returns_actionable_readiness_without_creating_a_
     assert response.json()["detail"]["next_step"] == "planning"
     assert (
         client.get("/api/v1/scheduling/revisions/active", headers=headers).status_code
-        == 404
+        == 204
     )
 
 

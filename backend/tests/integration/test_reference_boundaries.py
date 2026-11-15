@@ -54,7 +54,7 @@ def test_existing_reference_is_explicit_read_only_history_outside_reference_tool
     revision = imported.json()
     assert (
         client.get("/api/v1/scheduling/revisions/active", headers=headers).status_code
-        == 404
+        == 204
     )
     assert (
         client.get(
@@ -103,5 +103,5 @@ def test_existing_reference_is_explicit_read_only_history_outside_reference_tool
             "/api/v1/scheduling/revisions/active?source_kind=reference_archive",
             headers=other,
         ).status_code
-        == 404
+        == 204
     )

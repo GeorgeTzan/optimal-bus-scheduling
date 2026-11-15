@@ -32,7 +32,9 @@ def route_view(row):
 
 @router.get('/capabilities')
 def capabilities(user=Depends(get_current_user), db: Session = Depends(get_db)):
-    return {'capabilities': office_capabilities(db, user), 'timezone': db.query(KTEL.timezone).filter_by(id=user.ktel_id).scalar()}
+    from app.domain.office.permissions import is_approver
+    return {'capabilities': office_capabilities(db, user), 'timezone': db.query(KTEL.timezone).filter_by(id=user.ktel_id).scalar(),
+            'approver': is_approver(db, user)}
 
 
 @router.get('/grants')

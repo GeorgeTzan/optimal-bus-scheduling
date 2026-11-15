@@ -37,7 +37,7 @@ def test_restricted_roles_support_auth_revision_edits_and_actual_worker(restrict
         imported=client.post('/api/v1/scheduling/revisions/import-reference',headers=headers[0],json={'service_date':'2026-10-30'})
         assert imported.status_code==201,imported.text
         revision=imported.json()
-        assert client.get('/api/v1/scheduling/revisions/active',headers=headers[1]).status_code==404
+        assert client.get('/api/v1/scheduling/revisions/active',headers=headers[1]).status_code==204
         row=revision['assignments'][0]
         patch={'version':revision['version'],'patches':[{'trip_id':row['trip_id'],'new_resource_id':row['resource_id'],'is_locked':True}]}
         url=f"/api/v1/scheduling/revisions/{revision['revision_id']}/patches"

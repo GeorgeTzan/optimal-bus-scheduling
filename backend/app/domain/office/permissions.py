@@ -23,10 +23,14 @@ def resolve_approver_routes(db, tenant_id: int, driver_id: int) -> list[Approval
     return query.filter(ApprovalRoute.driver_id == driver_id).all() or query.filter(ApprovalRoute.driver_id.is_(None)).all()
 
 
+def is_approver(db, user):
+    return db.query(ApprovalRoute.id).filter_by(tenant_id=user.ktel_id, membership_id=user.membership_id, is_active=True).first() is not None
+
+
 def read_scope(db, user):
     """(can_read, can_see_private) per driver: availability.manage or a route covering the driver; private data needs notes access or a route."""
     capabilities = office_capabilities(db, user)
-    routed = db.query(ApprovalRoute.id).filter_by(tenant_id=user.ktel_id, membership_id=user.membership_id, is_active=True).first() is not None
+    routed = is_approver(db, user)
     if 'availability.manage' not in capabilities and not routed:
         raise HTTPException(403, {'code': 'office_permission_required', 'message': 'Your organization has not granted you this office action.'})
     cache = {}

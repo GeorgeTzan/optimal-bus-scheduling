@@ -33,14 +33,14 @@ export function OfficeWorkspace({ onOpenStudio }: { onOpenStudio: (date: string)
   if (!caps) return <section className="resource-empty"><p role="status">{el ? "Φόρτωση…" : "Loading…"}</p></section>;
   const has = (capability: string) => caps.capabilities.includes(capability),
     tabs: [Tab, string, boolean][] = [
-      ["leave", el ? "Άδειες" : "Leave", true],
+      ["leave", el ? "Άδειες" : "Leave", has("availability.manage") || caps.approver],
       ["working", el ? "Ωράριο οδηγών" : "Driver working time", has("availability.manage")],
       ["fleet", el ? "Συντήρηση οχημάτων" : "Vehicle maintenance", has("maintenance.manage")],
       ["impacts", el ? "Επηρεασμένα δρομολόγια" : "Affected trips", !!user?.permissions.includes("schedule.read")],
       ["access", el ? "Πρόσβαση" : "Access", !!user?.permissions.includes("members.manage")],
     ],
     visible = tabs.filter(([, , shown]) => shown),
-    active = visible.some(([id]) => id === tab) ? tab : "leave",
+    active = visible.some(([id]) => id === tab) ? tab : visible[0]?.[0],
     { from, to } = monthRange(month);
   return (
     <section className="resource-workspace office-workspace">
@@ -50,6 +50,8 @@ export function OfficeWorkspace({ onOpenStudio }: { onOpenStudio: (date: string)
         <label className="office-month">{el ? "Μήνας" : "Month"}
           <input type="month" value={month} onChange={(e) => e.target.value && setMonth(e.target.value)} /></label>
       </div>
+      {caps.capabilities.length === 0 && user?.permissions.includes("members.manage") && (
+        <p className="office-summary">{el ? "Δεν έχετε ακόμη ενέργειες γραφείου. Δώστε τις στον εαυτό σας ή σε άλλους από την ενότητα Πρόσβαση." : "You have no office actions yet. Grant them to yourself or others in the Access section."}</p>)}
       {caps.capabilities.length === 0 && !user?.permissions.includes("members.manage") && (
         <p className="office-summary">{el ? "Ο οργανισμός σας δεν σας έχει δώσει ενέργειες γραφείου. Μπορείτε να δείτε μόνο ό,τι αφορά τις άδειες που εγκρίνετε." : "Your organization has not granted you office actions. You can only see leave you are set to approve."}</p>)}
       <nav className="office-tabs" aria-label={el ? "Ενότητες γραφείου" : "Office sections"}>

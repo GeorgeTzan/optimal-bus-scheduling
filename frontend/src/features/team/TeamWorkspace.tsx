@@ -109,13 +109,13 @@ export function TeamWorkspace() {
       <section className="office-panel" aria-labelledby="pending-heading">
         <h2 id="pending-heading">{el ? "Εκκρεμείς προσκλήσεις" : "Pending invitations"}</h2>
         {invitations.length === 0 ? <p className="office-empty">{el ? "Δεν υπάρχουν εκκρεμείς προσκλήσεις." : "No pending invitations."}</p> : (
-          <div className="resource-table-scroll"><table className="resource-table"><thead><tr>
+          <div className="resource-table-scroll"><table className="resource-table team-table"><thead><tr>
             <th>Email</th><th>{el ? "Ρόλος" : "Role"}</th><th>{el ? "Λήξη" : "Expires"}</th><th>{el ? "Αποστολή" : "Delivery"}</th><th /></tr></thead><tbody>
             {invitations.map((item) => (
               <tr key={item.id}>
-                <td>{item.email}</td><td>{roleText[item.role].name[lang]}</td>
-                <td>{day(item.expires_at)}{item.expired ? ` · ${el ? "έληξε" : "expired"}` : ""}</td>
-                <td>{deliveryText(item.delivery_status, el)}</td>
+                <td data-label="Email">{item.email}</td><td data-label={el ? "Ρόλος" : "Role"}>{roleText[item.role].name[lang]}</td>
+                <td data-label={el ? "Λήξη" : "Expires"}>{day(item.expires_at)}{item.expired ? ` · ${el ? "έληξε" : "expired"}` : ""}</td>
+                <td data-label={el ? "Αποστολή" : "Delivery"}>{deliveryText(item.delivery_status, el)}</td>
                 <td className="office-action-cell">
                   <button className="button secondary" disabled={busy} aria-label={`${el ? "Εκ νέου αποστολή σε" : "Resend to"} ${item.email}`} onClick={() => void act(`r:${item.id}`, `/invitations/${item.id}/resend`, (id) => ({ method: "POST", body: JSON.stringify({ request_id: id }) }), el ? "Η πρόσκληση ανανεώθηκε." : "Invitation renewed.")}>{el ? "Νέα αποστολή" : "Resend"}</button>{" "}
                   <button className="button secondary" disabled={busy} aria-label={`${el ? "Ανάκληση για" : "Revoke for"} ${item.email}`} onClick={() => setConfirm({ kind: "revoke", invitation: item })}>{el ? "Ανάκληση" : "Revoke"}</button></td></tr>))}
@@ -123,17 +123,17 @@ export function TeamWorkspace() {
       </section>
       <section className="office-panel" aria-labelledby="members-heading">
         <h2 id="members-heading">{el ? "Μέλη" : "Members"}</h2>
-        <div className="resource-table-scroll"><table className="resource-table"><thead><tr>
+        <div className="resource-table-scroll"><table className="resource-table team-table"><thead><tr>
           <th>{el ? "Όνομα" : "Name"}</th><th>Email</th><th>{el ? "Ρόλος" : "Role"}</th><th>{el ? "Κατάσταση" : "Status"}</th><th /></tr></thead><tbody>
           {members.map((member) => {
             const own = member.user_id === user?.id;
             return (
               <tr key={member.id}>
-                <td>{name(member)}{own ? ` (${el ? "εσείς" : "you"})` : ""}</td><td>{member.email}</td>
-                <td>{own || member.role === "driver" ? <span title={roleText[member.role].meaning[lang]}>{roleText[member.role].name[lang]}{member.driver_id ? ` · ${el ? "συνδεδεμένος οδηγός" : "linked driver"}` : ""}</span> : (
+                <td className="team-name">{name(member)}{own ? ` (${el ? "εσείς" : "you"})` : ""}</td><td data-label="Email">{member.email}</td>
+                <td data-label={el ? "Ρόλος" : "Role"}>{own || member.role === "driver" ? <span title={roleText[member.role].meaning[lang]}>{roleText[member.role].name[lang]}{member.driver_id ? ` · ${el ? "συνδεδεμένος οδηγός" : "linked driver"}` : ""}</span> : (
                   <select aria-label={`${el ? "Ρόλος για" : "Role for"} ${name(member)}`} value={member.role} disabled={busy || !member.is_active} onChange={(e) => wantRole(member, e.target.value as Role)}>
                     {ROLES.map((r) => <option key={r} value={r}>{roleText[r].name[lang]}</option>)}</select>)}</td>
-                <td><span className="driver-badge">{member.is_active ? `✓ ${el ? "Ενεργός" : "Active"}` : `– ${el ? "Απενεργοποιημένος" : "Deactivated"}`}</span></td>
+                <td data-label={el ? "Κατάσταση" : "Status"}><span className="driver-badge">{member.is_active ? `✓ ${el ? "Ενεργός" : "Active"}` : `– ${el ? "Απενεργοποιημένος" : "Deactivated"}`}</span></td>
                 <td className="office-action-cell">{!own && (member.is_active
                   ? <><button className="button secondary" disabled={busy} aria-label={`${el ? "Σύνδεσμος νέου κωδικού για" : "New password link for"} ${name(member)}`} onClick={() => void act(`p:${member.id}`, `/members/${member.id}/reset-link`, (id) => ({ method: "POST", body: JSON.stringify({ request_id: id }) }), el ? "Δημιουργήθηκε σύνδεσμος νέου κωδικού." : "New password link created.")}>{el ? "Νέος κωδικός" : "New password"}</button>{" "}
                     <button className="button secondary" disabled={busy} aria-label={`${el ? "Απενεργοποίηση" : "Deactivate"} ${name(member)}`} onClick={() => setConfirm({ kind: "deactivate", member })}>{el ? "Απενεργοποίηση" : "Deactivate"}</button></>

@@ -164,7 +164,7 @@ function WorkspacePage() {
         { signal },
       );
       if (signal?.aborted || navigationEpoch.current !== epoch) return;
-      if (response.status === 404) {
+      if (response.status === 204) {
         setRevision(null);
         return;
       }

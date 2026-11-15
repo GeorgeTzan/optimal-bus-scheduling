@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   LayoutDashboard,
   CalendarRange,
@@ -46,6 +46,18 @@ export function Shell({
   const el = locale === "el";
   const [collapsed, setCollapsed] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const sidebar = useRef<HTMLElement>(null);
+  useEffect(() => {
+    if (!menuOpen) return;
+    const opener = document.activeElement as HTMLElement | null;
+    sidebar.current?.querySelector<HTMLElement>("nav button")?.focus();
+    const phone = window.matchMedia("(max-width: 600px)");
+    const close = (event: KeyboardEvent) => { if (event.key === "Escape") setMenuOpen(false); };
+    const widen = () => { if (!phone.matches) setMenuOpen(false); };
+    document.addEventListener("keydown", close);
+    phone.addEventListener("change", widen);
+    return () => { document.removeEventListener("keydown", close); phone.removeEventListener("change", widen); opener?.focus(); };
+  }, [menuOpen]);
   const go = (tab: ShellTab) => { setMenuOpen(false); onTabChange(tab); };
   const items = [
     {
@@ -78,7 +90,7 @@ export function Shell({
   return (
     <div className={`app-shell ${collapsed ? "sidebar-collapsed" : ""} ${menuOpen ? "menu-open" : ""}`}>
       {menuOpen && <div className="sidebar-backdrop" onClick={() => setMenuOpen(false)} aria-hidden="true" />}
-      <aside className="app-sidebar">
+      <aside className="app-sidebar" ref={sidebar}>
         <div className="brand">
           <div className="brand-mark">
             <BusFront size={23} strokeWidth={1.6} />
@@ -158,7 +170,7 @@ export function Shell({
           </button>
         </div>
       </aside>
-      <div className="app-main">
+      <div className="app-main" inert={menuOpen}>
         <Navbar currentTab={currentTab} onMenu={() => setMenuOpen(true)} />
         <main>{children}</main>
       </div>

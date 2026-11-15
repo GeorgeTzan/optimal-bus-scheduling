@@ -3,7 +3,7 @@ from dataclasses import asdict, replace
 from datetime import date, datetime, timezone
 from typing import Optional, Literal
 import uuid
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Response
 from pydantic import BaseModel, Field, ConfigDict
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
@@ -118,7 +118,7 @@ def active(service_date: date | None = None, source_kind: Literal['operational',
             SchedulingPeriod.tenant_id == user.ktel_id, SchedulingPeriod.start_date <= service_date, SchedulingPeriod.end_date >= service_date)
     rev = query.order_by(ScheduleRevision.created_at.desc(), ScheduleRevision.id.desc()).first()
     if not rev:
-        raise HTTPException(404, 'No saved schedule for this selection. Prepare your service day to create a draft.')
+        return Response(status_code=204)
     return serialize(db, rev)
 
 

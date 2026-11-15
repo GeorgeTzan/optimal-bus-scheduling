@@ -3075,3 +3075,15 @@ input.rule-invalid {
 @media (max-width: 600px) and (prefers-reduced-motion: reduce) {
   .app-sidebar { transition: none; }
 }
+@media (max-width: 600px) {
+  .team-table thead { display: none; }
+  .team-table, .team-table tbody, .team-table tr, .team-table td { display: block; width: 100%; }
+  .team-table tr { padding: 14px 0; border-bottom: 1px solid var(--line); }
+  .team-table td { padding: 4px 0; border: 0; overflow-wrap: anywhere; }
+  .team-table td[data-label] { display: grid; grid-template-columns: 88px minmax(0, 1fr); gap: 10px; align-items: center; }
+  .team-table td[data-label]::before { content: attr(data-label); color: var(--muted); font-size: 12px; }
+  .team-table .team-name { font-weight: 650; }
+  .team-table .office-action-cell { display: flex; flex-wrap: wrap; gap: 8px; padding-top: 10px; }
+  .team-table .office-action-cell:empty { display: none; }
+  .team-table select { width: 100%; }
+}

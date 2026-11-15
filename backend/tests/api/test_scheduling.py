@@ -59,7 +59,7 @@ def test_reload_patch_conflict_and_tenant_hiding(setup):
     assert next(a for a in loaded['assignments'] if a['trip_id'] == assignment['trip_id'])['is_locked']
     assert client.post(url, headers=auth(1), json=payload).status_code == 409
     assert client.post(url, headers=auth(2), json=payload).status_code == 404
-    assert client.get('/api/v1/scheduling/revisions/active?source_kind=reference_archive', headers=auth(2)).status_code == 404
+    assert client.get('/api/v1/scheduling/revisions/active?source_kind=reference_archive', headers=auth(2)).status_code == 204
     assert client.post(url, headers=auth(3), json=payload).status_code == 403
     assert client.get('/api/v1/scheduling/revisions/active?source_kind=reference_archive').status_code in (401, 403)
 

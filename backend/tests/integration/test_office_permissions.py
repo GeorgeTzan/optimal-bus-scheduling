@@ -45,7 +45,7 @@ def test_grants_default_off_and_admin_has_no_implicit_grant(identity_setup):
     admin, _ = person(identity_setup, None, 'admin')
     dispatcher, _ = person(identity_setup, 'dispatch@example.org', 'dispatcher')
     for headers in (admin, dispatcher):
-        assert client.get(CAPABILITIES, headers=headers).json() == {'capabilities': [], 'timezone': 'Europe/Athens'}
+        assert client.get(CAPABILITIES, headers=headers).json() == {'capabilities': [], 'timezone': 'Europe/Athens', 'approver': False}
     with identity_setup['owner_factory']() as db:
         assert db.execute(text('SELECT count(*) FROM domain_office_grants')).scalar_one() == 0
 
@@ -107,6 +107,7 @@ def test_missing_route_is_empty_and_driver_route_overrides_default(identity_setu
     with identity_setup['owner_factory']() as db:
         assert resolve_approver_routes(db, tenant, covered) == []
     default = client.post(ROUTES, headers=admin, json={'request_id': str(uuid.uuid4()), 'membership_id': member}).json()
+    assert client.get(CAPABILITIES, headers=admin).json()['approver'] is True
     specific = client.post(ROUTES, headers=admin, json={'request_id': str(uuid.uuid4()), 'driver_id': covered, 'external_contact_name': 'Bus owner'}).json()
     with identity_setup['owner_factory']() as db:
         assert [row.id for row in resolve_approver_routes(db, tenant, covered)] == [specific['id']]

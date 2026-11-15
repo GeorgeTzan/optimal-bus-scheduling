@@ -1,6 +1,7 @@
 export interface Capabilities {
   capabilities: string[];
   timezone: string;
+  approver: boolean;
 }
 export interface Pattern {
   id: number;

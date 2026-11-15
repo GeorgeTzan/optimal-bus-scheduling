@@ -87,7 +87,7 @@ def test_roles_are_server_authoritative_and_membership_changes_revoke_sessions(i
         db.commit()
     dispatcher_login=accept(client,dispatcher)
     dispatcher_headers={'Authorization':'Bearer '+dispatcher_login.json()['access_token']}
-    assert client.get('/api/v1/scheduling/revisions/active',headers=dispatcher_headers).status_code==404
+    assert client.get('/api/v1/scheduling/revisions/active',headers=dispatcher_headers).status_code==204
     assert client.post('/api/v1/scheduling/revisions/missing/patches',headers=dispatcher_headers,json={
         'version':1,'patches':[{'trip_id':'missing','new_resource_id':'missing'}]}).status_code==404
     assert client.get('/api/v1/identity/members',headers=dispatcher_headers).status_code==403
