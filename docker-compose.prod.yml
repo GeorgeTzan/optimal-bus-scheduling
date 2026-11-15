@@ -1,0 +1,63 @@
+x-hardened: &hardened
+  read_only: true
+  tmpfs:
+    - /tmp
+  cap_drop:
+    - ALL
+  security_opt:
+    - no-new-privileges:true
+  restart: unless-stopped
+  networks:
+    - ktel
+
+services:
+  frontend:
+    <<: *hardened
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prod
+    ports:
+      - "3000:3000"
+    tmpfs:
+      - /tmp
+      - /app/.next/cache:uid=1000,gid=1000
+    depends_on:
+      - backend
+
+  backend:
+    <<: *hardened
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.prod
+    image: ktel-backend
+    env_file:
+      - ./secrets/app.env
+      - ./secrets/runtime.env
+    depends_on:
+      - db
+
+  cv-worker:
+    <<: *hardened
+    image: ktel-backend
+    command: ["python", "-m", "app.domain.jobs.worker", "--tenant-id", "${KTEL_TENANT_ID:-1}"]
+    env_file:
+      - ./secrets/app.env
+      - ./secrets/runtime.env
+    depends_on:
+      - backend
+
+  db:
+    image: postgres:16-alpine
+    env_file:
+      - ./secrets/db.env
+    volumes:
+      - ktel_pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+    networks:
+      - ktel
+
+networks:
+  ktel:
+
+volumes:
+  ktel_pgdata:
