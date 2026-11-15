@@ -94,3 +94,43 @@ def test_a_deactivated_member_cannot_sign_in_and_stops_being_a_leave_approver_an
         assert resolve_approver_routes(db, identity_setup['first'].tenant_id, 11) == []
     viewer, _ = person(identity_setup, 'viewer@example.org', 'viewer')
     assert client.patch(f"{MEMBERS}/{target['id']}", headers=viewer, json={'version': 1, 'role': 'viewer'}).status_code == 403
+
+
+def reset_link(client, admin, member_id, request_id=None):
+    return client.post(f'{MEMBERS}/{member_id}/reset-link', headers=admin, json={'request_id': request_id or str(uuid.uuid4())})
+
+
+def test_without_mail_an_administrator_gets_a_one_time_reset_link_that_sets_a_new_password(identity_setup):
+    from config import settings
+    client = identity_setup['client']
+    admin, own = person(identity_setup, None, 'admin')
+    staff, member_id = person(identity_setup, 'staff@example.org', 'dispatcher')
+    request_id = str(uuid.uuid4())
+    first = reset_link(client, admin, member_id, request_id)
+    assert first.status_code == 202, first.text
+    assert first.json()['delivery_status'] == 'not_configured' and first.json()['email'] == 'staff@example.org'
+    link = first.json()['link']
+    assert link.startswith(settings.PUBLIC_APP_URL + '/reset-password#token=')
+    token = link.split('#token=')[1]
+    replay = reset_link(client, admin, member_id, request_id)
+    assert replay.status_code == 202 and 'link' not in replay.json()
+    with identity_setup['owner_factory']() as db:
+        stored = db.execute(text('SELECT response_data::text FROM domain_office_audit')).scalars().all()
+    assert not any(token in row for row in stored)
+    second = reset_link(client, admin, member_id).json()['link'].split('#token=')[1]
+    assert client.post('/auth/password-reset/confirm', json={'token': token, 'password': 'AnotherStrongPass123!'}).status_code == 400
+    assert client.post('/auth/password-reset/confirm', json={'token': second, 'password': 'AnotherStrongPass123!'}).status_code == 200
+    assert client.get('/auth/me', headers=staff).status_code == 401
+    assert client.post('/auth/login', json={'email': 'staff@example.org', 'password': 'AnotherStrongPass123!'}).status_code == 200
+
+
+def test_reset_links_are_refused_for_yourself_deactivated_members_and_non_administrators(identity_setup):
+    client = identity_setup['client']
+    admin, own = person(identity_setup, None, 'admin')
+    staff, member_id = person(identity_setup, 'staff@example.org', 'dispatcher')
+    assert reset_link(client, admin, own).status_code == 403
+    assert reset_link(client, staff, member_id).status_code == 403
+    assert reset_link(client, admin, 999999).status_code == 404
+    target = members(client, admin)['staff@example.org']
+    assert patch(client, admin, target, is_active=False, request_id=str(uuid.uuid4())).status_code == 200
+    assert reset_link(client, admin, member_id).status_code == 409

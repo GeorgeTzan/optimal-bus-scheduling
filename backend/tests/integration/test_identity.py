@@ -192,6 +192,7 @@ def test_login_rechecks_password_after_concurrent_credential_change(identity_set
 
 
 def test_admin_invites_are_bound_to_tenant_and_never_report_unconfigured_mail_as_sent(identity_setup):
+    from config import settings
     client=identity_setup['client'];invite=identity_setup['first']
     logged=accept(client,invite)
     headers={'Authorization':'Bearer '+logged.json()['access_token']}
@@ -200,7 +201,7 @@ def test_admin_invites_are_bound_to_tenant_and_never_report_unconfigured_mail_as
     assert response.status_code==202,response.text
     assert response.json()['delivery_status']=='not_configured'
     assert 'token' not in response.json()
-    assert 'link' not in response.json()
+    assert response.json()['link'].startswith(settings.PUBLIC_APP_URL+'/accept-invitation#token=')
     assert client.post('/api/v1/identity/invitations',headers=headers,json={
         'email':'forged@example.org','role':'platform_admin'}).status_code==422
     assert client.post('/api/v1/identity/invitations',headers=headers,json={

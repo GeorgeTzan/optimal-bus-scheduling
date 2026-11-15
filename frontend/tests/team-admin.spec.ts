@@ -1,10 +1,6 @@
-import { execFileSync } from "node:child_process";
-import path from "node:path";
 import { test, expect, signIn } from "./helpers/auth";
 
 test("an administrator invites, resends, revokes, onboards, changes roles and deactivates people, and a dispatcher never sees the Team screen", async ({ page, browser, request, customer }) => {
-  const backend = path.resolve("../backend"), script = path.resolve("tests/fixtures/identity-seed.py");
-  const run = (args: string[]) => execFileSync("uv", ["run", "python", script, ...args], { cwd: backend, env: { ...process.env, PYTHONPATH: backend }, encoding: "utf8" });
   await page.goto("/");
   await page.getByRole("button", { name: "EN", exact: true }).click();
   await signIn(page);
@@ -21,7 +17,8 @@ test("an administrator invites, resends, revokes, onboards, changes roles and de
   await page.getByRole("button", { name: "Send invitation" }).click();
   const pending = page.getByRole("row").filter({ hasText: email });
   await expect(pending).toContainText("Queued. No email has been sent because email delivery is not set up.");
-  expect(await page.content()).not.toContain("token=");
+  const shown = page.getByRole("region", { name: "Invitation link" }).getByRole("textbox");
+  await expect(shown).toHaveValue(/\/accept-invitation#token=/);
   await page.getByRole("button", { name: `Resend to ${email}` }).click();
   const resentNotice = page.getByRole("status").filter({ hasText: "Queued. No email has been sent" });
   await expect(resentNotice).toBeVisible();
@@ -34,7 +31,7 @@ test("an administrator invites, resends, revokes, onboards, changes roles and de
   await page.getByLabel("Email", { exact: true }).fill(email);
   await page.getByRole("button", { name: "Send invitation" }).click();
   await expect(page.getByRole("row").filter({ hasText: email })).toBeVisible();
-  const { token } = JSON.parse(run(["mail", String(customer.tenant_id), email])) as { token: string };
+  const token = (await shown.inputValue()).split("#token=")[1];
   const accepted = await request.post("/api/auth/accept-invitation", { data: { token, password: "StaffPortalPassword123!", full_name: "Staff Person" } });
   expect(accepted.ok(), await accepted.text()).toBeTruthy();
   await page.reload();
@@ -86,6 +83,16 @@ test("an administrator invites, resends, revokes, onboards, changes roles and de
     await expect(member).toContainText("Deactivated");
     await page.getByRole("button", { name: "Reactivate Staff Person" }).click();
     await expect(member).toContainText("Active");
+
+    await page.getByRole("button", { name: "New password link for Staff Person" }).click();
+    const resetLink = await page.getByRole("region", { name: "New password link" }).getByRole("textbox").inputValue();
+    expect(resetLink).toContain("/reset-password#token=");
+    await staff.goto(resetLink.replace(/^https?:\/\/[^/]+/, ""));
+    await staff.getByLabel("New password").fill("ResetByAdminPassword123!");
+    await staff.locator("button.auth-submit").click();
+    await expect(staff.getByText("Your password has been updated")).toBeVisible();
+    const signedIn = await request.post("/api/auth/login", { data: { email, password: "ResetByAdminPassword123!" } });
+    expect(signedIn.ok(), await signedIn.text()).toBeTruthy();
   } finally {
     await context.close();
   }

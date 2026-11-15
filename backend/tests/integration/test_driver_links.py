@@ -45,13 +45,15 @@ def accept(client, token, password='StrongTenantPassword123!'):
     return client.post('/auth/accept-invitation', json={'token': token, 'password': password, 'full_name': 'Nikos Driver'})
 
 
-def test_invitation_with_a_driver_queues_mail_without_a_link_and_acceptance_links_the_login(identity_setup):
+def test_invitation_with_a_driver_returns_the_link_without_mail_and_acceptance_links_the_login(identity_setup):
     client, admin = prepare(identity_setup)
     response = invite(client, admin)
     assert response.status_code == 202, response.text
-    assert response.json()['delivery_status'] == 'not_configured' and 'token' not in response.json() and 'link' not in response.json()
+    assert response.json()['delivery_status'] == 'not_configured' and 'token' not in response.json()
+    token = parse_qs(urlsplit(response.json()['link']).fragment)['token'][0]
+    assert token == token_for(identity_setup, 'driver@example.org')
     assert link_state(client, admin)['state'] == 'invited'
-    accepted = accept(client, token_for(identity_setup, 'driver@example.org'))
+    accepted = accept(client, token)
     assert accepted.status_code == 200, accepted.text
     me = client.get('/auth/me', headers={'Authorization': 'Bearer ' + accepted.json()['access_token']})
     assert me.json()['role'] == 'driver'
@@ -115,7 +117,7 @@ def test_retries_replay_and_changed_details_are_refused_and_only_administrators_
     body = {'email': 'driver@example.org', 'role': 'driver', 'driver_id': 11, 'request_id': request_id}
     first = client.post(INVITE, headers=admin, json=body)
     assert first.status_code == 202
-    assert client.post(INVITE, headers=admin, json=body).json() == first.json()
+    assert client.post(INVITE, headers=admin, json=body).json() == {key: value for key, value in first.json().items() if key != 'link'}
     changed = client.post(INVITE, headers=admin, json={**body, 'email': 'else@example.org'})
     assert changed.status_code == 409 and changed.json()['detail']['code'] == 'request_changed'
     viewer, _ = person(identity_setup, 'viewer@example.org', 'viewer')

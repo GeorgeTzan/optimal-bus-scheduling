@@ -192,7 +192,6 @@ def session_lookup(db,identifier,*,by_id=False):
 
 def request_password_reset(db,email):
     from app.domain.identity.lookup import lookup_identity
-    from app.domain.identity.mail import enqueue_identity_email
     user=lookup_identity(db,email.strip().lower(),login=True)
     if user is None or not user.is_active or user.ktel_id is None:
         return
@@ -200,16 +199,21 @@ def request_password_reset(db,email):
         member=db.query(Membership).filter_by(user_id=user.id,is_active=True).first()
         if member is None:
             return
-        now=datetime.now(timezone.utc)
-        db.query(IdentityToken).filter_by(user_id=user.id,kind='reset').filter(
-            IdentityToken.consumed_at.is_(None)).update({'expires_at':now},synchronize_session=False)
-        secret=secrets.token_urlsafe(32)
-        token=IdentityToken(id=str(uuid4()),tenant_id=user.ktel_id,user_id=user.id,email=user.email,
-            token_hash=digest(secret),kind='reset',expires_at=now+timedelta(minutes=30))
-        db.add(token);db.flush()
-        tenant=db.query(KTEL).filter_by(id=user.ktel_id).one()
-        enqueue_identity_email(db,token,secret,tenant.name)
+        issue_reset(db,user,user.ktel_id)
         db.commit()
+
+
+def issue_reset(db,user,tenant_id):
+    from app.domain.identity.mail import enqueue_identity_email
+    now=datetime.now(timezone.utc)
+    db.query(IdentityToken).filter_by(user_id=user.id,kind='reset').filter(
+        IdentityToken.consumed_at.is_(None)).update({'expires_at':now},synchronize_session=False)
+    secret=secrets.token_urlsafe(32)
+    token=IdentityToken(id=str(uuid4()),tenant_id=tenant_id,user_id=user.id,email=user.email,
+        token_hash=digest(secret),kind='reset',expires_at=now+timedelta(minutes=30))
+    db.add(token);db.flush()
+    tenant=db.query(KTEL).filter_by(id=tenant_id).one()
+    return token,secret,enqueue_identity_email(db,token,secret,tenant.name)
 
 
 def confirm_password_reset(db,secret,password):

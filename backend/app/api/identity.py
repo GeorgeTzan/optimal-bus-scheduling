@@ -119,19 +119,36 @@ def invitation_result(db,issue):
             'delivery_status':delivery.delivery_status}
 
 
+def issue_with_link(db,user,request_id,entity,action,payload,issue,invitation=True):
+    from app.domain.identity.mail import identity_link
+    issued=[]
+    def work():
+        secret,view=issue()
+        issued.append(secret)
+        return view
+    result=once(db,user,request_id,entity,action,payload,work)
+    if issued and result['delivery_status']=='not_configured':
+        return {**result,'link':identity_link(issued[0],invitation)}
+    return result
+
+
+def invitation_issued(db,invitation):
+    return invitation.token,invitation_result(db,invitation)
+
+
 @router.post('/invitations',status_code=202)
 def invite_member(req:InvitationCreate,user=Depends(require_permission('members.manage')),db:Session=Depends(get_db)):
     from uuid import uuid4
     from sqlalchemy import func
     from app.domain.identity.service import issue_invitation
-    def work():
+    def issue():
         email=str(req.email).strip().lower()
         # Only people of THIS organization are refused here; another organization's email gets the same answer as a new one.
         found=db.query(Membership,User).join(User,User.id==Membership.user_id).filter(Membership.tenant_id==user.ktel_id,func.lower(User.email)==email).first()
         if found is not None and not (found[0].role=='driver' and found[0].driver_id is None and found[0].is_active and req.driver_id is not None):
             raise HTTPException(409,{'code':'member_exists','message':'This person is already in your team. Reactivate them or change their role instead.'})
-        return invitation_result(db,issue_invitation(db,user.ktel_id,str(req.email),req.role,req.driver_id))
-    return once(db,user,req.request_id or uuid4(),'driver_link' if req.driver_id is not None else 'invitation','invite',req.model_dump(mode='json'),work)
+        return invitation_issued(db,issue_invitation(db,user.ktel_id,str(req.email),req.role,req.driver_id))
+    return issue_with_link(db,user,req.request_id or uuid4(),'driver_link' if req.driver_id is not None else 'invitation','invite',req.model_dump(mode='json'),issue)
 
 
 @router.get('/invitations')
@@ -143,8 +160,25 @@ def pending_invitations(user=Depends(require_permission('members.manage')),db:Se
 @router.post('/invitations/{invitation_id}/resend',status_code=202)
 def resend(invitation_id:str,req:LinkRequest,user=Depends(require_permission('members.manage')),db:Session=Depends(get_db)):
     from app.domain.identity.invitations import resend_invitation
-    return once(db,user,req.request_id,'invitation','resend',{'invitation_id':invitation_id,**req.model_dump(mode='json')},
-                lambda:invitation_result(db,resend_invitation(db,user.ktel_id,invitation_id)))
+    return issue_with_link(db,user,req.request_id,'invitation','resend',{'invitation_id':invitation_id,**req.model_dump(mode='json')},
+                           lambda:invitation_issued(db,resend_invitation(db,user.ktel_id,invitation_id)))
+
+
+@router.post('/members/{member_id}/reset-link',status_code=202)
+def member_reset_link(member_id:int,req:LinkRequest,user=Depends(require_permission('members.manage')),db:Session=Depends(get_db)):
+    from app.domain.identity.service import issue_reset
+    def issue():
+        member=db.query(Membership).filter_by(id=member_id).first()
+        if member is None:
+            raise HTTPException(404,'Organization member not found')
+        if member.user_id==user.id:
+            raise HTTPException(403,{'code':'own_membership','message':'You cannot give yourself a password link. Ask another administrator.'})
+        if not member.is_active:
+            raise HTTPException(409,{'code':'member_inactive','message':'Reactivate this member before giving a new password link.'})
+        person=db.query(User).filter_by(id=member.user_id).one()
+        token,secret,delivery=issue_reset(db,person,user.ktel_id)
+        return secret,{'member_id':member.id,'email':token.email,'expires_at':token.expires_at.isoformat(),'delivery_status':delivery.delivery_status}
+    return issue_with_link(db,user,req.request_id,'member','reset_link',{'member_id':member_id,**req.model_dump(mode='json')},issue,invitation=False)
 
 
 @router.get('/driver-links')

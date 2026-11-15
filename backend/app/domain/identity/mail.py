@@ -20,10 +20,13 @@ def decrypt_payload(value):
     return json.loads(_cipher().decrypt(value.encode()))
 
 
+def identity_link(secret,invitation=True):
+    return f"{settings.PUBLIC_APP_URL}/{'accept-invitation' if invitation else 'reset-password'}#token={secret}"
+
+
 def enqueue_identity_email(db,token,secret,organization_name):
     invitation=token.kind=='invitation'
-    path='accept-invitation' if invitation else 'reset-password'
-    link=f'{settings.PUBLIC_APP_URL}/{path}#token={secret}'
+    link=identity_link(secret,invitation)
     subject=f'Πρόσκληση στο {organization_name}' if invitation else 'Επαναφορά κωδικού KTEL'
     body=(f'Έχετε προσκληθεί στο {organization_name}. Ο σύνδεσμος ισχύει για 48 ώρες.' if invitation
           else 'Ζητήσατε νέο κωδικό για το KTEL. Ο σύνδεσμος ισχύει για 30 λεπτά. Αν δεν το ζητήσατε, αγνοήστε το μήνυμα.')

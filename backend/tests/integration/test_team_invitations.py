@@ -2,6 +2,7 @@
 import uuid
 from datetime import datetime, timedelta, timezone
 from sqlalchemy import text
+from config import settings
 from tests.integration.test_driver_links import accept, prepare, token_for
 from tests.integration.test_identity import identity_setup
 from tests.integration.test_office_permissions import person
@@ -45,7 +46,7 @@ def test_resend_replaces_the_link_and_discards_the_old_queued_mail(identity_setu
     old = listed(client, admin)[0]
     old_token = token_for(identity_setup, 'staff@example.org')
     resent = client.post(f"{INVITE}/{old['id']}/resend", headers=admin, json={'request_id': str(uuid.uuid4())})
-    assert resent.status_code == 202 and 'token' not in str(resent.json()), resent.text
+    assert resent.status_code == 202 and 'token' not in resent.json(), resent.text
     assert mail_status(identity_setup, old['id']) == 'discarded'
     assert accept(client, old_token).status_code == 400
     rows = listed(client, admin)
@@ -87,7 +88,8 @@ def test_replay_and_permissions(identity_setup):
     row = listed(client, admin)[0]
     request_id = str(uuid.uuid4())
     first = client.post(f"{INVITE}/{row['id']}/resend", headers=admin, json={'request_id': request_id})
-    assert client.post(f"{INVITE}/{row['id']}/resend", headers=admin, json={'request_id': request_id}).json() == first.json()
+    first_body = {key: value for key, value in first.json().items() if key != 'link'}
+    assert client.post(f"{INVITE}/{row['id']}/resend", headers=admin, json={'request_id': request_id}).json() == first_body
     viewer, _ = person(identity_setup, 'viewer@example.org', 'viewer')
     assert client.get(LIST, headers=viewer).status_code == 403
     assert client.post(f"{INVITE}/{row['id']}/resend", headers=viewer, json={'request_id': str(uuid.uuid4())}).status_code == 403
@@ -112,3 +114,28 @@ def test_a_deactivated_driver_login_is_not_invited_again_but_asked_to_be_reactiv
     assert client.patch(f"/api/v1/identity/members/{member['id']}", headers=admin, json={'version': member['version'], 'is_active': False}).status_code == 200
     refused = driver_invite(client, admin)
     assert refused.status_code == 409 and refused.json()['detail']['code'] == 'member_exists'
+
+
+def test_without_mail_the_link_is_returned_once_and_never_stored_and_with_mail_it_is_not_returned(identity_setup, monkeypatch):
+    client, admin = prepare(identity_setup)
+    request_id = str(uuid.uuid4())
+    body = {'email': 'staff@example.org', 'role': 'dispatcher', 'request_id': request_id}
+    first = client.post(INVITE, headers=admin, json=body)
+    assert first.status_code == 202, first.text
+    link = first.json()['link']
+    token = link.split('#token=')[1]
+    assert link == f'{settings.PUBLIC_APP_URL}/accept-invitation#token={token}'
+    replay = client.post(INVITE, headers=admin, json=body)
+    assert replay.status_code == 202 and 'link' not in replay.json()
+    with identity_setup['owner_factory']() as db:
+        stored = db.execute(text('SELECT response_data::text FROM domain_office_audit')).scalars().all()
+    assert stored and not any(token in row for row in stored)
+    renewed = client.post(f'{INVITE}/{first.json()["id"]}/resend', headers=admin, json={'request_id': str(uuid.uuid4())})
+    assert renewed.status_code == 202, renewed.text
+    assert renewed.json()['link'] != link
+    assert accept(client, token).status_code != 200
+    assert accept(client, renewed.json()['link'].split('#token=')[1]).status_code == 200
+    monkeypatch.setattr(settings, 'SMTP_HOST', '127.0.0.1')
+    monkeypatch.setattr(settings, 'SMTP_FROM', 'sender@example.org')
+    mailed = invite(client, admin, email='mailed@example.org')
+    assert mailed.status_code == 202 and mailed.json()['delivery_status'] == 'queued' and 'link' not in mailed.json()

@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useAuth } from "../auth/AuthContext";
 import { useI18n } from "../../i18n/context";
 import { newRequestId } from "../office/office-api";
+import { InviteLink } from "../team/InviteLink";
 
 interface Link {
   state: "unlinked" | "invited" | "expired" | "linked";
@@ -13,7 +14,6 @@ interface Link {
 }
 type Failure = { detail?: string | { message?: string } };
 
-/** Invite a driver to sign in from their driver record, and see or end the link. The invitation link itself is only ever in the email. */
 export function DriverAccess({ driverId, driverName }: { driverId: number; driverName: string }) {
   const { apiFetch } = useAuth(),
     el = useI18n().locale === "el";
@@ -23,6 +23,7 @@ export function DriverAccess({ driverId, driverName }: { driverId: number; drive
     [error, setError] = useState(""),
     [note, setNote] = useState(""),
     [confirmUnlink, setConfirmUnlink] = useState(false),
+    [shared, setShared] = useState<{ email: string; link: string } | null>(null),
     attempt = useRef<{ key: string; id: string } | null>(null);
   const load = useCallback(async (signal?: AbortSignal) => {
     const response = await apiFetch(`/api/v1/identity/driver-links?driver_ids=${driverId}`, { signal });
@@ -38,15 +39,16 @@ export function DriverAccess({ driverId, driverName }: { driverId: number; drive
   async function send(path: string, body: object, key: string, done: string) {
     if (busy) return;
     attempt.current = attempt.current?.key === key ? attempt.current : { key, id: newRequestId() };
-    setBusy(true); setError(""); setNote("");
+    setBusy(true); setError(""); setNote(""); setShared(null);
     try {
       const response = await apiFetch(path, { method: "POST", body: JSON.stringify({ ...body, request_id: attempt.current.id }) });
-      const value = (await response.json()) as Failure & { delivery_status?: string };
+      const value = (await response.json()) as Failure & { delivery_status?: string; email?: string; link?: string };
       if (!response.ok) {
         const detail = value.detail;
         throw Error(typeof detail === "string" ? detail : (detail?.message ?? (el ? "Η ενέργεια δεν ολοκληρώθηκε." : "The action could not be completed.")));
       }
       attempt.current = null;
+      if (value.link && value.email) setShared({ email: value.email, link: value.link });
       setNote(path.endsWith("/invitations") ? delivery(value.delivery_status, el) : done);
       setEmail(""); setConfirmUnlink(false);
       await load();
@@ -57,6 +59,7 @@ export function DriverAccess({ driverId, driverName }: { driverId: number; drive
       <h3 id={`access-${driverId}`}>{el ? "Πρόσβαση οδηγού" : "Driver sign-in"}</h3>
       {error && <p className="auth-error" role="alert">{error}</p>}
       {note && <p className="office-summary" role="status">{note}</p>}
+      {shared && <InviteLink email={shared.email} link={shared.link} el={el} onClose={() => setShared(null)} />}
       {!link ? <p>{el ? "Φόρτωση…" : "Loading…"}</p> : link.state === "linked" ? (
         <>
           <p>{el ? "Συνδεδεμένος λογαριασμός:" : "Linked account:"} <strong>{link.email}</strong></p>

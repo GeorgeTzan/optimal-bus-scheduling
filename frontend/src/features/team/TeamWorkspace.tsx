@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState, type FormEvent } from "react"
 import { useAuth } from "../auth/AuthContext";
 import { useI18n } from "../../i18n/context";
 import { Field, Modal } from "../timetables/shared";
+import { InviteLink } from "./InviteLink";
 import { ROLES, TeamError, deliveryText, requestId, roleText, teamCall, type Invitation, type Role, type TeamMember } from "./team-api";
 
 type Confirm =
@@ -23,6 +24,7 @@ export function TeamWorkspace() {
     [email, setEmail] = useState(""),
     [role, setRole] = useState<Role>("dispatcher"),
     [confirm, setConfirm] = useState<Confirm | null>(null),
+    [shared, setShared] = useState<{ email: string; link: string; reset: boolean } | null>(null),
     attempt = useRef<{ key: string; id: string } | null>(null),
     sequence = useRef(0);
   const load = useCallback(async (signal?: AbortSignal, keepError = false) => {
@@ -50,10 +52,11 @@ export function TeamWorkspace() {
   async function act(key: string, path: string, options: (id: string) => RequestInit, done: string): Promise<boolean> {
     if (busy) return false;
     attempt.current = attempt.current?.key === key ? attempt.current : { key, id: requestId() };
-    setBusy(true); setError(""); setNotice("");
+    setBusy(true); setError(""); setNotice(""); setShared(null);
     try {
-      const value = await teamCall<{ delivery_status?: string | null }>(apiFetch, path, options(attempt.current.id), el);
+      const value = await teamCall<{ delivery_status?: string | null; email?: string; link?: string }>(apiFetch, path, options(attempt.current.id), el);
       attempt.current = null;
+      if (value.link && value.email) setShared({ email: value.email, link: value.link, reset: value.link.includes("/reset-password") });
       // When mail is not configured nothing was sent, so the notice says only that: never "sent" or "resent".
       const status = value.delivery_status;
       setNotice(status === undefined || status === null ? done : status === "not_configured" ? deliveryText(status, el) : `${done} ${deliveryText(status, el)}`);
@@ -92,6 +95,7 @@ export function TeamWorkspace() {
       </header>
       {error && <p className="auth-error" role="alert">{error}</p>}
       {notice && <p className="office-summary" role="status">{notice}</p>}
+      {shared && <InviteLink email={shared.email} link={shared.link} reset={shared.reset} el={el} onClose={() => setShared(null)} />}
       <section className="office-panel" aria-labelledby="invite-heading">
         <h2 id="invite-heading">{el ? "Πρόσκληση ατόμου" : "Invite a person"}</h2>
         <form onSubmit={invite} className="team-invite">
@@ -131,7 +135,8 @@ export function TeamWorkspace() {
                     {ROLES.map((r) => <option key={r} value={r}>{roleText[r].name[lang]}</option>)}</select>)}</td>
                 <td><span className="driver-badge">{member.is_active ? `✓ ${el ? "Ενεργός" : "Active"}` : `– ${el ? "Απενεργοποιημένος" : "Deactivated"}`}</span></td>
                 <td className="office-action-cell">{!own && (member.is_active
-                  ? <button className="button secondary" disabled={busy} aria-label={`${el ? "Απενεργοποίηση" : "Deactivate"} ${name(member)}`} onClick={() => setConfirm({ kind: "deactivate", member })}>{el ? "Απενεργοποίηση" : "Deactivate"}</button>
+                  ? <><button className="button secondary" disabled={busy} aria-label={`${el ? "Σύνδεσμος νέου κωδικού για" : "New password link for"} ${name(member)}`} onClick={() => void act(`p:${member.id}`, `/members/${member.id}/reset-link`, (id) => ({ method: "POST", body: JSON.stringify({ request_id: id }) }), el ? "Δημιουργήθηκε σύνδεσμος νέου κωδικού." : "New password link created.")}>{el ? "Νέος κωδικός" : "New password"}</button>{" "}
+                    <button className="button secondary" disabled={busy} aria-label={`${el ? "Απενεργοποίηση" : "Deactivate"} ${name(member)}`} onClick={() => setConfirm({ kind: "deactivate", member })}>{el ? "Απενεργοποίηση" : "Deactivate"}</button></>
                   : <button className="button secondary" disabled={busy} aria-label={`${el ? "Ενεργοποίηση" : "Reactivate"} ${name(member)}`} onClick={() => void change(member, { is_active: true }, el ? "Το μέλος ενεργοποιήθηκε ξανά." : "Member reactivated.")}>{el ? "Ενεργοποίηση" : "Reactivate"}</button>)}</td></tr>);
           })}
         </tbody></table></div>
