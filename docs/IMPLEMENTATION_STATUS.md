@@ -22,6 +22,10 @@ Local database is at `0009_casefold_identity`; private backups preceded each mig
 
 Implemented, uncommitted: per-member office grants (off by default), leave approval routes, weekly working patterns and dated periods, leave lifecycle, vehicle maintenance and open out-of-service holds, usable windows frozen into new `ktel-operational-v2` drafts, solver and independent-verifier enforcement, a stale-availability gate, successor refresh with a server-derived exemption for operated trips, a lock release inside a reviewed change, derived impacts, and the Office screens. Latest gates: backend 400 passed and 1 timing-limit failure that passes alone; browser 56 of 58 on the development server (one fixed, one development-mode hydration race outside this work); typecheck clean. A clean production-build run is still owed. Acceptance, dispositions and open items: `docs/audits/2026-11-01-office-acceptance.md`. Operations: `docs/operations/OFFICE_AVAILABILITY.md`. Local database is at `0016_office_vehicle_periods`.
 
+## Driver work rules (2026-11-14)
+
+Implemented on `feat/v2-ktel-platform`: a versioned legal table (PD 54/1998, EU 561/2006; «Προς επιβεβαίωση», not confirmed by counsel), stricter-only company limits, opt-in warning rules, driver, vehicle and route restrictions, per-driver adoption baselines, warning overrides (`schedule.approve`), emergency 660' duties in urgent changes (`schedule.publish`), verifier findings in the Studio, solver budgets and the `legal_duty` helper, and import columns. Operations and known limitations: `docs/operations/DRIVER_WORK_RULES.md`. Solver authors: `docs/operations/WRITING_A_SOLVER.md`. Gates: backend 581 passed; typecheck and production build clean; browser 76 passed, 1 skipped on `next start`; 1 000-trip verification with work context 0.07 s. This is not legal certification.
+
 The sections below retain earlier recovery and task evidence; the current slice above supersedes their historical “next task” statements.
 
 ## Delivered recovery slice

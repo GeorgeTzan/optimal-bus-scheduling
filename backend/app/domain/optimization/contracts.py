@@ -28,6 +28,11 @@ class TripSnapshot:
     day_offset: int = 0
     group: str = "000"
     allowed_bus_types: tuple[str, ...] = ("01",)
+    route_id: int | None = None
+    urban: bool = False
+    long_route: bool = True
+    origin_is_depot: bool = False
+    destination_is_depot: bool = False
 
 
 @dataclass(frozen=True)
@@ -55,15 +60,6 @@ class ChainSnapshot:
 
 
 @dataclass(frozen=True)
-class SolverParametersSnapshot:
-    max_driving_time: int = 900
-    max_continuous_driving: int = 270
-    min_break_time: int = 30
-    min_rest_time: int = 720
-    max_duty_duration: int = 600
-
-
-@dataclass(frozen=True)
 class SolverProblem:
     problem_id: str
     tenant_id: str
@@ -73,10 +69,11 @@ class SolverProblem:
     chains: tuple[ChainSnapshot, ...]
     stations: tuple[str, ...] = field(default_factory=tuple)
     transfer_matrix: tuple[tuple[int, ...], ...] = field(default_factory=tuple)
-    parameters: SolverParametersSnapshot = field(default_factory=SolverParametersSnapshot)
     # New canonical problems enforce availability for every trip except protected, already-operated work chosen by the server.
     availability_enforced: bool = False
     availability_exempt_trip_ids: tuple[str, ...] = ()
+    work_policy: dict[str, Any] | None = None
+    driver_budgets: tuple[dict[str, Any], ...] = ()
 
 
 @dataclass(frozen=True)

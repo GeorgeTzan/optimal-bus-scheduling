@@ -17,23 +17,30 @@ from app.domain.identity.tenant_session import set_tenant_scope
 from app.domain.jobs.models import Job
 from app.domain.jobs.repository import JobRepository
 from app.domain.events.outbox import OutboxEvent
-from app.domain.scheduling.snapshots import RevisionSnapshot, decode_problem
+from app.domain.scheduling.snapshots import RevisionSnapshot, decode_problem, encode_problem
 from app.domain.optimization.contracts import SolverConfig, SolverResult
 from app.domain.optimization.metrics import calculate_metrics
 from app.domain.verification.verifier import HardRuleVerifier
+from app.domain.workrules.loader import WorkContext, attach_work_context
 
 
-def _candidate(problem, assignments, config, iteration, runtime=0):
+def _candidate(problem, assignments, config, iteration, runtime=0, work=None):
     assigned = {a.trip_id for a in assignments}
     result = SolverResult('cv-solver', 'cv-bounded-v1', tuple(assignments),
                           tuple(t.id for t in problem.trips if t.id not in assigned), {}, runtime, 'completed')
-    report = HardRuleVerifier().verify(problem, result)
+    report = HardRuleVerifier().verify(problem, result, work)
     return dict(id=f'iteration-{iteration}', assignments=[asdict(a) for a in assignments],
                 metrics=asdict(calculate_metrics(problem, result)), verification=asdict(report),
                 seed=config.seed, solver_version='cv-bounded-v1', iteration=iteration, solve_time_seconds=runtime)
 
 
-def solve_child(problem_data, config_data, messages):
+def solver_input(problem_data, work_data):
+    if not work_data:
+        return problem_data
+    return encode_problem(attach_work_context(decode_problem(problem_data), WorkContext.from_dict(work_data)))
+
+
+def solve_child(problem_data, config_data, messages, work_data, snapshot_hash):
     # Spawned interpreter receives only serializable input; no SQLAlchemy sessions/pools.
     # Suppress legacy solver output at the OS descriptor level; only bounded messages leave this process.
     with open(os.devnull, 'w') as sink:
@@ -43,14 +50,15 @@ def solve_child(problem_data, config_data, messages):
         from app.domain.optimization.cv_bounded import CVBoundedV1
         problem = decode_problem(problem_data)
         config = SolverConfig(**config_data)
+        work = WorkContext.from_dict(work_data) if work_data else None
         class Progress:
             def update(self, iteration, max_iterations, current_cost, best_cost, message=''):
                 messages.put(('progress', {'progress_pct': min(99, int(iteration/max_iterations*100))}), timeout=5)
             def candidate(self, assignments, iteration):
-                messages.put(('candidate', _candidate(problem, assignments, config, iteration)), timeout=5)
+                messages.put(('candidate', _candidate(problem, assignments, config, iteration, work=work)), timeout=5)
         result = CVBoundedV1().solve(problem, config, Progress())
-        final = _candidate(problem, result.assignments, config, config.iterations, result.solve_time_seconds)
-        final['snapshot_hash'] = hashlib.sha256(json.dumps(problem_data, sort_keys=True).encode()).hexdigest()
+        final = _candidate(problem, result.assignments, config, config.iterations, result.solve_time_seconds, work)
+        final['snapshot_hash'] = snapshot_hash
         messages.put(('completed', final), timeout=5)
     except Exception:
         messages.put(('failed', {'error': 'CV execution failed; inspect worker diagnostics'}), timeout=5)
@@ -105,9 +113,16 @@ def work_once(factory, tenant_id, worker_id):
         problem_data = snap.problem_data
         config_data = {k: job.config.get(k, default) for k, default in
                        [('seed',42), ('iterations',3), ('time_limit_seconds',60), ('cp_sat_workers',1)]}
+        work_data = job.config.get('work_context')
+    snapshot_hash = hashlib.sha256(json.dumps(problem_data, sort_keys=True).encode()).hexdigest()
+    try:
+        problem_data = solver_input(problem_data, work_data)
+    except Exception:
+        record(factory, jid, tenant_id, worker_id, token, 'failed', {'error': 'Driver work rules could not be prepared for this run'})
+        return True
     context = mp.get_context('spawn')
     messages = context.Queue(maxsize=8)
-    process = context.Process(target=solve_child, args=(problem_data, config_data, messages))
+    process = context.Process(target=solve_child, args=(problem_data, config_data, messages, work_data, snapshot_hash))
     process.start()
     deadline = time.monotonic() + config_data['time_limit_seconds']
     heartbeat = time.monotonic()

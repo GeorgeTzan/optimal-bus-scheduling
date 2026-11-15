@@ -51,7 +51,11 @@ def capabilities(
             for kind, schema in SHEETS.items()
         },
         "write_entities": [
-            kind for kind in SHEETS if PERMISSIONS[kind] in user.permissions
+            kind
+            for kind in SHEETS
+            if PERMISSIONS[kind] in user.permissions
+            or kind == "route_rules"
+            and "fleet.write" in user.permissions
         ],
         "limits": limits.__dict__,
     }

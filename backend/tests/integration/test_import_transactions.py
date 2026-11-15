@@ -1146,3 +1146,245 @@ def test_commit_identity_lookup_count_does_not_grow_with_uploaded_rows(
     assert (
         len(reads) <= 2
     ), f"Expected two catalog reads, observed {len(reads)} identity lookups"
+
+
+def commit_import(client, headers, staged):
+    assert staged.status_code == 201, staged.text
+    preview = staged.json()
+    assert preview["status"] == "ready", preview["rows"]
+    done = client.post(
+        "/api/v1/imports/" + preview["batch_id"] + "/commit",
+        headers=headers,
+        json={"version": preview["version"]},
+    )
+    assert done.status_code == 200, done.text
+    return done.json()
+
+
+def network(client, headers):
+    from tests.integration.test_operational_snapshots import template_payload
+
+    def create(path, payload):
+        response = client.post("/api/v1/" + path, headers=headers, json=payload)
+        assert response.status_code == 201, response.text
+        return response.json()
+
+    a = create("stations", {"name_el": "Αφετηρία", "is_depot": True})
+    b = create("stations", {"name_el": "Προορισμός"})
+    driver = create("drivers", {"first_name": "Νίκος", "last_name": "Δήμου", "home_station_id": a["id"]})
+    vehicle = create("vehicles", {"registration_plate": "ABC-123", "bus_type": "02", "home_station_id": a["id"]})
+    create("timetables", template_payload(a, b))
+    return a, b, driver, vehicle
+
+
+def test_driver_profile_columns_import(identity_setup):
+    from app.domain.workrules.models import DriverWorkBaseline, DriverWorkProfile
+    from app.domain.workforce.models import WorkforceDriver
+
+    client, headers = operator(identity_setup)
+    tenant = identity_setup["first"].tenant_id
+    a, b, driver, vehicle = network(client, headers)
+    record = {
+        "code": driver["code"],
+        "first_name": "Νίκος",
+        "last_name": "Δήμου",
+        "overnight_allowed": False,
+        "must_return_to_base": True,
+        "baseline_as_of": "2026-05-31",
+        "baseline_overtime_hours": 2.5,
+        "baseline_last_duty_end": "2026-05-30 21:30",
+        "baseline_last_weekly_rest_end": "2026-05-25T06:00:00+00:00",
+        "baseline_last_weekly_rest_at_base": True,
+        "baseline_owed_rest_hours": 1,
+    }
+    commit_import(client, headers, upload(client, headers, [record]))
+    with identity_setup["owner_factory"]() as db:
+        profile = db.query(DriverWorkProfile).filter_by(tenant_id=tenant, driver_id=driver["id"]).one()
+        assert (profile.overnight_allowed, profile.split_shift_allowed, profile.must_return_to_base) == (False, True, True)
+        baseline = db.query(DriverWorkBaseline).filter_by(tenant_id=tenant, driver_id=driver["id"]).one()
+        assert baseline.as_of.isoformat() == "2026-05-31"
+        assert baseline.overtime_minutes == 150 and baseline.owed_rest_minutes == 60
+        assert baseline.last_weekly_rest_at_base is True
+        assert baseline.last_duty_end.isoformat() == "2026-05-30T18:30:00+00:00"
+        assert baseline.last_weekly_rest_end.isoformat() == "2026-05-25T06:00:00+00:00"
+        profile_version, baseline_version = profile.version, baseline.version
+    commit_import(client, headers, upload(client, headers, [{"code": driver["code"], "first_name": "Νίκος", "last_name": "Δήμου", "split_shift_allowed": False}]))
+    with identity_setup["owner_factory"]() as db:
+        profile = db.query(DriverWorkProfile).filter_by(tenant_id=tenant, driver_id=driver["id"]).one()
+        assert (profile.overnight_allowed, profile.split_shift_allowed, profile.must_return_to_base) == (False, False, True)
+        assert profile.version == profile_version + 1
+        baseline = db.query(DriverWorkBaseline).filter_by(tenant_id=tenant, driver_id=driver["id"]).one()
+        assert baseline.version == baseline_version and baseline.overtime_minutes == 150
+        assert db.query(WorkforceDriver).filter_by(tenant_id=tenant).count() == 1
+    unchanged = upload(client, headers, [{"code": driver["code"], "first_name": "Νίκος", "last_name": "Δήμου", "split_shift_allowed": False, "baseline_overtime_hours": 3}])
+    assert unchanged.status_code == 201, unchanged.text
+    row = unchanged.json()["rows"][0]
+    assert row["action"] == "update" and "baseline_overtime_hours" in row["changed_fields"]
+
+
+def test_driver_baseline_issues_are_row_issues(identity_setup):
+    client, headers = operator(identity_setup)
+    network(client, headers)
+    new = {"code": "NEW01", "first_name": "Άννα", "last_name": "Κώστα", "baseline_overtime_hours": 1}
+    staged = upload(client, headers, [new])
+    assert staged.status_code == 201, staged.text
+    body = staged.json()
+    assert body["status"] == "review" and body["summary"]["invalid"] == 1
+    assert body["rows"][0]["issues"][0]["field"] == "baseline_as_of"
+    ambiguous = upload(client, headers, [{**new, "baseline_as_of": "2026-05-31", "baseline_last_duty_end": "2026-10-25 03:30"}])
+    assert ambiguous.json()["summary"]["invalid"] == 1
+    assert ambiguous.json()["rows"][0]["issues"][0]["field"] == "baseline_last_duty_end"
+
+
+def test_baseline_locked_import_row_is_an_issue(identity_setup):
+    from tests.integration.test_office_impacts import driver_of
+    from tests.integration.test_schedule_change_actions import customer_with_two_confirmed_crews
+    from app.domain.workforce.models import WorkforceDriver
+
+    client, headers, revision, first, other = customer_with_two_confirmed_crews(identity_setup)
+    with identity_setup["owner_factory"]() as db:
+        driver = db.query(WorkforceDriver).filter_by(id=driver_of(revision, first)).one()
+        record = {"code": driver.code, "first_name": driver.first_name, "last_name": driver.last_name,
+                  "baseline_as_of": "2026-05-31", "baseline_overtime_hours": 2}
+    staged = upload(client, headers, [record])
+    assert staged.status_code == 201, staged.text
+    body = staged.json()
+    assert body["status"] == "review" and body["summary"]["invalid"] == 1
+    assert body["rows"][0]["issues"][0]["field"] == "baseline_as_of"
+
+
+def test_baseline_import_rejects_future_as_of_and_stored_lock(identity_setup):
+    from datetime import date
+    from app.domain.workforce.models import WorkforceDriver
+    from app.domain.workrules.models import DriverWorkBaseline
+    from tests.integration.test_office_impacts import driver_of
+    from tests.integration.test_schedule_change_actions import customer_with_two_confirmed_crews
+
+    client, headers, revision, first, other = customer_with_two_confirmed_crews(identity_setup)
+    with identity_setup["owner_factory"]() as db:
+        locked = db.query(WorkforceDriver).filter_by(id=driver_of(revision, first)).one()
+        free = db.query(WorkforceDriver).filter_by(id=driver_of(revision, other)).one()
+        db.add(DriverWorkBaseline(tenant_id=identity_setup["first"].tenant_id, driver_id=locked.id, as_of=date(2026, 5, 20),
+                                  overtime_minutes=600, version=1))
+        db.commit()
+        rows = [
+            {"code": locked.code, "first_name": locked.first_name, "last_name": locked.last_name,
+             "baseline_as_of": "2026-07-01", "baseline_overtime_hours": 0},
+            {"code": free.code, "first_name": free.first_name, "last_name": free.last_name,
+             "baseline_as_of": "2099-01-01", "baseline_overtime_hours": 1},
+        ]
+    staged = upload(client, headers, rows)
+    assert staged.status_code == 201, staged.text
+    issues = {row["values"]["code"]: row["issues"][0]["code"] for row in staged.json()["rows"] if row["issues"]}
+    assert issues == {locked.code: "baseline_locked", free.code: "baseline_as_of_not_past"}
+
+
+def test_route_rules_sheet_import(identity_setup):
+    from app.domain.timetables.models import Route
+    from app.domain.workrules.models import DriverRouteRule, VehicleRouteRule
+
+    client, headers = operator(identity_setup)
+    tenant = identity_setup["first"].tenant_id
+    a, b, driver, vehicle = network(client, headers)
+    with identity_setup["owner_factory"]() as db:
+        route = db.query(Route).filter_by(origin_station_id=a["id"], destination_station_id=b["id"]).one().id
+
+    vehicle_code = vehicle["code"]
+    rules = [
+        {"driver_code": driver["code"], "origin_station_code": a["code"], "destination_station_code": b["code"], "rule": "prefer"},
+        {"vehicle_code": vehicle_code, "origin_station_code": a["code"], "destination_station_code": b["code"], "rule": "forbid"},
+    ]
+    commit_import(client, headers, upload(client, headers, {"route_rules": rules}, "all"))
+    with identity_setup["owner_factory"]() as db:
+        driver_rule = db.query(DriverRouteRule).filter_by(tenant_id=tenant, driver_id=driver["id"]).one()
+        assert (driver_rule.route_id, driver_rule.kind) == (route, "prefer")
+        assert db.query(VehicleRouteRule).filter_by(tenant_id=tenant, vehicle_id=vehicle["id"], route_id=route).count() == 1
+    again = upload(client, headers, {"route_rules": rules[::-1]}, "all")
+    assert again.json()["summary"]["unchanged"] == 2
+    flipped = upload(client, headers, {"route_rules": [{**rules[0], "rule": "forbid"}]}, "all")
+    assert flipped.json()["summary"]["updated"] == 1
+    commit_import(client, headers, flipped)
+    with identity_setup["owner_factory"]() as db:
+        assert db.query(DriverRouteRule).filter_by(tenant_id=tenant, driver_id=driver["id"]).one().kind == "forbid"
+
+
+def test_route_rule_rows_with_bad_references_are_row_issues(identity_setup):
+    client, headers = operator(identity_setup)
+    a, b, driver, vehicle = network(client, headers)
+    ok = {"origin_station_code": a["code"], "destination_station_code": b["code"]}
+    cases = [
+        ({**ok, "driver_code": "NOPE", "rule": "prefer"}, "driver_code"),
+        ({**ok, "vehicle_code": "NOPE", "rule": "forbid"}, "vehicle_code"),
+        ({**ok, "driver_code": driver["code"], "origin_station_code": "NOPE", "rule": "prefer"}, "origin_station_code"),
+        ({**ok, "driver_code": driver["code"], "origin_station_code": b["code"], "destination_station_code": a["code"], "rule": "prefer"}, "destination_station_code"),
+        ({**ok, "vehicle_code": vehicle["code"], "rule": "prefer"}, "rule"),
+        ({**ok, "rule": "prefer"}, "driver_code"),
+        ({**ok, "driver_code": driver["code"], "vehicle_code": vehicle["code"], "rule": "forbid"}, "driver_code"),
+    ]
+    for row, field in cases:
+        staged = upload(client, headers, {"route_rules": [row]}, "all")
+        assert staged.status_code == 201, staged.text
+        body = staged.json()
+        assert body["summary"]["invalid"] == 1, (row, body["summary"])
+        assert body["rows"][0]["issues"][0]["field"] == field, (row, body["rows"][0]["issues"])
+    both = [
+        {**ok, "driver_code": driver["code"], "rule": "prefer"},
+        {**ok, "driver_code": driver["code"], "rule": "forbid"},
+    ]
+    staged = upload(client, headers, {"route_rules": both}, "all")
+    assert staged.json()["summary"]["invalid"] == 2
+
+
+def test_timetable_service_type_column_import(identity_setup):
+    from app.domain.timetables.models import Route
+
+    client, headers = operator(identity_setup)
+    a, b, driver, vehicle = network(client, headers)
+    record = {
+        "trip_code": "U001", "origin": a["code"], "destination": b["code"], "departure_time": "08:00", "arrival_time": "09:00",
+        "arrival_day_offset": 0, "operating_weekdays": [0], "valid_from": "2026-01-01", "valid_until": "2028-12-31",
+        "allowed_bus_types": ["02"], "service_type": "urban",
+    }
+    commit_import(client, headers, upload(client, headers, {"timetable": [record]}, "all"))
+    tenant = identity_setup["first"].tenant_id
+    with identity_setup["owner_factory"]() as db:
+        kinds = {row.service_type for row in db.query(Route).filter_by(tenant_id=tenant)}
+        assert kinds == {"intercity", "urban"}
+    changed = upload(client, headers, {"timetable": [{**record, "service_type": "intercity"}]}, "all")
+    assert changed.json()["summary"]["updated"] == 1
+
+
+def test_route_rule_permissions_are_row_aware_at_preview_and_commit(identity_setup):
+    from app.domain.imports.service import ImportService
+    from app.domain.timetables.models import Route
+    from app.domain.workrules.models import VehicleRouteRule
+    from fastapi import HTTPException
+
+    client, headers = operator(identity_setup)
+    tenant = identity_setup["first"].tenant_id
+    a, b, driver, vehicle = network(client, headers)
+    rule = {"vehicle_code": vehicle["code"], "origin_station_code": a["code"], "destination_station_code": b["code"], "rule": "forbid"}
+    content = generate_template_for(rule)
+    staged = upload(client, headers, None, "route_rules", content=content)
+    assert staged.status_code == 201, staged.text
+    batch_id = staged.json()["batch_id"]
+    actor = client.get("/auth/me", headers=headers).json()["id"]
+    with identity_setup["owner_factory"]() as db:
+        with pytest.raises(HTTPException) as denied:
+            ImportService(db, tenant, actor, {"imports.write", "drivers.write"}).commit(batch_id, 1)
+        assert denied.value.status_code == 403
+        db.rollback()
+        assert db.query(VehicleRouteRule).filter_by(tenant_id=tenant).count() == 0
+        with pytest.raises(HTTPException) as denied_stage:
+            ImportService(db, tenant, actor, {"imports.write", "drivers.write"}).stage(content, "r.xlsx", "route_rules", "en")
+        assert denied_stage.value.status_code == 403
+        db.rollback()
+        ImportService(db, tenant, actor, {"imports.write", "fleet.write"}).commit(batch_id, 1)
+        db.commit()
+        assert db.query(VehicleRouteRule).filter_by(tenant_id=tenant).count() == 1
+
+
+def generate_template_for(rule):
+    from app.domain.imports.templates import generate_template
+
+    return generate_template("route_rules", "en", [rule])

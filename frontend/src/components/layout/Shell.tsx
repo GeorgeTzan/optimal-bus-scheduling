@@ -12,6 +12,7 @@ import {
   PanelLeftOpen,
   Route,
   ClipboardList,
+  Scale,
 } from "lucide-react";
 import { useAuth } from "../../features/auth/AuthContext";
 import { Navbar } from "./Navbar";
@@ -27,6 +28,7 @@ export type ShellTab =
   | "imports"
   | "office"
   | "team"
+  | "rules"
   | "reports"
   | "archive";
 export function Shell({
@@ -67,6 +69,7 @@ export function Shell({
     },
     { id: "office", icon: ClipboardList, el: "Γραφείο", en: "Office" },
     { id: "team", icon: Users, el: "Ομάδα", en: "Team" },
+    { id: "rules", icon: Scale, el: "Κανόνες εργασίας", en: "Work rules" },
     { id: "imports", icon: Upload, el: "Εισαγωγές", en: "Data imports" },
   ] as const;
   return (
@@ -96,7 +99,7 @@ export function Shell({
         <div className="nav-caption">{el ? "ΧΩΡΟΣ ΕΡΓΑΣΙΑΣ" : "WORKSPACE"}</div>
         <nav aria-label={el ? "Κύρια πλοήγηση" : "Main navigation"}>
           {items.filter((item) => {
-            const capability = item.id === "team" ? "members.manage" : item.id === "imports" ? "imports.read" : ["drivers","fleet","timetables","planning","dashboard"].includes(item.id) ? "resources.read" : "schedule.read";
+            const capability = item.id === "team" ? "members.manage" : item.id === "imports" ? "imports.read" : ["drivers","fleet","timetables","planning","dashboard","rules"].includes(item.id) ? "resources.read" : "schedule.read";
             return user?.permissions.includes(capability);
           }).map((item) => (
             <button

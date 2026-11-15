@@ -1,5 +1,11 @@
 "use client";
-import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type FormEvent,
+} from "react";
 import { ArrowRight, CalendarDays, Plus, Search } from "lucide-react";
 import { ConnectionPanel } from "./ConnectionPanel";
 import { DateExceptionForm } from "./DateExceptionForm";
@@ -408,6 +414,9 @@ function TimetableForm({
     [arrival, setArrival] = useState(row?.arrival_time?.slice(0, 5) ?? ""),
     [offset, setOffset] = useState(row?.arrival_day_offset ?? 0),
     [distance, setDistance] = useState(row?.distance_km?.toString() ?? ""),
+    [serviceType, setServiceType] = useState<"intercity" | "urban">(
+      row?.service_type ?? "intercity",
+    ),
     [days, setDays] = useState<number[]>(row?.operating_weekdays ?? []),
     [from, setFrom] = useState(row?.valid_from ?? ""),
     [until, setUntil] = useState(row?.valid_until ?? ""),
@@ -422,10 +431,26 @@ function TimetableForm({
       field: "origin" | "destination";
       name: string;
     } | null>(null);
-  const formValue = JSON.stringify({code,origin:origin?.id,destination:destination?.id,departure,arrival,offset,distance,days,from,until,types,active});
+  const formValue = JSON.stringify({
+    code,
+    origin: origin?.id,
+    destination: destination?.id,
+    departure,
+    arrival,
+    offset,
+    distance,
+    serviceType,
+    days,
+    from,
+    until,
+    types,
+    active,
+  });
   const baseline = useRef(formValue);
   useUnsavedChanges(formValue !== baseline.current || busy);
-  const closeGuarded = () => { if (!busy && mayLeaveWorkspace()) onClose(); };
+  const closeGuarded = () => {
+    if (!busy && mayLeaveWorkspace()) onClose();
+  };
   const loadTypes = useCallback(async () => {
     try {
       const found = new Set(row?.allowed_bus_types ?? []);
@@ -490,6 +515,7 @@ function TimetableForm({
             valid_until: until,
             allowed_bus_types: types,
             distance_km: distance ? Number(distance) : null,
+            service_type: serviceType,
             is_active: active,
           }),
         }),
@@ -614,6 +640,19 @@ function TimetableForm({
                     <option value={2}>
                       {el ? "Μετά από δύο ημέρες" : "Two days later"}
                     </option>
+                  </select>
+                </Field>
+                <Field label={el ? "Τύπος υπηρεσίας" : "Service type"}>
+                  <select
+                    value={serviceType}
+                    onChange={(e) =>
+                      setServiceType(e.target.value as "intercity" | "urban")
+                    }
+                  >
+                    <option value="intercity">
+                      {el ? "Υπεραστικό" : "Intercity"}
+                    </option>
+                    <option value="urban">{el ? "Αστικό" : "Urban"}</option>
                   </select>
                 </Field>
                 <details>

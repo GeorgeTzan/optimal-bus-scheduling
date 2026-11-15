@@ -25,6 +25,7 @@ export interface Timetable {
   valid_until: string | null;
   allowed_bus_types: string[] | null;
   distance_km: number | null;
+  service_type: "intercity" | "urban";
   is_active: boolean;
   calendar_ready: boolean;
 }

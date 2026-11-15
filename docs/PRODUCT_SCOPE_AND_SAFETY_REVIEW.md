@@ -259,6 +259,7 @@ Unknown external requirements remain blockers or documented limitations. They ar
 - [Urgent schedule-change implementation plan](superpowers/plans/2026-11-01-urgent-schedule-changes.md).
 - [Office availability, leave and maintenance implementation plan](superpowers/plans/2026-11-01-office-availability-maintenance.md) — prepared after design approval; execution belongs in the main implementation thread.
 - [Office availability acceptance and dispositions](audits/2026-11-01-office-acceptance.md) and [operations note](operations/OFFICE_AVAILABILITY.md).
+- [Driver work rules](operations/DRIVER_WORK_RULES.md) and [writing a solver](operations/WRITING_A_SOLVER.md) — legal table (to be confirmed by counsel), company limits, baselines, overrides, emergency, known limitations.
 - [Workflow acceptance](audits/2026-11-01-workflow-acceptance.md) and [foundation review](audits/2026-11-01-foundation-review.md).
 - [Database migrations](operations/DATABASE_MIGRATIONS.md), [identity/access](operations/IDENTITY_AND_ACCESS.md), [canonical resources](operations/OPERATIONAL_RESOURCES.md).
 - [Actual screenshots](screenshots/2026-11-01/README.md) and [UI design tokens](UI_DESIGN_SYSTEM.md).

@@ -16,6 +16,7 @@ from app.domain.imports.catalog import (
 )
 from app.domain.imports.issues import row_issue
 from app.domain.imports.template_schema import SHEETS
+from app.domain.imports.work_rules import plan_driver_work, plan_route_rule
 from app.domain.resources.service import FIELDS
 
 BASIC = ("stations", "drivers", "vehicles", "timetable")
@@ -92,6 +93,7 @@ class ImportPlanner:
             item["key"]: item for item in batch.station_plan or [] if item.get("key")
         }
         self.plan_by_target = {}
+        self.rule_seen = {}
 
     def error(self, row, code, en, el, field=None):
         row.plan["issues"].append(row_issue(row, code, en, el, field))
@@ -260,6 +262,7 @@ class ImportPlanner:
                 "valid_until",
                 "allowed_bus_types",
                 "distance_km",
+                "service_type",
                 "is_active",
             }
         )
@@ -500,6 +503,8 @@ class ImportPlanner:
                     )
 
     def finish_basic(self, row):
+        if row.entity == "drivers" and not row.plan["issues"]:
+            plan_driver_work(self, row)
         if row.plan["issues"]:
             if row.plan["action"] != "resolve":
                 row.plan["action"] = "invalid"
@@ -518,6 +523,7 @@ class ImportPlanner:
                 or "station_key" in ref
             ):
                 changed.append(column)
+        changed += row.plan.get("work_changed", [])
         row.plan["changed_fields"] = changed
         row.plan["action"] = (
             "new"
@@ -772,6 +778,9 @@ class ImportPlanner:
                 if a.get("id") and b.get("id"):
                     transfer_pairs.add((a["id"], b["id"]))
         self.catalog.load_transfers(transfer_pairs)
+        for row in self.rows:
+            if row.entity == "route_rules":
+                plan_route_rule(self, row)
         for row in self.rows:
             if row.entity == "pairings":
                 self.finish_pairing(row)

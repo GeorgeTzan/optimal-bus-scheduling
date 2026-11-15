@@ -18,6 +18,7 @@ from app.domain.imports.models import (
     utcnow,
 )
 from app.domain.imports.parsers import parse_upload
+from app.domain.imports.work_rules import WORK_FIELDS, apply_driver_work, apply_route_rule
 from app.domain.imports.revalidation import validate_saved_rows
 from app.domain.imports.planning import ImportPlanner, json_ready
 from app.domain.imports.catalog import Catalog, MODELS, SOURCE, ref_existing, ref_key
@@ -53,6 +54,7 @@ PERMISSIONS = {
     "pairings": "schedule.write",
     "transfers": "timetable.write",
     "connections": "timetable.write",
+    "route_rules": "drivers.write",
 }
 CREATE = {
     "drivers": DriverCreate,
@@ -112,7 +114,25 @@ class ImportService:
     def require_entities(self, entities):
         self.require("imports.write")
         for entity in entities:
-            self.require(PERMISSIONS[entity])
+            if entity == "route_rules":
+                if not {"drivers.write", "fleet.write"} & set(self.permissions):
+                    self.require("drivers.write")
+            else:
+                self.require(PERMISSIONS[entity])
+
+    def require_rule_rows(self, rows):
+        for row in rows:
+            if row.entity != "route_rules":
+                continue
+            if row.values.get("driver_code") or not row.values.get("vehicle_code"):
+                self.require("drivers.write")
+            if row.values.get("vehicle_code"):
+                self.require("fleet.write")
+
+    def require_batch(self, batch):
+        self.require_entities(batch.entities)
+        if "route_rules" in batch.entities:
+            self.require_rule_rows(self.rows(batch))
 
     def lock(self):
         return self.db.query(KTEL).filter_by(id=self.tenant_id).with_for_update().one()
@@ -207,7 +227,7 @@ class ImportService:
 
         existing = replay()
         if existing is not None:
-            self.require_entities(existing.entities)
+            self.require_batch(existing)
             if existing.status == "committed" or aware(existing.expires_at) > utcnow():
                 return existing, True
             # Expired previews never resurrect; retention frees their source key.
@@ -234,10 +254,11 @@ class ImportService:
             )
         entities = list(dict.fromkeys(row.entity for row in workbook.rows))
         self.require_entities(entities)
+        self.require_rule_rows(workbook.rows)
         self.lock()
         existing = replay()
         if existing is not None:
-            self.require_entities(existing.entities)
+            self.require_batch(existing)
             return existing, True
         days = getattr(settings, "IMPORT_STAGING_DAYS", 7)
         if days < 1:
@@ -303,6 +324,7 @@ class ImportService:
             summary, snapshot, stations, aliases = planner.build()
         if summary["new_stations"]:
             self.require("timetable.write")
+        self.require_rule_rows(rows)
         for row in rows:
             row.plan = json_ready(row.plan)
         batch.summary = json_ready(summary)
@@ -336,7 +358,7 @@ class ImportService:
     def correct(self, batch_id, request):
         self.lock()
         batch = self.get(batch_id, lock=True)
-        self.require_entities(batch.entities)
+        self.require_batch(batch)
         self.check_mutable(batch, request.version)
         rows = self.rows(batch)
         by_id = {row.id: row for row in rows}
@@ -443,7 +465,7 @@ class ImportService:
     def refresh(self, batch_id, version):
         self.lock()
         batch = self.get(batch_id, lock=True)
-        self.require_entities(batch.entities)
+        self.require_batch(batch)
         self.check_mutable(batch, version)
         self.revalidate(batch, self.rows(batch))
         batch.version += 1
@@ -469,7 +491,7 @@ class ImportService:
     def commit(self, batch_id, version):
         self.lock()
         batch = self.get(batch_id, lock=True)
-        self.require_entities(batch.entities)
+        self.require_batch(batch)
         if batch.status == "committed":
             return batch
         self.check_mutable(batch, version)
@@ -527,6 +549,7 @@ class ImportService:
                     "connections": 4,
                     "transfers": 5,
                     "pairings": 6,
+                    "route_rules": 7,
                 }[row.entity],
                 0 if row.entity == "connections" and row.plan.get("payload", {}).get("is_active") is False else 1,
                 row.position,
@@ -539,9 +562,15 @@ class ImportService:
                 payload = dict(plan["payload"])
                 for column, ref in plan["relations"].items():
                     payload[column] = self.resolve(ref, saved, planner).id
-                if kind in ("pairings", "transfers", "connections"):
+                if kind == "route_rules":
+                    target = apply_route_rule(self, row, payload, planner, saved)
+                elif kind in ("pairings", "transfers", "connections"):
                     target = self.apply_dated(row, payload, planner, saved)
-                elif plan["action"] == "unchanged":
+                elif plan["action"] == "unchanged" or (
+                    kind == "drivers"
+                    and plan["action"] == "update"
+                    and WORK_FIELDS.issuperset(plan["changed_fields"])
+                ):
                     target = planner.catalog.records[kind][plan["target"]["id"]]
                 elif plan["action"] == "new":
                     request = CREATE[kind].model_validate(payload)
@@ -569,6 +598,8 @@ class ImportService:
                         )
                     )
                     target = self.query(MODELS[kind]).filter_by(id=result["id"]).one()
+                if kind == "drivers":
+                    apply_driver_work(self, row, target)
                 saved[ref_key(plan["ref"])] = target
                 if kind == 'connections':
                     reference = self.resolve(plan['relations']['incoming_template_id'],saved,planner).trip_code + ' → ' + self.resolve(plan['relations']['outgoing_template_id'],saved,planner).trip_code
@@ -771,7 +802,7 @@ class ImportService:
     def discard(self, batch_id, version):
         self.lock()
         batch = self.get(batch_id, lock=True)
-        self.require_entities(batch.entities)
+        self.require_batch(batch)
         if batch.status == "discarded":
             return batch
         self.check_mutable(batch, version)

@@ -179,3 +179,24 @@ def test_case_insensitive_identity_upgrade_preserves_mixed_case_legacy_address(p
         upgrade_database(connection)
         assert connection.execute(text("SELECT id FROM public.ktel_login_identity('nikos@example.org')")).scalar_one()==identifier
         assert connection.execute(text('SELECT email FROM users WHERE id=:id'),{'id':identifier}).scalar_one()=='Nikos@example.org'
+
+
+def test_work_rules_migration_upgrades_and_downgrades(postgres_engine):
+    from db.migrations import upgrade_database
+    from alembic import command
+    from db.migrations import migration_config
+    with postgres_engine.begin() as connection:
+        upgrade_database(connection)
+        inspector = inspect(connection)
+        assert {'domain_company_work_rules', 'domain_driver_work_profiles', 'domain_driver_route_rules', 'domain_vehicle_route_rules',
+                'domain_driver_work_baselines', 'domain_work_rule_overrides'} <= set(inspector.get_table_names())
+        assert 'service_type' in {c['name'] for c in inspector.get_columns('domain_routes')}
+        assert 'emergency' in {c['name'] for c in inspector.get_columns('domain_schedule_changes')}
+        assert 'max_daily_driving_minutes' not in {c['name'] for c in inspector.get_columns('domain_drivers')}
+        command.downgrade(migration_config(connection), '0018_team_admin')
+        inspector = inspect(connection)
+        assert 'domain_company_work_rules' not in inspector.get_table_names()
+        assert 'service_type' not in {c['name'] for c in inspector.get_columns('domain_routes')}
+        assert 'max_daily_driving_minutes' in {c['name'] for c in inspector.get_columns('domain_drivers')}
+        command.upgrade(migration_config(connection), 'head')
+        assert 'domain_work_rule_overrides' in inspect(connection).get_table_names()

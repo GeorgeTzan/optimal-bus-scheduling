@@ -6,7 +6,7 @@ from pathlib import Path
 from sqlalchemy import Column, String, Integer, ForeignKey, JSON
 from db.database import Base
 from app.domain.optimization.contracts import (
-    SolverProblem, TripSnapshot, ResourceSnapshot, ChainSnapshot, SolverParametersSnapshot,
+    SolverProblem, TripSnapshot, ResourceSnapshot, ChainSnapshot,
 )
 from app.domain.timetables.time_service import normalize_service_trip
 
@@ -32,9 +32,10 @@ def decode_problem(data):
         resources=tuple(ResourceSnapshot(**{**r, 'available_windows': None if r.get('available_windows') is None else tuple(tuple(w) for w in r['available_windows'])}) for r in data['resources']),
         chains=tuple(ChainSnapshot(tuple(c['trip_ids'])) for c in data['chains']),
         stations=tuple(data['stations']), transfer_matrix=tuple(tuple(r) for r in data['transfer_matrix']),
-        parameters=SolverParametersSnapshot(**data['parameters']),
         availability_enforced=data.get('availability_enforced', False),
         availability_exempt_trip_ids=tuple(data.get('availability_exempt_trip_ids', ())),
+        work_policy=data.get('work_policy'),
+        driver_budgets=tuple(data.get('driver_budgets', ())),
     )
 
 

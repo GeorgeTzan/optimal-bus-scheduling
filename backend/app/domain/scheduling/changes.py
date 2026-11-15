@@ -18,6 +18,8 @@ from app.domain.scheduling.models import Publication,RevisionAssignment,Schedule
 from app.domain.scheduling.snapshots import RevisionSnapshot,decode_problem,encode_problem
 from app.domain.scheduling.source_review import source_review_required
 from app.domain.verification.verifier import HardRuleVerifier
+from app.domain.workrules.draft import touched_drivers
+from app.domain.workrules.loader import load_work_context
 
 
 class ScheduleChanges:
@@ -127,16 +129,26 @@ class ScheduleChanges:
             availability_enforced=True,availability_exempt_trip_ids=tuple(sorted(operated)))
         proposed=[Assignment(chosen.get(row.trip_id,row.resource_id),row.trip_id,row.start_minutes,row.end_minutes,row.start_station,row.end_station)
                   for row in rows if not row.is_cancelled and row.trip_id not in excluded and chosen.get(row.trip_id,row.resource_id)!='UNASSIGNED']
-        report=HardRuleVerifier().verify(active_problem,proposed)
+        work=replace(load_work_context(self.db,self.tenant,active_problem,revision.revision_id),emergency_drivers=self.emergency_drivers(request,changes,fresh))
+        report=HardRuleVerifier().verify(active_problem,proposed,work)
         return rows,chosen,created_crews,{'publication_id':publication.publication_id,'base_revision_id':revision.revision_id,'version':revision.version,
             'source_versions':snapshot.source_data.get('source_versions',{}),'changes':changes,'verification':asdict(report)},(fresh,availability,tuple(sorted(operated)),unlocked)
 
+    def emergency_drivers(self,request,changes,resources):
+        return touched_drivers(changes,{item.resource_id:str(item.driver_id) for item in resources}) if request.emergency else frozenset()
+
+    def authorize(self,request):
+        if request.emergency and 'schedule.publish' not in self.user.permissions:
+            raise HTTPException(403,{'code':'emergency_not_allowed','message':'Only users who can publish may mark a change as an emergency.'})
+
     def preview(self,request):
+        self.authorize(request)
         publication,revision,snapshot=self.base(request)
         return self.validate(request,publication,revision,snapshot)[3]
 
     def create(self,request):
         # The established mutation order is revision row followed by organization row.
+        self.authorize(request)
         publication,revision,snapshot=self.base(request,lock=True)
         self.db.query(KTEL).filter_by(id=self.tenant).populate_existing().with_for_update().one()
         digest=hashlib.sha256(json.dumps({'request':request.model_dump(mode='json'),'actor':self.user.id},sort_keys=True,separators=(',',':')).encode()).hexdigest()
@@ -182,8 +194,8 @@ class ScheduleChanges:
         self.db.add(SchedulingAuditLog(tenant_id=self.tenant,revision_id=identifier,action='create_published_successor',actor=str(self.user.id),
             details={'base_publication_id':publication.publication_id,'reason':request.reason,'reviewed_not_started':request.reviewed_not_started,'unlocked_trips':sorted(unlocked)}))
         self.db.flush()
-        response=jsonable_encoder(serialize(self.db,successor))
+        response=jsonable_encoder(serialize(self.db,successor,emergency_drivers=self.emergency_drivers(request,preview['changes'],fresh)))
         self.db.add(ScheduleChange(tenant_id=self.tenant,publication_id=publication.publication_id,base_revision_id=revision.revision_id,
             successor_revision_id=identifier,request_id=str(request.request_id),payload_hash=digest,actor_id=self.user.id,
-            reason=request.reason,changes=preview['changes'],response_data=response,created_at=datetime.now(timezone.utc)))
+            reason=request.reason,changes=preview['changes'],response_data=response,emergency=request.emergency,created_at=datetime.now(timezone.utc)))
         self.db.flush();return response

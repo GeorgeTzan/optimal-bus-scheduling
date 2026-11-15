@@ -5,7 +5,8 @@ Derives validation directly from the canonical problem snapshot and assignment r
 
 from __future__ import annotations
 from collections import defaultdict
-from typing import Sequence
+from datetime import timedelta
+from typing import TYPE_CHECKING, Sequence
 
 from app.domain.optimization.availability import availability_allows_transition, availability_allows_trip
 from app.domain.optimization.contracts import SolverProblem, Assignment, SolverResult
@@ -15,21 +16,82 @@ from app.domain.verification.rules import (
     Violation,
     Severity,
 )
+from app.domain.workrules.draft import draft_duties
+from app.domain.workrules.evaluate import evaluate
+from app.domain.workrules.findings import WorkRuleFinding, caused_by
+
+if TYPE_CHECKING:
+    from app.domain.workrules.loader import WorkContext
+
+FOCUS_DAYS = 7
 
 
 class HardRuleVerifier:
     def __init__(self, rules: RuleSet | None = None):
         self.rules = rules or RuleSet()
 
-    def verify(self, problem: SolverProblem, result: SolverResult | Sequence[Assignment]) -> VerificationReport:
+    def verify(
+        self, problem: SolverProblem, result: SolverResult | Sequence[Assignment], work: WorkContext | None = None
+    ) -> VerificationReport:
         assignments = result.assignments if hasattr(result, "assignments") else result
-        return verify_schedule(problem, assignments, self.rules)
+        return verify_schedule(problem, assignments, self.rules, work)
+
+
+def _work_violation(finding: WorkRuleFinding, severity: Severity, preexisting: bool, draft_day) -> Violation:
+    measured = "" if finding.measured is None else f" (measured {finding.measured}, limit {finding.limit})"
+    if preexisting:
+        message = f"Existing issue on {finding.service_date}: {finding.rule_id} for driver {finding.driver_id}{measured}."
+    elif finding.service_date != draft_day:
+        message = f"{finding.rule_id} for driver {finding.driver_id} on {finding.service_date}{measured} is caused by the {draft_day} draft."
+    else:
+        message = f"{finding.rule_id} for driver {finding.driver_id} on {finding.service_date}{measured}."
+    return Violation(
+        rule_id=finding.rule_id,
+        rule_name=finding.message_key,
+        severity=severity,
+        message=message,
+        entity_type="Driver",
+        entity_ids=[finding.driver_id, *finding.trip_ids],
+        finding_key=finding.key,
+        measured=finding.measured,
+        limit=finding.limit,
+        source=finding.source,
+        hint=dict(finding.hint),
+        message_key=finding.message_key,
+        service_date=finding.service_date.isoformat(),
+        preexisting=preexisting,
+        kind=finding.kind,
+    )
+
+
+def work_violations(problem: SolverProblem, assignments: Sequence[Assignment], work: WorkContext) -> list[Violation]:
+    day = work.service_date
+    focus = (day, day + timedelta(days=FOCUS_DAYS))
+    out: list[Violation] = []
+    for driver_id, duty in sorted(draft_duties(work, problem, assignments).items()):
+        timeline = work.timelines.get(driver_id)
+        if timeline is None:
+            continue
+        with_draft = evaluate(timeline.with_day(day, duty), work.policy, focus, work.transfer_minutes, tz=work.tz)
+        without_draft = evaluate(timeline.with_day(day, None), work.policy, focus, work.transfer_minutes, tz=work.tz)
+        caused = {id(f) for f in caused_by(with_draft, without_draft)}
+        for finding in with_draft:
+            new = id(finding) in caused
+            if finding.kind == "legal":
+                out.append(_work_violation(finding, Severity.ERROR if new else Severity.WARNING, not new, day))
+            elif finding.kind == "warning":
+                if finding.key not in work.overrides:
+                    out.append(_work_violation(finding, Severity.WARNING, not new, day))
+            else:
+                out.append(_work_violation(finding, Severity.INFO, False, day))
+    return out
 
 
 def verify_schedule(
     problem: SolverProblem,
     assignments: Sequence[Assignment],
     rules: RuleSet | None = None,
+    work: WorkContext | None = None,
 ) -> VerificationReport:
     if rules is None:
         rules = RuleSet()
@@ -298,11 +360,14 @@ def verify_schedule(
             )
         )
 
+    if work is not None:
+        violations.extend(work_violations(problem, assignments, work))
+
     is_valid = not any(v.severity == Severity.ERROR for v in violations)
 
     return VerificationReport(
         valid=is_valid,
-        rule_version=rules.version,
+        rule_version=rules.version if work is None else f"{rules.version}+{work.policy.legal_version}+company-v{work.policy.company_version}",
         violations=violations,
         coverage_percent=round(coverage_percent, 2),
         unassigned_trips=unassigned_trips,

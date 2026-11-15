@@ -23,19 +23,25 @@ class Violation:
     message: str
     entity_type: str
     entity_ids: list[str] = field(default_factory=list)
+    finding_key: str | None = None
+    measured: int | None = None
+    limit: int | None = None
+    source: str | None = None
+    hint: dict | None = None
+    message_key: str | None = None
+    service_date: str | None = None
+    preexisting: bool = False
+    kind: str | None = None
 
 
 @dataclass(frozen=True)
 class RuleSet:
-    version: str = "v2.4-availability"
+    version: str = "v2.5-workrules"
     require_full_coverage: bool = False
     enforce_unique_trips: bool = True
     enforce_no_temporal_overlap: bool = True
     enforce_mandatory_chains: bool = True
     enforce_station_continuity: bool = True
-    max_continuous_driving_minutes: int = 270
-    max_daily_driving_minutes: int = 540
-    min_break_minutes: int = 45
 
 
 @dataclass(frozen=True)

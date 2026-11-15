@@ -8,7 +8,7 @@ from openpyxl.styles import Font, PatternFill, Alignment
 from openpyxl.utils import get_column_letter
 from openpyxl.worksheet.datavalidation import DataValidation
 from app.domain.imports.contracts import SCHEMA_VERSION, ImportLimits
-from app.domain.imports.template_schema import SHEETS, WEEKDAYS, ARRIVAL_DAYS, title
+from app.domain.imports.template_schema import SHEETS, WEEKDAYS, ARRIVAL_DAYS, CHOICES, title
 
 
 def export_value(value, column, locale):
@@ -204,6 +204,28 @@ def generate_template(
                 ),
             )
         )
+    if "drivers" in entities:
+        lines.append(
+            (
+                "Κανόνες εργασίας οδηγών" if locale == "el" else "Driver work rules",
+                (
+                    "Οι ώρες υπερωρίας και οφειλόμενης ανάπαυσης δίνονται σε ώρες (π.χ. 2,5). Οι ημερομηνίες και ώρες χωρίς ζώνη διαβάζονται ως τοπική ώρα του οργανισμού, π.χ. 2026-06-01 08:30. Κενές στήλες διατηρούν τις υπάρχουσες τιμές."
+                    if locale == "el"
+                    else "Overtime and owed rest are entered in hours (for example 2.5). Date-times without a zone are read as your organization's local time, for example 2026-06-01 08:30. Empty columns keep the existing values."
+                ),
+            )
+        )
+    if "route_rules" in entities:
+        lines.append(
+            (
+                "Κανόνες διαδρομών" if locale == "el" else "Route rules",
+                (
+                    "Συμπληρώστε είτε οδηγό είτε όχημα. Κανόνας: prefer ή forbid (τα οχήματα μόνο forbid). Οι διαδρομές πρέπει να υπάρχουν ήδη."
+                    if locale == "el"
+                    else "Enter either a driver or a vehicle. Rule: prefer or forbid (vehicles only forbid). Routes must already be saved."
+                ),
+            )
+        )
     for key in entities:
         required = ", ".join(
             column.label(locale) for column in SHEETS[key][2] if column.required
@@ -243,6 +265,7 @@ def generate_template(
                 "weekdays",
                 "clock",
                 "date",
+                "datetime",
             ):
                 sheet.column_dimensions[letter].number_format = "@"
             options = (
@@ -251,7 +274,7 @@ def generate_template(
                 else (
                     (("Ναι", "Όχι") if locale == "el" else ("Yes", "No"))
                     if column.kind == "boolean"
-                    else None
+                    else CHOICES.get(column.kind)
                 )
             )
             if options:

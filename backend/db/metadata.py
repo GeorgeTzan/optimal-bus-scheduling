@@ -8,7 +8,7 @@ def load_domain_metadata():
         'db.models', 'app.domain.identity.models', 'app.domain.workforce.models', 'app.domain.fleet.models',
         'app.domain.timetables.models', 'app.domain.imports.models', 'app.domain.jobs.models',
         'app.domain.scheduling.models', 'app.domain.scheduling.snapshots', 'app.domain.scheduling.change_models',
-        'app.domain.incidents.models', 'app.domain.incidents.operations_models', 'app.domain.events.outbox', 'app.domain.office.models', 'app.domain.identity.driver_models',
+        'app.domain.incidents.models', 'app.domain.incidents.operations_models', 'app.domain.events.outbox', 'app.domain.office.models', 'app.domain.identity.driver_models', 'app.domain.workrules.models',
     ):
         import_module(name)
     return Base.metadata

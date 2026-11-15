@@ -199,6 +199,7 @@ class Catalog:
                 "origin_station_id": route.origin_station_id,
                 "destination_station_id": route.destination_station_id,
                 "distance_km": route.distance_km,
+                "service_type": route.service_type,
             }
         return {key: getattr(row, key) for key in FIELDS[kind]}
 
@@ -270,6 +271,39 @@ class Catalog:
         )
         return row
 
+    def driver_work(self, driver_id):
+        from app.domain.workrules.models import DriverRouteRule, DriverWorkBaseline, DriverWorkProfile
+        profile = baseline = None
+        rules = {}
+        if driver_id is not None:
+            profile = self.query(DriverWorkProfile).filter_by(driver_id=driver_id).first()
+            baseline = self.query(DriverWorkBaseline).filter_by(driver_id=driver_id).first()
+            rules = {row.route_id: row.kind for row in self.query(DriverRouteRule).filter_by(driver_id=driver_id)}
+        self.observe(
+            "work_profile",
+            driver_id,
+            [profile.version if profile else 0, baseline.version if baseline else 0, [[route, kind] for route, kind in sorted(rules.items())]],
+        )
+        return profile, baseline, rules
+
+    def vehicle_rules(self, vehicle_id):
+        from app.domain.workrules.models import VehicleRouteRule
+        routes = set()
+        if vehicle_id is not None:
+            routes = {row.route_id for row in self.query(VehicleRouteRule).filter_by(vehicle_id=vehicle_id)}
+        self.observe("vehicle_rules", vehicle_id, sorted(routes))
+        return routes
+
+    def routes_between(self, origin_id, destination_id):
+        rows = (
+            self.query(Route)
+            .filter_by(origin_station_id=origin_id, destination_station_id=destination_id)
+            .order_by(Route.id)
+            .all()
+        )
+        self.observe("routes_between", [origin_id, destination_id], [[row.id, row.version] for row in rows])
+        return rows
+
     def connection_rows(self):
         from app.domain.timetables.models import ServiceConnection
         if self._connection_rows is None:
@@ -316,6 +350,12 @@ class Catalog:
                         for row in sorted(rows, key=lambda row: row.id)
                     ],
                 )
+            elif category == "work_profile":
+                self.driver_work(key)
+            elif category == "vehicle_rules":
+                self.vehicle_rules(key)
+            elif category == "routes_between":
+                self.routes_between(*key)
             elif category == "route":
                 row = self.routes.get(key)
                 self.observe(category, key, row.version if row else None)

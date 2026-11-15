@@ -20,6 +20,16 @@ from framework.problem import Problem
 from framework.cv_solver import CustomSolver
 
 
+REFERENCE_PARAMETERS = {
+    "maxDutyMinutes": 600,
+    "normalDutyMinutes": 600,
+    "maxWorkMinutes": 900,
+    "driveTimeToBreakMinutes": 270,
+    "minBreakMinutes": 30,
+    "transitMinutes": 30,
+}
+
+
 class InvalidSolverInput(ValueError):
     """Raised when problem input is degenerate, empty, or structurally invalid."""
     pass
@@ -55,8 +65,35 @@ def validate_cv_input(problem: SolverProblem, *, minimum_resources: int = 6) -> 
         seen_resource_ids.add(r.resource_id)
 
 
+def _parameters(problem: SolverProblem) -> Dict[str, int]:
+    if problem.work_policy is None:
+        return dict(REFERENCE_PARAMETERS)
+    limits = problem.work_policy["limits"]
+    budgets = problem.driver_budgets
+    return {
+        "maxDutyMinutes": max((b["max_work_minutes"] for b in budgets), default=limits["daily_work_max"]),
+        "normalDutyMinutes": 480,
+        "maxWorkMinutes": max((b["max_long_route_driving_minutes"] for b in budgets), default=limits["daily_driving_eu_extended"]),
+        "driveTimeToBreakMinutes": limits["continuous_driving"],
+        "minBreakMinutes": limits["break_full"],
+        "transitMinutes": 30,
+    }
+
+
+def _budget_fields(problem: SolverProblem, resource, budget: Dict[str, Any]) -> Dict[str, Any]:
+    banned = set(budget["forbidden_route_ids"]) | set(budget["forbidden_vehicle_route_ids"].get(resource.bus_id, ()))
+    return {
+        "earliestStartMinutes": budget["earliest_start_minutes"],
+        "latestEndMinutes": budget["latest_end_minutes"],
+        "maxDutyMinutes": budget["max_work_minutes"],
+        "maxWorkMinutes": budget["max_long_route_driving_minutes"],
+        "prohibitedTripIds": sorted(t.id for t in problem.trips if t.route_id is not None and t.route_id in banned),
+    }
+
+
 def problem_snapshot_to_legacy_dict(problem: SolverProblem) -> Dict[str, Any]:
     """Converts an immutable SolverProblem snapshot into the dict expected by legacy Problem."""
+    budgets = {b["driver_id"]: b for b in problem.driver_budgets}
     trips_data = [
         {
             "id": t.id,
@@ -70,6 +107,7 @@ def problem_snapshot_to_legacy_dict(problem: SolverProblem) -> Dict[str, Any]:
                 "group": t.group,
                 "allowedBusTypes": list(t.allowed_bus_types),
             },
+            **({"longRoute": t.long_route} if budgets else {}),
         }
         for t in problem.trips
     ]
@@ -82,6 +120,7 @@ def problem_snapshot_to_legacy_dict(problem: SolverProblem) -> Dict[str, Any]:
             "currentStation": r.home_station,
             "busAttributes": {"type": r.bus_type},
             **({"availableWindows": [list(w) for w in r.available_windows]} if r.available_windows is not None else {}),
+            **(_budget_fields(problem, r, budgets[r.driver_id]) if r.driver_id in budgets else {}),
         }
         for r in problem.resources
     ]
@@ -96,21 +135,23 @@ def problem_snapshot_to_legacy_dict(problem: SolverProblem) -> Dict[str, Any]:
                 }
             )
 
+    wishes = [
+        {"driverId": r.driver_id, "tripId": t.id, "type": 1}
+        for r in problem.resources
+        if r.driver_id in budgets
+        for t in problem.trips
+        if t.route_id is not None and t.route_id in budgets[r.driver_id]["preferred_route_ids"]
+    ]
+
     return {
         "trips": trips_data,
         "resources": resources_data,
         "constraints": {
             "mandatoryConnections": mandatory_connections,
+            **({"driverWishes": wishes} if wishes else {}),
         },
         "configuration": {
-            "parameters": {
-                "maxDutyMinutes": problem.parameters.max_duty_duration,
-                "normalDutyMinutes": 600,
-                "maxWorkMinutes": problem.parameters.max_driving_time,
-                "driveTimeToBreakMinutes": problem.parameters.max_continuous_driving,
-                "minBreakMinutes": problem.parameters.min_break_time,
-                "transitMinutes": 30,
-            }
+            "parameters": _parameters(problem),
         },
         "stationTransferMatrix": {
             "matrix": [list(row) for row in problem.transfer_matrix]
@@ -141,6 +182,8 @@ class CVLegacyV0(SchedulingSolver):
     ) -> SolverResult:
         if problem.availability_enforced:
             raise InvalidSolverInput("the original reference solver cannot honour availability; use the bounded solver")
+        if problem.driver_budgets:
+            raise InvalidSolverInput("the original reference solver cannot honour driver work rules; use the bounded solver")
         validate_cv_input(problem)
 
         legacy_dict = problem_snapshot_to_legacy_dict(problem)

@@ -48,7 +48,6 @@ def test_driver_vehicle_records_independent(db_session):
             first_name="Nikos",
             last_name="Papadopoulos",
             license_number="EL-12345",
-            max_daily_driving_minutes=540,
             is_active=True,
         ))
         vehicle = fleet_svc.create_vehicle(VehicleCreate(

@@ -1,5 +1,5 @@
 """Authoritative tenant-scoped revision API. Never trust caller timing or tenant IDs."""
-from dataclasses import asdict
+from dataclasses import asdict, replace
 from datetime import date, datetime, timezone
 from typing import Optional, Literal
 import uuid
@@ -20,6 +20,7 @@ from app.domain.scheduling.models import (
 from app.domain.scheduling.snapshots import RevisionSnapshot, encode_problem, decode_problem, import_reference_problem, display_metadata
 from app.domain.optimization.contracts import Assignment
 from app.domain.verification.verifier import HardRuleVerifier
+from app.domain.workrules.loader import load_work_context
 
 router = APIRouter(prefix='/api/v1/scheduling', tags=['scheduling'])
 
@@ -43,6 +44,12 @@ class PatchesRequest(VersionRequest):
 
 class ImportRequest(BaseModel):
     service_date: date
+
+
+class OverrideRequest(BaseModel):
+    model_config = ConfigDict(extra='forbid')
+    finding_key: str = Field(min_length=1, max_length=500)
+    reason: str = Field(min_length=1, max_length=1000)
 
 
 class CreateRevisionRequest(BaseModel):
@@ -74,14 +81,15 @@ def rows_for(db, rev):
     return db.query(RevisionAssignment).filter_by(tenant_id=rev.tenant_id, revision_id=rev.revision_id).order_by(RevisionAssignment.trip_id).all()
 
 
-def verify(db, rev):
+def verify(db, rev, emergency_drivers=None):
     problem = decode_problem(snapshot_for(db, rev).problem_data)
     assignments = [Assignment(a.resource_id, a.trip_id, a.start_minutes, a.end_minutes, a.start_station, a.end_station)
                    for a in rows_for(db, rev) if a.resource_id != 'UNASSIGNED' and not a.is_cancelled]
-    return HardRuleVerifier().verify(problem, assignments)
+    work = load_work_context(db, rev.tenant_id, problem, rev.revision_id)
+    return HardRuleVerifier().verify(problem, assignments, work if emergency_drivers is None else replace(work, emergency_drivers=emergency_drivers))
 
 
-def serialize(db, rev):
+def serialize(db, rev, emergency_drivers=None):
     snapshot = snapshot_for(db, rev)
     return dict(**display_metadata(snapshot), revision_id=rev.revision_id, version=rev.version, status=rev.status, author=rev.author,
                 updated_at=rev.updated_at.replace(tzinfo=timezone.utc).isoformat(), problem=snapshot.problem_data,
@@ -90,7 +98,7 @@ def serialize(db, rev):
                 source_stations=snapshot.source_data.get('stations', []), source_hash=snapshot.source_data.get('source_hash'),
                 source_review_required=source_review_required(db, rev, snapshot) or availability_review_required(db, rev, snapshot),
                 assignments=[dict(trip_id=a.trip_id, resource_id=a.resource_id, is_locked=a.is_locked, is_cancelled=a.is_cancelled, cancellation_reason=a.cancellation_reason) for a in rows_for(db, rev)],
-                verification=asdict(verify(db, rev)))
+                verification=asdict(verify(db, rev, emergency_drivers)))
 
 
 def audit(db, rev, user, action):
@@ -198,7 +206,7 @@ def preview_patch(rid:str,req:PatchesRequest,user:User=Depends(writer),db:Sessio
     proposed={item.trip_id:item.new_resource_id for item in req.patches}
     facts=[Assignment(proposed.get(row.trip_id,row.resource_id),row.trip_id,row.start_minutes,row.end_minutes,row.start_station,row.end_station)
            for row in assignments.values() if not row.is_cancelled and proposed.get(row.trip_id,row.resource_id)!='UNASSIGNED']
-    report=HardRuleVerifier().verify(problem,facts)
+    report=HardRuleVerifier().verify(problem,facts,load_work_context(db,user.ktel_id,problem,rev.revision_id))
     return {'revision_id':rev.revision_id,'version':rev.version,'verification':asdict(report),
         'changes':[{'trip_id':item.trip_id,'original_resource_id':assignments[item.trip_id].resource_id,
             'new_resource_id':item.new_resource_id,'start_minutes':assignments[item.trip_id].start_minutes,
@@ -226,6 +234,35 @@ def patch(rid: str, req: PatchesRequest, user: User = Depends(writer), db: Sessi
     return response
 
 
+@router.post('/revisions/{rid}/work-rule-overrides')
+def override_work_rule(rid: str, req: OverrideRequest, user: User = Depends(require_permission('schedule.approve')), db: Session = Depends(get_db)):
+    from app.domain.office.audit import office_record
+    from app.domain.workrules.models import WorkRuleOverride
+    rev = find_revision(db, user.ktel_id, rid)
+    if rev.status == 'published':
+        raise HTTPException(409, {'code': 'published_revision', 'message': 'Published revisions are immutable.'})
+    row = db.query(WorkRuleOverride).filter_by(tenant_id=user.ktel_id, revision_id=rid, finding_key=req.finding_key).first()
+    if row is None:
+        finding = next((v for v in verify(db, rev).violations if v.finding_key == req.finding_key), None)
+        if finding is None:
+            raise HTTPException(404, {'code': 'finding_not_found', 'message': 'This finding is not in the current verification.'})
+        if finding.kind != 'warning':
+            raise HTTPException(422, {'code': 'legal_finding', 'message': 'Only company-rule warnings can be overridden.'})
+        row = WorkRuleOverride(tenant_id=user.ktel_id, revision_id=rid, finding_key=req.finding_key, reason=req.reason,
+                               actor_id=user.id, created_at=datetime.now(timezone.utc))
+        db.add(row)
+        db.flush()
+        response = override_view(row)
+        office_record(db, user.ktel_id, user.id, str(uuid.uuid4()), 'work_rule_override', 'create', req.model_dump(), response)
+        db.commit()
+    return override_view(row)
+
+
+def override_view(row):
+    return {'revision_id': row.revision_id, 'finding_key': row.finding_key, 'reason': row.reason, 'actor_id': row.actor_id,
+            'created_at': row.created_at.astimezone(timezone.utc).isoformat()}
+
+
 @router.post('/revisions/{rid}/{action}')
 def transition(rid: str, action: str, req: VersionRequest, user: User = Depends(writer), db: Session = Depends(get_db)):
     if action not in ('request-approval', 'approve', 'publish'):
@@ -246,7 +283,7 @@ def transition(rid: str, action: str, req: VersionRequest, user: User = Depends(
         from app.domain.scheduling.changes import ScheduleChanges
         base=db.query(ScheduleRevision).filter_by(tenant_id=user.ktel_id,revision_id=change.base_revision_id).first()
         if base is None:raise HTTPException(409, 'The original published schedule is unavailable.')
-        request=ChangePreview(publication_id=change.publication_id,version=base.version,reason=change.reason,
+        request=ChangePreview(publication_id=change.publication_id,version=base.version,reason=change.reason,emergency=change.emergency,
             reviewed_not_started=[item['trip_id'] for item in change.changes],
             patches=[({'trip_id':item['trip_id'],'operation':'cancel','reason':item['reason']} if item.get('operation')=='cancel' else {'trip_id':item['trip_id'],'operation':'replace_driver','replacement_resource_id':item['replacement_resource_id'],'driver_version':item['driver_version'],'vehicle_version':item['vehicle_version'],'confirm_replacement':True} if item.get('operation')=='replace_driver' else {'trip_id':item['trip_id'],'new_resource_id':item['new_resource_id']}) for item in change.changes])
         for patch,item in zip(request.patches,change.changes):patch.unlock=bool(item.get('unlocked'))
@@ -259,7 +296,7 @@ def transition(rid: str, action: str, req: VersionRequest, user: User = Depends(
         raise HTTPException(409, {'code':'availability_changed','message':'Driver or vehicle availability changed. Review the affected trips and open an updated draft.'})
     report = verify(db, rev)
     if not report.valid:
-        raise HTTPException(422, detail={'message': 'Independent verification failed', 'verification': asdict(report)})
+        raise HTTPException(422, detail={'code': 'verification_failed', 'message': 'Independent verification failed', 'verification': asdict(report)})
     if action == 'request-approval':
         if rev.status != 'draft':
             raise HTTPException(409, 'Only drafts can request approval')

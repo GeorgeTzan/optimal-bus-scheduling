@@ -9,6 +9,7 @@ import { Field, Modal } from "../timetables/shared";
 import { scheduleDisplay } from "./display";
 import type { PersistedRevision, Verification } from "./revision-api";
 import type { StudioResource, StudioTrip } from "./types";
+import { FindingsList, findingLabels, isWorkRule } from "./WorkRulesTab";
 
 type Mode = "move" | "cancel" | "replace_driver";
 interface Preview {
@@ -41,14 +42,16 @@ export function ScheduleChangeDialog({
   onClose,
   onSaved,
 }: Props) {
-  const { apiFetch } = useAuth(),
+  const { apiFetch, user } = useAuth(),
     { locale } = useI18n(),
     el = locale === "el";
   const published = revision.status === "published";
   const [mode, setMode] = useState<Mode>(initialMode),
     [destination, setDestination] = useState(initialTarget ?? ""),
     [reason, setReason] = useState(""),
-    [confirmed, setConfirmed] = useState(false);
+    [confirmed, setConfirmed] = useState(false),
+    [emergency, setEmergency] = useState(false);
+  const canEmergency = !!user?.permissions.includes("schedule.publish");
   const [selected, setSelected] = useState<string[]>([trip.id]),
     [preview, setPreview] = useState<Preview | null>(null),
     [busy, setBusy] = useState(false),
@@ -65,6 +68,7 @@ export function ScheduleChangeDialog({
   const dirty =
     !!reason ||
     confirmed ||
+    emergency ||
     destination !== (initialTarget ?? "") ||
     selected.length !== 1 ||
     selected[0] !== trip.id ||
@@ -162,6 +166,7 @@ export function ScheduleChangeDialog({
           version: revision.version,
           reason: reason.trim(),
           reviewed_not_started: ids,
+          ...(emergency ? { emergency: true } : {}),
           patches,
         }
       : { version: revision.version, patches };
@@ -387,6 +392,7 @@ export function ScheduleChangeDialog({
                   disabled={busy}
                   onChange={(event) => {
                     setReason(event.target.value);
+                    if (!event.target.value.trim()) setEmergency(false);
                     changed();
                   }}
                 />
@@ -406,6 +412,20 @@ export function ScheduleChangeDialog({
                   ? "Έχω επιβεβαιώσει ότι τα επιλεγμένα δρομολόγια δεν έχουν ξεκινήσει"
                   : "I confirmed the selected trips have not started"}
               </label>
+              {canEmergency && (
+                <label className="change-confirm change-emergency">
+                  <input
+                    type="checkbox"
+                    checked={emergency}
+                    disabled={busy || !reason.trim()}
+                    onChange={(event) => {
+                      setEmergency(event.target.checked);
+                      changed();
+                    }}
+                  />
+                  {el ? "Έκτακτη ανάγκη (έως 11 ώρες)" : "Emergency (up to 11 h)"}
+                </label>
+              )}
               <p className="resource-help">
                 {el
                   ? "Η αλλαγή δημιουργεί προσχέδιο. Η ισχύουσα δημοσίευση παραμένει μέχρι τη νέα έγκριση και δημοσίευση."
@@ -437,9 +457,19 @@ export function ScheduleChangeDialog({
                   ? "Οι έλεγχοι αφορούν τα διαθέσιμα αποθηκευμένα στοιχεία. Δεν αποτελούν πλήρη έλεγχο διαθεσιμότητας ή νομοθεσίας."
                   : "Checks use the available saved records; they do not establish full availability or legal compliance."}
               </p>
-              {preview.verification.violations.map((violation, index) => (
-                <p key={`${violation.rule_id}-${index}`}>{violation.message}</p>
-              ))}
+              {preview.verification.violations.filter(isWorkRule).length > 0 && (
+                <FindingsList
+                  violations={preview.verification.violations.filter(isWorkRule)}
+                  el={el}
+                  timezone={revision.timezone}
+                  labels={findingLabels(revision, trips)}
+                />
+              )}
+              {preview.verification.violations
+                .filter((violation) => !isWorkRule(violation))
+                .map((violation, index) => (
+                  <p key={`${violation.rule_id}-${index}`}>{violation.message}</p>
+                ))}
               {preview.verification.unassigned_trips.length > 0 && (
                 <p>
                   {el

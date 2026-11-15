@@ -29,6 +29,7 @@ export function Navbar({ currentTab }: { currentTab: ShellTab }) {
     imports: ["Εισαγωγές", "Data imports"],
     office: ["Γραφείο", "Office"],
     team: ["Ομάδα", "Team"],
+    rules: ["Κανόνες εργασίας", "Work rules"],
     reports: ["Αναφορές", "Reports"],
     archive: ["Αρχείο αναφοράς", "Reference archive"],
   };

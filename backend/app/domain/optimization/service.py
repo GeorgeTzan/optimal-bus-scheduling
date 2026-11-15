@@ -4,14 +4,12 @@ from sqlalchemy.orm import Session
 from app.domain.jobs.models import Job
 from app.domain.jobs.repository import JobRepository
 from app.domain.optimization.registry import ALLOWED_PRODUCTION_SOLVERS
-from app.domain.verification.verifier import HardRuleVerifier
 
 
 class OptimizationService:
     def __init__(self, db: Session):
         self.db = db
         self.job_repo = JobRepository(db)
-        self.verifier = HardRuleVerifier()
 
     def enqueue_run(
         self,
@@ -27,13 +25,26 @@ class OptimizationService:
                 f"Allowed solvers: {sorted(list(ALLOWED_PRODUCTION_SOLVERS))}"
             )
 
+        if idempotency_key:
+            existing = self.db.query(Job).filter(Job.tenant_id == tenant_id, Job.idempotency_key == idempotency_key).first()
+            if existing:
+                return existing
         return self.job_repo.enqueue_job(
             tenant_id=tenant_id,
             snapshot_id=snapshot_id,
             solver_version=solver_version,
-            config=config or {},
+            config={**(config or {}), **self.work_config(tenant_id, snapshot_id)},
             idempotency_key=idempotency_key,
         )
+
+    def work_config(self, tenant_id: int, snapshot_id: str) -> Dict[str, Any]:
+        from app.domain.scheduling.snapshots import RevisionSnapshot, decode_problem
+        from app.domain.workrules.loader import load_work_context
+        snapshot = self.db.query(RevisionSnapshot).filter_by(tenant_id=tenant_id, revision_id=snapshot_id).first()
+        if snapshot is None:
+            return {}
+        problem = decode_problem(snapshot.problem_data)
+        return {"work_context": load_work_context(self.db, tenant_id, problem, snapshot_id).to_dict()}
 
     def get_run(self, tenant_id: int, run_id: str) -> Optional[Job]:
         job = self.db.query(Job).filter(Job.job_id == run_id).first()

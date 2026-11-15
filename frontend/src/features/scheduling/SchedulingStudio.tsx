@@ -30,6 +30,9 @@ import { RunFeedback } from "./RunFeedback";
 import { AssignmentInspector } from "./inspector/AssignmentInspector";
 import { scheduleDisplay, type ScheduleDisplayContext } from "./display";
 import type { CandidatePlan } from "./CandidateComparisonTray";
+import type { Violation } from "./revision-api";
+import { WorkRulesTab, blocksApproval, findingLabels, isWorkRule } from "./WorkRulesTab";
+import { OverrideDialog } from "./OverrideDialog";
 interface Props {
   initialRevision: StudioRevision;
   persistedRevision: PersistedRevision;
@@ -108,8 +111,9 @@ export function SchedulingStudio({
   const [day, setDay] = useState(0);
   const [zoom, setZoom] = useState(1);
   const [tab, setTab] = useState<
-    "trips" | "conflicts" | "unassigned" | "candidates"
+    "trips" | "conflicts" | "unassigned" | "candidates" | "rules"
   >("trips");
+  const [overriding, setOverriding] = useState<Violation | null>(null);
   const [onlyLocked, setOnlyLocked] = useState(false);
   const [iterations, setIterations] = useState(3);
   const [busy, setBusy] = useState(false);
@@ -232,6 +236,14 @@ export function SchedulingStudio({
     0,
   );
   const conflicts = trips.filter((t) => t.hasViolation).length;
+  const ruleFindings = verification.violations.filter(isWorkRule);
+  const blockingRules = verification.violations.filter(blocksApproval).length;
+  const showTrip = (tripId: string) => {
+    const trip = trips.find((t) => t.id === tripId);
+    if (!trip) return;
+    setDay(dayIndex(trip.startMinutes));
+    setSelected(tripId);
+  };
   const date = new Date(`${serviceDate}T12:00:00Z`);
   date.setUTCDate(date.getUTCDate() + day);
   const dateText = new Intl.DateTimeFormat(el ? "el-GR" : "en-GB", {
@@ -472,7 +484,15 @@ export function SchedulingStudio({
             isOptimizing ||
             isRestoringRun ||
             !verification.valid ||
+            blockingRules > 0 ||
             !canApprove
+          }
+          title={
+            blockingRules > 0
+              ? el
+                ? `${blockingRules} ευρήματα νόμου εμποδίζουν το αίτημα`
+                : `${blockingRules} legal finding${blockingRules === 1 ? "" : "s"} block this request`
+              : undefined
           }
           onClick={() =>
             execute(() =>
@@ -711,7 +731,7 @@ export function SchedulingStudio({
           >
             <div className="data-tabs">
               {(
-                ["trips", "conflicts", "unassigned", "candidates"] as const
+                ["trips", "conflicts", "unassigned", "rules", "candidates"] as const
               ).map((t) => (
                 <button
                   key={t}
@@ -726,6 +746,7 @@ export function SchedulingStudio({
                       trips: el ? "Δρομολόγια" : "Trips",
                       conflicts: el ? "Ευρήματα" : "Conflicts",
                       unassigned: el ? "Χωρίς ανάθεση" : "Unassigned",
+                      rules: el ? "Κανόνες εργασίας" : "Work rules",
                       candidates: el ? "Επιλογές προσχεδίου" : "Draft options",
                     }[t]
                   }
@@ -736,12 +757,27 @@ export function SchedulingStudio({
                         ? conflicts
                         : t === "unassigned"
                           ? trips.length - assigned.length
-                          : plans.length}
+                          : t === "rules"
+                            ? ruleFindings.length
+                            : plans.length}
                   </span>
                 </button>
               ))}
             </div>
-            {tab === "candidates" ? (
+            {tab === "rules" ? (
+              <WorkRulesTab
+                violations={ruleFindings}
+                el={el}
+                timezone={persistedRevision.timezone}
+                labels={findingLabels(persistedRevision, trips)}
+                onShow={showTrip}
+                onOverride={
+                  permissions.includes("schedule.approve") && revision.status !== "published"
+                    ? setOverriding
+                    : undefined
+                }
+              />
+            ) : tab === "candidates" ? (
               <div className="candidate-list">
                 {plans.length === 0 ? (
                   <div className="table-empty">
@@ -922,6 +958,19 @@ export function SchedulingStudio({
               </p>
             ))}
         </section>
+      )}
+      {overriding && (
+        <OverrideDialog
+          revisionId={revision.revisionId}
+          finding={overriding}
+          timezone={persistedRevision.timezone}
+          labels={findingLabels(persistedRevision, trips)}
+          onClose={() => setOverriding(null)}
+          onDone={(saved) => {
+            setOverriding(null);
+            onSaveChange(saved, revision.revisionId);
+          }}
+        />
       )}
       {change && changeTrip && (
         <ScheduleChangeDialog

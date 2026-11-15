@@ -165,7 +165,7 @@ def published_with_overnight_trip(identity_setup):
     revision = client.post('/api/v1/scheduling/revisions', headers=headers, json={'service_date': '2026-06-01'}).json()
     resource = revision['source_resources'][0]['resource_id']
     revision = client.post(f"/api/v1/scheduling/revisions/{revision['revision_id']}/patches", headers=headers, json={'version': revision['version'], 'patches': [
-        {'trip_id': item['trip_id'], 'new_resource_id': resource} for item in revision['assignments']]}).json()
+        {'trip_id': item['id'], 'new_resource_id': resource} for item in revision['source_trips'] if item['trip_code'] == 'T002']}).json()
     for action in ('request-approval', 'approve', 'publish'):
         revision = transition(client, headers, revision, action).json()
     return client, headers, revision, driver

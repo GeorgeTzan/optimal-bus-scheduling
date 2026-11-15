@@ -49,8 +49,7 @@ def station_facts(station):
 
 
 def pairing_fingerprint(driver,vehicle,home):
-    return fingerprint({'driver':{'id':driver.id,'active':driver.is_active,'home':driver.home_station_id,
-            'daily':driver.max_daily_driving_minutes,'continuous':driver.max_continuous_driving_minutes,'rest':driver.min_daily_rest_minutes},
+    return fingerprint({'driver':{'id':driver.id,'active':driver.is_active,'home':driver.home_station_id},
         'vehicle':{'id':vehicle.id,'active':vehicle.is_active,'home':vehicle.home_station_id,'type':vehicle.bus_type},
         'home':station_facts(home)})
 
@@ -84,7 +83,7 @@ class OperationsService:
     def template_data(self,template):
         route=self.get(Route,template.route_id)
         return {**{key:getattr(template,key) for key in TEMPLATE_FIELDS},'origin_station_id':route.origin_station_id,
-                'destination_station_id':route.destination_station_id,'distance_km':route.distance_km}
+                'destination_station_id':route.destination_station_id,'distance_km':route.distance_km,'service_type':route.service_type}
 
     def template_view(self,template):
         data=self.template_data(template)
@@ -94,19 +93,19 @@ class OperationsService:
             'origin':self.station_view(self.get(Station,data['origin_station_id'])),
             'destination':self.station_view(self.get(Station,data['destination_station_id']))}
 
-    def route(self,origin,destination,distance):
+    def route(self,origin,destination,distance,service_type='intercity'):
         self.get(Station,origin,True);self.get(Station,destination,True)
-        result=self.query(Route).filter_by(origin_station_id=origin,destination_station_id=destination,distance_km=distance).order_by(Route.id).first()
+        result=self.query(Route).filter_by(origin_station_id=origin,destination_station_id=destination,distance_km=distance,service_type=service_type).order_by(Route.id).first()
         if result is None:
             result=Route(tenant_id=self.tenant_id,origin_station_id=origin,destination_station_id=destination,
-                         distance_km=distance,typical_duration_minutes=None)
+                         distance_km=distance,service_type=service_type,typical_duration_minutes=None)
             self.db.add(result);self.db.flush()
         return result
 
     def create_template(self,request):
         self.lock();values=request.model_dump()
         check_reference(self.db,self.tenant_id,'timetable',values['trip_code'])
-        route=self.route(request.origin_station_id,request.destination_station_id,request.distance_km)
+        route=self.route(request.origin_station_id,request.destination_station_id,request.distance_km,request.service_type)
         row=ServiceTemplate(tenant_id=self.tenant_id,route_id=route.id,**{key:values[key] for key in TEMPLATE_FIELDS})
         self.db.add(row);self.flush('trip_reference_exists');return self.template_view(row)
 
@@ -118,7 +117,7 @@ class OperationsService:
         if changes=={'is_active':False}:
             row.is_active=False;row.version+=1;self.db.flush();return self.template_view(row)
         values=validate(TimetableCreate,{**self.template_data(row),**changes}).model_dump()
-        row.route_id=self.route(values['origin_station_id'],values['destination_station_id'],values['distance_km']).id
+        row.route_id=self.route(values['origin_station_id'],values['destination_station_id'],values['distance_km'],values['service_type']).id
         for key in TEMPLATE_FIELDS:setattr(row,key,values[key])
         row.version+=1;self.flush('trip_reference_exists');return self.template_view(row)
 
@@ -248,7 +247,7 @@ def materialize_service_date(db,tenant_id,service_date,template_versions=None):
                     'calendar':rule.model_dump(mode='json'),'exception':exception.model_dump(mode='json') if exception else None,
                     'exception_version':stored.version if stored else None,'timezone':tenant.timezone,
                     'route':{'id':route.id,'version':route.version,'origin_station_id':route.origin_station_id,
-                             'destination_station_id':route.destination_station_id,'distance_km':route.distance_km},
+                             'destination_station_id':route.destination_station_id,'distance_km':route.distance_km,'service_type':route.service_type},
                     'allowed_bus_types':list(template.allowed_bus_types),'start_utc':instant.start_utc.isoformat(),'end_utc':instant.end_utc.isoformat()}
                 prepared.append((template,route,payload,instant))
             except (AmbiguousLocalTimeError,NonExistentLocalTimeError,ValidationError,ValueError) as error:
@@ -296,6 +295,9 @@ def build_operational_snapshot(db,tenant_id,service_date):
             resource_labels.append({**view,'resource_id':f'PAIR_{pairing.id}','vehicle_code':vehicle.code,'home_station_code':home.code})
             needed.add(home.id);versions['drivers'][str(driver.id)]=driver.version;versions['vehicles'][str(vehicle.id)]=vehicle.version
             versions['pairings'][str(pairing.id)]=pairing.version
+        from app.domain.workrules.legal import LEGAL_LIMITS
+        from app.domain.workrules.loader import route_facts,template_routes
+        routes=template_routes(db,tenant_id,{trip.template_id for trip in trips})
         raw=[];trip_labels=[]
         for trip in trips:
             payload=trip.properties['materialization'];rule=payload['calendar'];override=payload['exception'] or {}
@@ -306,7 +308,9 @@ def build_operational_snapshot(db,tenant_id,service_date):
             def effective(key):return override[key] if override.get(key) is not None else rule[key]
             raw.append({'id':f'TRIP_{trip.id}','origin':origin.code,'destination':destination.code,
                 'start_time':effective('departure_time'),'end_time':effective('arrival_time'),'arrival_day_offset':effective('arrival_day_offset'),
-                'fold_start':override.get('fold_start'),'fold_end':override.get('fold_end'),'allowed_bus_types':payload['allowed_bus_types']})
+                'fold_start':override.get('fold_start'),'fold_end':override.get('fold_end'),'allowed_bus_types':payload['allowed_bus_types'],
+                **dict(zip(('route_id','urban','long_route'),route_facts(routes.get(trip.template_id),payload['route']['distance_km'],LEGAL_LIMITS['eu_route_km'].value))),
+                'origin_is_depot':bool(origin.is_depot),'destination_is_depot':bool(destination.is_depot)})
             trip_labels.append({**trip_view(trip),'id':f'TRIP_{trip.id}','trip_code':trip.trip_code,
                 'origin':service.station_view(origin),'destination':service.station_view(destination),'distance_km':payload['route']['distance_km'],
                 'departure_local':effective('departure_time'),'arrival_local':effective('arrival_time'),'arrival_day_offset':effective('arrival_day_offset')})

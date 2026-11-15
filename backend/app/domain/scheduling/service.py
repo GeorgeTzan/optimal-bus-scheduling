@@ -20,6 +20,7 @@ from app.domain.scheduling.publication import (
 )
 from app.domain.optimization.contracts import SolverProblem, Assignment
 from app.domain.verification.verifier import HardRuleVerifier
+from app.domain.workrules.loader import load_work_context
 
 
 class SchedulingService:
@@ -277,7 +278,8 @@ class SchedulingService:
 
         # Verify through independent verifier
         if problem:
-            report = self.verifier.verify(problem, contracts_assignments)
+            work = load_work_context(self.db, self.tenant_id, problem, revision_id)
+            report = self.verifier.verify(problem, contracts_assignments, work)
             if not report.is_feasible:
                 raise PublicationVerificationFailedError(
                     f"Publication rejected: verification failed with {len(report.violations)} violations."

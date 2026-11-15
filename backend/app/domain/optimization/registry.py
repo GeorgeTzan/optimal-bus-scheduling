@@ -8,7 +8,10 @@ from __future__ import annotations
 from typing import Dict, List, Type
 
 from app.domain.optimization.contracts import SchedulingSolver
+from app.domain.optimization.cv_bounded import CVBoundedV1
 from app.domain.optimization.cv_legacy import CVLegacyV0
+
+RESEARCH_SOLVERS = frozenset({"greedy", "simulated_annealing", "lahc"})
 
 
 class InvalidSolverSelectionError(ValueError):
@@ -16,17 +19,12 @@ class InvalidSolverSelectionError(ValueError):
     pass
 
 
-# Production allowlist mapping version ID -> Solver class
 _PRODUCTION_SOLVERS: Dict[str, Type[SchedulingSolver]] = {
     "cv-legacy-v0": CVLegacyV0,
+    "cv-bounded-v1": CVBoundedV1,
 }
 
-ALLOWED_PRODUCTION_SOLVERS = {"cv-bounded-v1", "cv-legacy-v0"}
-
-
-def register_solver(version: str, solver_cls: Type[SchedulingSolver]) -> None:
-    """Registers a solver implementation in the production allowlist."""
-    _PRODUCTION_SOLVERS[version] = solver_cls
+ALLOWED_PRODUCTION_SOLVERS = frozenset(_PRODUCTION_SOLVERS)
 
 
 def list_available_solvers() -> List[str]:
@@ -39,7 +37,7 @@ def get_production_solver(version: str = "cv-bounded-v1") -> SchedulingSolver:
     Returns an instance of the requested approved production solver.
     Raises InvalidSolverSelectionError if the solver is unknown or research-only.
     """
-    if version in ("greedy", "simulated_annealing", "lahc"):
+    if version in RESEARCH_SOLVERS:
         raise InvalidSolverSelectionError(
             f"Solver '{version}' is a research/benchmark solver and is prohibited in production routes."
         )

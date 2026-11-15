@@ -70,6 +70,14 @@ def _issue(code, sheet, row, column, cell, locale):
             "Χρησιμοποιήστε τοπική ώρα όπως 08:30, χωρίς δευτερόλεπτα.",
         ),
         "invalid_boolean": ("Choose Yes or No.", "Επιλέξτε Ναι ή Όχι."),
+        "invalid_choice": (
+            "Choose a value from the list.",
+            "Επιλέξτε μια τιμή από τη λίστα.",
+        ),
+        "invalid_datetime": (
+            "Use year-month-day and a local time, for example 2026-06-01 08:30.",
+            "Χρησιμοποιήστε έτος-μήνα-ημέρα και τοπική ώρα, π.χ. 2026-06-01 08:30.",
+        ),
         "invalid_arrival_day": (
             "Choose Same day, Next day or Two days later.",
             "Επιλέξτε Ίδια ημέρα, Επόμενη ημέρα ή Μετά από δύο ημέρες.",

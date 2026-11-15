@@ -40,6 +40,7 @@ class ChangePreview(BaseModel):
     reason:Reason
     reviewed_not_started:list[Identifier]=Field(min_length=1,max_length=2500)
     patches:list[ChangePatch]=Field(min_length=1,max_length=2500)
+    emergency:bool=Field(default=False,strict=True)
 
     @model_validator(mode='after')
     def unique_confirmed_trips(self):

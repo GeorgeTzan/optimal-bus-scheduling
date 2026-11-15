@@ -4,7 +4,7 @@ import math
 import re
 from datetime import date, datetime, time
 from decimal import Decimal, InvalidOperation
-from app.domain.imports.template_schema import WEEKDAYS, ARRIVAL_DAYS
+from app.domain.imports.template_schema import WEEKDAYS, ARRIVAL_DAYS, CHOICES
 
 
 class CellValueError(ValueError):
@@ -82,6 +82,26 @@ def parse_cell_value(value, kind, locale):
         if str(value).casefold() not in choices:
             raise CellValueError("invalid_boolean")
         return choices[str(value).casefold()]
+    if kind in CHOICES:
+        if not isinstance(value, str) or value.casefold() not in CHOICES[kind]:
+            raise CellValueError("invalid_choice")
+        return value.casefold()
+    if kind == "datetime":
+        if isinstance(value, datetime):
+            return value.isoformat()
+        if not isinstance(value, str) or not re.fullmatch(
+            r"\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}(?::\d{2})?(?:Z|[+-]\d{2}:\d{2})?", value
+        ):
+            raise CellValueError("invalid_datetime")
+        try:
+            return datetime.fromisoformat(value.replace(" ", "T")).isoformat()
+        except ValueError:
+            raise CellValueError("invalid_datetime") from None
+    if kind == "hours":
+        hours = parse_cell_value(value, "decimal", locale)
+        if hours < 0 or abs(hours * 60 - round(hours * 60)) > 1e-6:
+            raise CellValueError("invalid_number")
+        return hours
     if kind == "arrival_day":
         choices = {
             label.casefold(): index

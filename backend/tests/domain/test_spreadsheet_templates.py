@@ -389,16 +389,16 @@ def test_empty_formatted_columns_are_harmless_but_unheaded_values_are_not_droppe
         "drivers", "en", [{"code": "001", "first_name": "Nikos", "last_name": "Dimou"}]
     )
     book = load_workbook(io.BytesIO(content))
-    book["Drivers"]["H1"].number_format = "@"
+    book["Drivers"]["R1"].number_format = "@"
     output = io.BytesIO()
     book.save(output)
     assert not parse_upload(output.getvalue(), "drivers.xlsx", "drivers", "en").issues
-    book["Drivers"]["H2"] = "Keep this source value"
+    book["Drivers"]["R2"] = "Keep this source value"
     output = io.BytesIO()
     book.save(output)
     result = parse_upload(output.getvalue(), "drivers.xlsx", "drivers", "en")
     assert any(
-        issue.code == "unknown_column" and issue.cell == "H2" for issue in result.issues
+        issue.code == "unknown_column" and issue.cell == "R2" for issue in result.issues
     )
     assert (
         result.rows[0].raw["_unmapped_columns"][0]["value"] == "Keep this source value"
@@ -545,7 +545,7 @@ def test_complete_workbook_types_are_readable_independently(tmp_path, locale):
     file = tmp_path / "complete.xlsx"
     file.write_bytes(generate_template("all", locale, source))
     book = CalamineWorkbook.from_path(str(file))
-    assert len(book.sheet_names) == 8
+    assert len(book.sheet_names) == 9
     vehicle = book.get_sheet_by_name(title("vehicles", locale)).to_python()[1]
     trip = book.get_sheet_by_name(title("timetable", locale)).to_python()[1]
     assert vehicle[0] == "BUS001" and vehicle[2] == "02" and vehicle[3] == 42
@@ -648,3 +648,117 @@ def test_travel_note_validation_matches_the_canonical_manual_entry_contract():
     result=parse_upload(generate_template('transfers','en',[{'origin':'001','destination':'002','minutes':30,'source_note':'x'*301}]),'travel.xlsx','transfers','en')
     assert not result.is_valid
     assert any(issue.field=='source_note' and issue.cell=='D2' for issue in result.issues)
+
+
+NEW_COLUMNS = {
+    "drivers": (
+        "overnight_allowed",
+        "split_shift_allowed",
+        "must_return_to_base",
+        "baseline_as_of",
+        "baseline_overtime_hours",
+        "baseline_last_duty_end",
+        "baseline_last_weekly_rest_end",
+        "baseline_last_weekly_rest_at_base",
+        "baseline_owed_rest_hours",
+    ),
+    "route_rules": (
+        "driver_code",
+        "vehicle_code",
+        "origin_station_code",
+        "destination_station_code",
+        "rule",
+    ),
+    "timetable": ("service_type",),
+}
+
+
+def header_of(book, entity, locale):
+    from app.domain.imports.template_schema import title
+
+    return [cell.value for cell in book[title(entity, locale)][1]]
+
+
+@pytest.mark.parametrize("locale", ["en", "el"])
+def test_templates_contain_new_columns(locale):
+    from pathlib import Path
+    from openpyxl import load_workbook
+    from app.domain.imports.template_schema import SHEETS
+
+    committed = Path(__file__).resolve().parents[3] / "docs" / "templates" / f"ktel-import-v1-complete-{locale}.xlsx"
+    books = [
+        load_workbook(io.BytesIO(generate_template("all", locale))),
+        load_workbook(committed),
+    ]
+    for book in books:
+        for entity, keys in NEW_COLUMNS.items():
+            labels = {column.key: column.label(locale) for column in SHEETS[entity][2]}
+            header = header_of(book, entity, locale)
+            for key in keys:
+                assert labels[key] in header
+        assert [cell.value for cell in book.worksheets[0]["B"]][1] == "ktel-import-v1"
+    single = parse_upload(generate_template("route_rules", locale), "r.xlsx", "route_rules", locale)
+    assert single.rows == () and single.issues == ()
+
+
+def test_new_columns_parse_literal_values():
+    content = generate_template(
+        "drivers",
+        "en",
+        [
+            {
+                "code": "00001",
+                "first_name": "Nikos",
+                "last_name": "Dimou",
+                "overnight_allowed": False,
+                "split_shift_allowed": True,
+                "must_return_to_base": True,
+                "baseline_as_of": "2026-05-31",
+                "baseline_overtime_hours": 2.5,
+                "baseline_last_duty_end": "2026-05-30 21:30",
+                "baseline_last_weekly_rest_end": "2026-05-25T06:00:00+00:00",
+                "baseline_last_weekly_rest_at_base": "Yes",
+                "baseline_owed_rest_hours": 0,
+            }
+        ],
+    )
+    parsed = parse_upload(content, "drivers.xlsx", "drivers", "en")
+    assert parsed.issues == ()
+    values = parsed.rows[0].values
+    assert values["overnight_allowed"] is False and values["must_return_to_base"] is True
+    assert values["baseline_as_of"] == "2026-05-31"
+    assert values["baseline_overtime_hours"] == 2.5
+    assert values["baseline_last_duty_end"] == "2026-05-30T21:30:00"
+    assert values["baseline_last_weekly_rest_end"] == "2026-05-25T06:00:00+00:00"
+    assert values["baseline_last_weekly_rest_at_base"] is True
+    assert values["baseline_owed_rest_hours"] == 0
+
+
+@pytest.mark.parametrize(
+    "entity,field,value",
+    [
+        ("route_rules", "rule", "maybe"),
+        ("timetable", "service_type", "metro"),
+        ("drivers", "baseline_overtime_hours", -1),
+        ("drivers", "baseline_owed_rest_hours", 0.001),
+        ("drivers", "baseline_last_duty_end", "yesterday evening"),
+        ("drivers", "baseline_as_of", "01/02/2026"),
+        ("drivers", "overnight_allowed", "sometimes"),
+    ],
+)
+def test_invalid_rule_value_is_row_issue(entity, field, value):
+    base = {
+        "route_rules": {"driver_code": "D1", "origin_station_code": "S1", "destination_station_code": "S2", "rule": "prefer"},
+        "timetable": {
+            "trip_code": "T1", "origin": "A", "destination": "B", "departure_time": "08:00", "arrival_time": "09:00",
+            "arrival_day_offset": 0, "operating_weekdays": [0], "valid_from": "2026-01-01", "valid_until": "2026-12-31",
+            "allowed_bus_types": ["02"],
+        },
+        "drivers": {"code": "D1", "first_name": "A", "last_name": "B"},
+    }[entity]
+    content = generate_template(entity, "en", [{**base, field: value}])
+    parsed = parse_upload(content, "x.xlsx", entity, "en")
+    assert [issue.field for issue in parsed.issues] == [field]
+    assert not parsed.rows[0].is_valid
+    good = parse_upload(generate_template(entity, "en", [base]), "x.xlsx", entity, "en")
+    assert good.issues == ()

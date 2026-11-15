@@ -24,6 +24,7 @@ class Station(Base):
 
 class Route(Base):
     __tablename__ = "domain_routes"
+    __table_args__ = (CheckConstraint("service_type IN ('intercity','urban')"),)
 
     id = Column(Integer, primary_key=True, index=True)
     tenant_id = Column(Integer, ForeignKey("ktels.id"), index=True, nullable=False)
@@ -34,6 +35,7 @@ class Route(Base):
     external_key = Column(String, nullable=True)
     distance_km = Column(Float, nullable=True, default=None)
     typical_duration_minutes = Column(Integer, nullable=True, default=None)
+    service_type = Column(String, nullable=False, default="intercity", server_default="intercity")
 
     origin = relationship("Station", foreign_keys=[origin_station_id])
     destination = relationship("Station", foreign_keys=[destination_station_id])

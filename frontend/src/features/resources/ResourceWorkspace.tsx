@@ -1,5 +1,7 @@
 "use client";
 import { DriverAccess } from "./DriverAccess";
+import { DriverWorkProfile } from "../workrules/DriverWorkProfile";
+import { VehicleRouteRules } from "../workrules/VehicleRouteRules";
 import { useUnsavedChanges } from "../navigation/use-unsaved-changes";
 import { confirmDiscardOwn } from "../navigation/unsaved-changes";
 import {
@@ -574,8 +576,12 @@ export function ResourceForm({
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const baseline = useRef(JSON.stringify({form,active,referenceOnly,depot,home}));
   const dirty = JSON.stringify({form,active,referenceOnly,depot,home}) !== baseline.current;
+  const [tab, setTab] = useState<"details" | "rules">("details"),
+    [rulesOpened, setRulesOpened] = useState(false),
+    [rulesDirty, setRulesDirty] = useState(false);
+  const hasRules = !isNew && (kind === "drivers" || kind === "vehicles");
   useUnsavedChanges(dirty || busy);
-  const closeGuarded = () => { if (!busy && confirmDiscardOwn(dirty, el)) onClose(); };
+  const closeGuarded = () => { if (!busy && confirmDiscardOwn(dirty || rulesDirty, el)) onClose(); };
   const dialog = useRef<HTMLDialogElement>(null);
   useEffect(() => {
     const modal = dialog.current;
@@ -648,6 +654,7 @@ export function ResourceForm({
   );
   const submit = async (event: FormEvent) => {
     event.preventDefault();
+    if (tab !== "details") return;
     setError(null);
     setFieldErrors({});
     const homeRecord =
@@ -801,7 +808,38 @@ export function ResourceForm({
             <X size={18} />
           </button>
         </header>
-        <div className="resource-form-body">
+        {hasRules && (
+          <div className="data-tabs" role="group" aria-label={el ? "Ενότητες εγγραφής" : "Record sections"}>
+            <button type="button" className={tab === "details" ? "active" : ""} aria-pressed={tab === "details"} onClick={() => setTab("details")}>
+              {el ? "Στοιχεία" : "Details"}
+            </button>
+            <button
+              type="button"
+              className={tab === "rules" ? "active" : ""}
+              aria-pressed={tab === "rules"}
+              onClick={() => {
+                setRulesOpened(true);
+                setTab("rules");
+              }}
+            >
+              {kind === "drivers" ? (el ? "Προτιμήσεις & περιορισμοί" : "Preferences & restrictions") : el ? "Περιορισμοί γραμμών" : "Route restrictions"}
+            </button>
+          </div>
+        )}
+        {hasRules && rulesOpened && (
+          <div className="resource-form-body" hidden={tab !== "rules"}>
+            {kind === "drivers" ? (
+              <DriverWorkProfile
+                driverId={record.id}
+                homeBase={record.home_station ? `${el ? record.home_station.name_el : record.home_station.name_en} · ${record.home_station.code}` : ""}
+                onDirty={setRulesDirty}
+              />
+            ) : (
+              <VehicleRouteRules vehicleId={record.id} onDirty={setRulesDirty} />
+            )}
+          </div>
+        )}
+        <div className="resource-form-body" hidden={tab !== "details"}>
           <p className="resource-form-intro">
             {el
               ? "Συμπληρώστε τα βασικά. Μπορείτε να προσθέσετε περισσότερα στοιχεία αργότερα."
@@ -950,7 +988,7 @@ export function ResourceForm({
             <DriverAccess driverId={record.id} driverName={`${record.first_name ?? ""} ${record.last_name ?? ""}`.trim()} />
           )}
         </div>
-        <footer>
+        <footer hidden={tab !== "details"}>
           <button
             type="button"
             className="button secondary"

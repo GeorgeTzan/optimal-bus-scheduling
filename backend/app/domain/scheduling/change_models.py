@@ -1,6 +1,6 @@
 """Audited, idempotent lineage for a published schedule's draft successor."""
 from datetime import datetime,timezone
-from sqlalchemy import Column,Integer,String,DateTime,JSON,ForeignKey,ForeignKeyConstraint,UniqueConstraint
+from sqlalchemy import Boolean,Column,Integer,String,DateTime,JSON,ForeignKey,ForeignKeyConstraint,UniqueConstraint,text
 from db.database import Base
 
 class ScheduleChange(Base):
@@ -18,6 +18,7 @@ class ScheduleChange(Base):
     payload_hash=Column(String(64),nullable=False)
     actor_id=Column(Integer,nullable=False)
     reason=Column(String(1000),nullable=False)
+    emergency=Column(Boolean,nullable=False,default=False,server_default=text('false'))
     changes=Column(JSON,nullable=False)
     response_data=Column(JSON,nullable=False)
     created_at=Column(DateTime(timezone=True),nullable=False,default=lambda:datetime.now(timezone.utc))

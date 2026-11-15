@@ -23,6 +23,7 @@ import { OperationsWorkspace } from "../features/operations/OperationsWorkspace"
 import { OverviewWorkspace } from "../features/dashboard/OverviewWorkspace";
 import { OfficeWorkspace } from "../features/office/OfficeWorkspace";
 import { TeamWorkspace } from "../features/team/TeamWorkspace";
+import { WorkRulesWorkspace } from "../features/workrules/WorkRulesWorkspace";
 import { SchedulingStudio } from "../features/scheduling/SchedulingStudio";
 import { useJobEvents } from "../features/optimization/use-job-events";
 import {
@@ -411,6 +412,13 @@ function WorkspacePage() {
     return (
       <Shell currentTab={activeTab} onTabChange={navigate}>
         {user?.permissions.includes("members.manage") ? <TeamWorkspace /> : null}
+      </Shell>
+    );
+
+  if (activeTab === "rules")
+    return (
+      <Shell currentTab={activeTab} onTabChange={navigate}>
+        {user?.permissions.includes("resources.read") ? <WorkRulesWorkspace /> : null}
       </Shell>
     );
 

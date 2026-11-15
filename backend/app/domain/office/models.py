@@ -3,6 +3,7 @@ from datetime import datetime, timezone
 from typing import Literal, get_args
 from sqlalchemy import Boolean, CheckConstraint, Column, Date, DateTime, ForeignKey, ForeignKeyConstraint, Integer, JSON, String, Time, UniqueConstraint
 from db.database import Base
+import app.domain.identity.models
 
 Capability = Literal['availability.manage', 'maintenance.manage', 'maintenance.release', 'office.notes.read']
 CAPABILITIES = get_args(Capability)

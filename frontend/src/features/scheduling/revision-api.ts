@@ -1,9 +1,24 @@
 import type { ScheduleDisplayContext, StationLabel } from "./display";
 import type { StudioRevision, StudioTrip, StudioResource } from "./types";
 
+export interface Violation {
+  rule_id: string;
+  message: string;
+  entity_ids: string[];
+  severity?: string;
+  finding_key?: string | null;
+  measured?: number | null;
+  limit?: number | null;
+  source?: string | null;
+  hint?: Record<string, string> | null;
+  message_key?: string | null;
+  service_date?: string | null;
+  preexisting?: boolean;
+  kind?: "legal" | "warning" | "info" | null;
+}
 export interface Verification {
   valid: boolean;
-  violations: Array<{ rule_id: string; message: string; entity_ids: string[] }>;
+  violations: Violation[];
   coverage_percent: number;
   unassigned_trips: string[];
 }

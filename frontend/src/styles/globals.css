@@ -649,6 +649,10 @@ p {
   background: #fff1d7;
   color: #ae771c;
 }
+.status-pill.bad {
+  background: #fde4e4;
+  color: #b42318;
+}
 .status-dot {
   width: 5px;
   height: 5px;
@@ -1523,6 +1527,10 @@ p {
   background: #423521;
   color: #e0ba72;
 }
+.dark .status-pill.bad {
+  background: #4a2222;
+  color: #f1a3a3;
+}
 .dark .status-pill.neutral {
   background: #243044;
   color: #a0b1c6;
@@ -2387,6 +2395,9 @@ p {
   font-weight: 650;
   margin-top: 6px;
 }
+.resource-dialog [hidden] {
+  display: none;
+}
 .resource-dialog footer {
   display: flex;
   justify-content: flex-end;
@@ -3014,3 +3025,13 @@ p {
 .team-invite { display: grid; gap: 0.75rem; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.6fr) auto; align-items: end; }
 .team-invite select, .team-invite input { width: 100%; }
 @media (max-width: 700px) { .team-invite { grid-template-columns: minmax(0, 1fr); } }
+
+input.rule-invalid {
+  border-color: #dc2626;
+}
+.work-findings { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.work-findings li { display: flex; align-items: center; gap: 10px; padding: 9px 13px; border-bottom: 1px solid var(--line); font-size: 12px; line-height: 1.5; }
+.work-findings .finding-text { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.work-findings small { color: var(--muted); font-size: 10px; }
+.work-findings .status-pill { flex: none; }
+.change-emergency { display: flex; align-items: center; gap: 8px; }

@@ -2,7 +2,7 @@
 
 Task 6 provides tested template generation and pure parsing. The durable upload/review/commit API and guided import screen follow in Tasks 7–8. Parsing does not write operational records, confirm pairings or publish schedules. The older DAT/JSON fixture helpers are not supported customer upload formats.
 
-Templates use `ktel-import-v1`. Download the relevant Drivers, Vehicles or Timetable template by default; the complete workbook also includes optional Stations, Pairings, Connections and Travel times. Examples occur only in Instructions. Operational sheets contain headings without example records. Optional Connections use incoming/following trip references. They require the same vehicle on dates when both trips operate; branching and cyclic links are rejected. Preview validates the complete proposed graph, including new timetable rows in the same workbook. Travel durations are a separate concept. Required spreadsheet headings are teal; optional headings are navy, with a legend in Instructions.
+Templates use `ktel-import-v1`. Download the relevant Drivers, Vehicles or Timetable template by default; the complete workbook also includes optional Stations, Pairings, Connections, Travel times and Route rules. Examples occur only in Instructions. Operational sheets contain headings without example records. Optional Connections use incoming/following trip references. They require the same vehicle on dates when both trips operate; branching and cyclic links are rejected. Preview validates the complete proposed graph, including new timetable rows in the same workbook. Travel durations are a separate concept. Required spreadsheet headings are teal; optional headings are navy, with a legend in Instructions.
 
 References are text. Preserve values such as `00001`; numeric Excel references are rejected because missing leading zeroes cannot be recovered reliably. Format reference cells as Text **before** typing. Merely changing the format of an already numeric value does not recover lost digits. New drivers may omit staff references; the forthcoming persisted preview must allocate stable references and return a populated workbook. Matching people by name alone is not a parser operation.
 
@@ -24,7 +24,7 @@ Empty sheets and empty formatted columns do not create records or errors. Unexpe
 |---|---:|
 | Uploaded bytes | 5 MiB |
 | Expanded ZIP bytes | 25 MiB |
-| ZIP members / workbook sheets | 128 / 8 |
+| ZIP members / workbook sheets | 128 / 9 |
 | Nonempty operational rows, across the workbook | 5,000 |
 | Columns / actual cells | 32 / 100,000 |
 | Text characters per cell | 512 |
@@ -70,3 +70,24 @@ uv run pytest -s tests/performance/benchmark_durable_imports.py
 It provisions and drops a disposable database with restricted runtime roles, creates 5000 test drivers through the real upload/save APIs, and downloads their completed workbook. It does not use or alter an existing customer organization.
 
 The live default is **1000 total operational rows per file**, 5MiB upload. The parser/configuration ceiling remains5000 rows. The explicit5000-driver PostgreSQL probe passed (stage11.300s, save49.038s, export2.213s, peak292.9MiB), but is too slow as a normal interactive default. At1000 rows the measured path is stage2.630s/save10.018s/export0.424s, peak214.6MiB. These are local restricted-role measurements, not a concurrent-load benchmark or an external deployment SLA. `IMPORT_MAX_ROWS` may be configured within1..5000 after deployment-specific capacity/timeout validation. Templates and capabilities show the configured limit. Run the default-size probe with `KTEL_IMPORT_PROBE_ROWS=1000`.
+
+## Driver work rules columns
+
+All of these columns are optional. An empty or missing column keeps the saved value; a filled cell that is not valid is a row issue and never a silent default.
+
+Drivers sheet: `overnight_allowed`, `split_shift_allowed`, `must_return_to_base` (Yes/No, Ναι/Όχι, true/false, 1/0), then the baseline columns `baseline_as_of` (date), `baseline_overtime_hours`, `baseline_last_duty_end`, `baseline_last_weekly_rest_end`, `baseline_last_weekly_rest_at_base` (Yes/No) and `baseline_owed_rest_hours`.
+
+- Hours columns accept a non-negative decimal that is a whole number of minutes (`2.5` = 150 minutes; `0.001` is rejected). They are stored as whole minutes.
+- Date-times are `2026-06-01 08:30` or ISO 8601. A value without a zone is read as the organization's local time (`KTEL.timezone`, default `Europe/Athens`) and stored in UTC. A local time that does not exist or occurs twice at a clock change is a row issue; add an offset such as `+03:00` instead. A value with an offset or `Z` is used as given.
+- `baseline_as_of` is required when baseline values are given for a driver without a saved baseline. A baseline is saved only when a baseline cell actually differs from the saved one. If a schedule is already published for the driver after `baseline_as_of`, the row is an issue (`baseline_locked`).
+- Profile and baseline writes use the same rules, versions and audit as the manual work-rules screens.
+
+Timetable sheet: optional `service_type` (`intercity` or `urban`). A different value moves the template to the matching route.
+
+Route rules sheet (`route_rules`): `driver_code` or `vehicle_code` (exactly one), `origin_station_code`, `destination_station_code` and `rule` (`prefer` or `forbid`; vehicles only `forbid`).
+
+- Drivers and vehicles are found by saved or same-workbook reference. Stations are found by saved station reference, and a saved route must already run between them: import new timetables first and rules in a later upload. If several saved routes (different distance or service type) run between the two stations, the rule applies to all of them.
+- A row replaces an opposite saved rule for the same driver and route. Two rows in one workbook that prefer and forbid the same route for the same driver are both row issues.
+- Unknown references, a missing route, a vehicle with `prefer`, or both/neither of driver and vehicle are row issues.
+- Writing route rules needs `drivers.write`; vehicle rows also need `fleet.write`. Rows are applied in the same transaction as the rest of the import.
+

@@ -10,9 +10,6 @@ class DriverBase(BaseModel):
     phone: Optional[str] = None
     license_number: Optional[str] = None
     home_station_id: Optional[int] = None
-    max_daily_driving_minutes: int = Field(default=540, ge=60, le=900)
-    max_continuous_driving_minutes: int = Field(default=270, ge=60, le=360)
-    min_daily_rest_minutes: int = Field(default=660, ge=480, le=1440)
     is_active: bool = True
     properties: Dict[str, Any] = Field(default_factory=dict)
 
@@ -27,9 +24,6 @@ class DriverUpdate(BaseModel):
     phone: Optional[str] = None
     license_number: Optional[str] = None
     home_station_id: Optional[int] = None
-    max_daily_driving_minutes: Optional[int] = None
-    max_continuous_driving_minutes: Optional[int] = None
-    min_daily_rest_minutes: Optional[int] = None
     is_active: Optional[bool] = None
     properties: Optional[Dict[str, Any]] = None
 

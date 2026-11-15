@@ -119,7 +119,7 @@ class UploadRow(Base):
         ),
         CheckConstraint("position>=0 AND row_number>=2"),
         CheckConstraint(
-            "entity IN ('drivers','vehicles','stations','timetable','pairings','transfers','connections')"
+            "entity IN ('drivers','vehicles','stations','timetable','pairings','transfers','connections','route_rules')"
         ),
     )
 

@@ -118,3 +118,57 @@ def test_synthetic_ladder_metrics_scalability():
 
     assert elapsed < 0.05  # < 50ms
     assert metrics.assigned_trips_count + metrics.unassigned_trips_count == 1000
+
+
+def test_synthetic_ladder_verification_with_work_context():
+    from datetime import datetime, timezone
+    from app.domain.workrules.loader import WorkContext
+    from app.domain.workrules.policy import build_policy
+    from app.domain.workrules.timeline import DriverProfile, DriverTimeline
+
+    prob = make_synthetic_ladder(1000)
+    assignments = []
+    for i, trip in enumerate(prob.trips):
+        resource = prob.resources[i % len(prob.resources)]
+        assignments.append(
+            Assignment(
+                resource_id=resource.resource_id,
+                trip_id=trip.id,
+                start_minutes=trip.start_minutes,
+                end_minutes=trip.end_minutes,
+                start_station=trip.start_station,
+                end_station=trip.end_station,
+            )
+        )
+    profile = DriverProfile("Patras", True, True, False, frozenset(), frozenset())
+    timelines = {
+        r.driver_id: DriverTimeline(r.driver_id, profile, (), None, date(2026, 1, 1), {}) for r in prob.resources
+    }
+    work = WorkContext(
+        build_policy({}, [], 0),
+        timelines,
+        frozenset(),
+        prob.service_date,
+        datetime(2026, 5, 31, 21, tzinfo=timezone.utc),
+        {},
+    )
+    result = SolverResult(
+        solver_id="cv-bounded-v1",
+        solver_version="1.0.0",
+        assignments=tuple(assignments),
+        unassigned_trip_ids=(),
+        metrics={},
+        solve_time_seconds=1.0,
+        status="FEASIBLE",
+    )
+    verifier = HardRuleVerifier()
+
+    t0 = time.time()
+    verifier.verify(prob, result)
+    without_work = time.time() - t0
+
+    t0 = time.time()
+    report = verifier.verify(prob, result, work)
+    with_work = time.time() - t0
+
+    assert with_work < 5.0

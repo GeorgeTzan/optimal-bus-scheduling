@@ -106,6 +106,11 @@ def to_cv_problem(
                 end_minutes=instant.end_offset_minutes,
                 duration_minutes=instant.duration_minutes,
                 allowed_bus_types=tuple(allowed_types),
+                route_id=raw.get("route_id"),
+                urban=raw.get("urban", False),
+                long_route=raw.get("long_route", True),
+                origin_is_depot=raw.get("origin_is_depot", False),
+                destination_is_depot=raw.get("destination_is_depot", False),
             )
         )
 

@@ -11,7 +11,7 @@ class ImportLimits:
     max_upload_bytes: int = 5 * 1024 * 1024
     max_expanded_bytes: int = 25 * 1024 * 1024
     max_members: int = 128
-    max_sheets: int = 8
+    max_sheets: int = 9
     max_rows: int = 5000
     max_cells: int = 100000
     max_columns: int = 32

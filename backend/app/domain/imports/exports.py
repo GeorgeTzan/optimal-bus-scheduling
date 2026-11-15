@@ -25,12 +25,21 @@ def capture_committed_rows(service, rows, saved):
         }
         if row.entity in ("drivers", "vehicles", "pairings"):
             values["home_station"] = code("stations", target.home_station_id)
+        if row.entity in ("drivers", "route_rules"):
+            values.update(
+                {
+                    column.key: row.values[column.key]
+                    for column in SHEETS[row.entity][2]
+                    if column.key in row.values and not hasattr(target, column.key)
+                }
+            )
         if row.entity == "timetable":
             route = routes[target.route_id]
             values.update(
                 origin=code("stations", route.origin_station_id),
                 destination=code("stations", route.destination_station_id),
                 distance_km=route.distance_km,
+                service_type=route.service_type,
             )
         elif row.entity == "pairings":
             values.update(

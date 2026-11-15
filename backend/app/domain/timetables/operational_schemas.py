@@ -1,6 +1,6 @@
 """Validated manual/import contracts for recurring services and daily resource pairings."""
 from datetime import date
-from typing import Annotated
+from typing import Annotated,Literal
 from pydantic import BaseModel,ConfigDict,Field,field_validator,model_validator
 from app.domain.resources.schemas import Code,validate_patch
 from app.domain.timetables.calendar import CalendarRule,CalendarException,Clock,ArrivalDay,Fold,Weekday
@@ -13,6 +13,7 @@ class TimetableCreate(CalendarRule):
     destination_station_id:Positive
     allowed_bus_types:tuple[Code,...]=Field(min_length=1,max_length=64)
     distance_km:float|None=Field(default=None,ge=0,le=10000)
+    service_type:Literal['intercity','urban']='intercity'
     is_active:bool=True
 
     @field_validator('allowed_bus_types')
@@ -34,6 +35,7 @@ class TimetablePatch(BaseModel):
     valid_until:date|None=None
     allowed_bus_types:tuple[Code,...]|None=None
     distance_km:float|None=Field(default=None,ge=0,le=10000)
+    service_type:Literal['intercity','urban']|None=None
     is_active:bool|None=None
     @model_validator(mode='after')
     def changes(self):
