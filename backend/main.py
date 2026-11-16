@@ -7,8 +7,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from core.sentry import init_sentry
 from config import settings
 from api import auth, trips, drivers, solver as solver_api
-from app.api import optimization, events, scheduling, identity, resources, timetables, imports, operations, schedule_changes, office, driver, workrules, reports
+from app.api import optimization, events, scheduling, identity, resources, timetables, imports, operations, schedule_changes, office, driver, workrules, reports, platform
 from app.domain.identity.reference_tools import require_reference_tools
+from api.deps import refuse_support_writes
 from dat_parser import get_full_data
 from db.database import engine, Base
 from db.models import User
@@ -24,11 +25,18 @@ init_sentry()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    from config import validate_platform_settings
+    validate_platform_settings(settings)
     from db.migrations import assert_schema_current
     with engine.connect() as connection:
         assert_schema_current(connection)
-        from db.tenant_schema import assert_runtime_role
+        from db.tenant_schema import assert_runtime_role, assert_support_grants
         assert_runtime_role(connection)
+        assert_support_grants(connection)
+    if settings.ENVIRONMENT == "production":
+        from app.api.platform import engine as platform_engine
+        with platform_engine.connect() as connection:
+            assert_runtime_role(connection)
     yield
 
 
@@ -36,6 +44,7 @@ app = FastAPI(
     title="Optimal Scheduling System API",
     version="2.0.0",
     lifespan=lifespan,
+    dependencies=[Depends(refuse_support_writes)],
     docs_url="/docs" if settings.ENVIRONMENT != "production" else None,
     redoc_url="/redoc" if settings.ENVIRONMENT != "production" else None,
 )
@@ -77,6 +86,7 @@ app.include_router(office.router)
 app.include_router(driver.router)
 app.include_router(workrules.router)
 app.include_router(reports.router)
+app.include_router(platform.router)
 
 
 @app.get("/")

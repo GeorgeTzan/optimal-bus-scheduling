@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 
 from db.database import get_db
 from db.models import User
-from app.domain.identity.permissions import require_permission, PERMISSIONS
+from app.domain.identity.permissions import require_member_permission, PERMISSIONS
 from app.domain.identity.models import AuthSession, Membership
 from app.domain.events.outbox import OutboxService
 
@@ -21,7 +21,7 @@ async def sse_events(
     request: Request,
     cursor: int = Query(default=0, ge=0),
     once: bool = Query(default=False),
-    current_user: User = Depends(require_permission('optimization.read')),
+    current_user: User = Depends(require_member_permission('optimization.read')),
     db: Session = Depends(get_db),
 ):
     outbox = OutboxService(db)

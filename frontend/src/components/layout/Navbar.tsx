@@ -87,17 +87,18 @@ export function Navbar({ currentTab, onMenu }: { currentTab: ShellTab; onMenu: (
                 driver: ["Οδηγός", "Driver"],
                 management: ["Διοίκηση", "Management"],
                 viewer: ["Προβολή", "Viewer"],
+                support: ["Υποστήριξη πλατφόρμας", "Platform support"],
               }[user?.role ?? "viewer"][locale === "el" ? 0 : 1]
             }
           </small>
         </div>
-        <button
+        {user?.role !== "support" && <button
           className="icon-button"
           onClick={() => void logout()}
           aria-label={locale === "el" ? "Αποσύνδεση" : "Sign out"}
         >
           <LogOut size={16} />
-        </button>
+        </button>}
       </div>
     </header>
   );

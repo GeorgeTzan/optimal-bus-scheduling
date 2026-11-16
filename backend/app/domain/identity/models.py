@@ -67,7 +67,7 @@ class EmailOutbox(Base):
     __tablename__='domain_email_outbox'
     id=Column(String,primary_key=True)
     tenant_id=Column(Integer,ForeignKey('ktels.id'),nullable=False,index=True)
-    identity_token_id=Column(String,nullable=False)
+    identity_token_id=Column(String,nullable=True)
     kind=Column(String,nullable=False)
     encrypted_payload=Column(String,nullable=False)
     delivery_status=Column(String,nullable=False,default='queued',index=True)

@@ -16,6 +16,8 @@ def _configure(connection, tenant_id):
 
 @event.listens_for(Session,'after_begin')
 def _apply_scope(session,transaction,connection):
+    if session.info.get('read_only') and connection.dialect.name=='postgresql':
+        connection.execute(text('SET TRANSACTION READ ONLY'))
     _configure(connection,session.info.get('tenant_id'))
 
 

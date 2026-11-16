@@ -10,7 +10,7 @@ from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException
 from db.models import KTEL,User
 from core.security import hash_password,create_access_token
-from app.domain.identity.models import Membership,AuthSession,IdentityToken,ROLES
+from app.domain.identity.models import Membership,AuthSession,IdentityToken,EmailOutbox,ROLES
 from app.domain.identity.tenant_session import tenant_transaction
 
 SESSION_SECONDS=8*60*60
@@ -44,6 +44,21 @@ def _refuse(status,code,message):
     raise HTTPException(status,{'code':code,'message':message})
 
 
+@dataclass(frozen=True)
+class InvitationRows:
+    secret:str
+    token:IdentityToken
+    email:EmailOutbox
+
+
+def invitation_rows(tenant_id,email,role,organization_name,driver_id=None):
+    from app.domain.identity.mail import identity_email
+    secret=secrets.token_urlsafe(32)
+    token=IdentityToken(id=str(uuid4()),tenant_id=tenant_id,token_hash=digest(secret),kind='invitation',
+        email=email.strip().lower(),role=role,driver_id=driver_id,expires_at=datetime.now(timezone.utc)+timedelta(days=2))
+    return InvitationRows(secret,token,identity_email(token,secret,organization_name))
+
+
 def issue_invitation(db,tenant_id,email,role='viewer',driver_id=None):
     if role not in ROLES:
         raise ValueError('Unsupported organization role')
@@ -68,14 +83,23 @@ def issue_invitation(db,tenant_id,email,role='viewer',driver_id=None):
         mine.update({'revoked_at':now},synchronize_session=False)  # expired invitations stop occupying the driver
     db.query(IdentityToken).filter_by(tenant_id=tenant_id,email=email,kind='invitation').filter(
         IdentityToken.consumed_at.is_(None)).update({'expires_at':now,'revoked_at':now},synchronize_session=False)
-    secret=secrets.token_urlsafe(32)
-    token=IdentityToken(id=str(uuid4()),tenant_id=tenant_id,token_hash=digest(secret),kind='invitation',
-        email=email.strip().lower(),role=role,driver_id=driver_id,expires_at=datetime.now(timezone.utc)+timedelta(days=2))
-    db.add(token);db.flush()
-    from app.domain.identity.mail import enqueue_identity_email
     tenant=db.query(KTEL).filter_by(id=tenant_id).one()
-    enqueue_identity_email(db,token,secret,tenant.name)
-    return IssuedInvitation(tenant_id,secret,email.strip().lower(),role)
+    rows=invitation_rows(tenant_id,email,role,tenant.name,driver_id)
+    db.add(rows.token);db.flush()
+    db.add(rows.email);db.flush()
+    return IssuedInvitation(tenant_id,rows.secret,rows.token.email,role)
+
+
+CLOSED_STATUSES=('suspended','cancelled')
+
+
+def organization_closed(db,tenant_id):
+    return db.query(KTEL.status).filter(KTEL.id==tenant_id).scalar() in CLOSED_STATUSES
+
+
+def ensure_organization_open(db,tenant_id):
+    if organization_closed(db,tenant_id):
+        _refuse(403,'organization_suspended','Your organization\'s access is suspended. Contact the platform provider.')
 
 
 def provision_organization(db,*,name,admin_email,timezone='Europe/Athens'):
@@ -120,6 +144,7 @@ def _relink_existing_driver_login(db,token,password):
     Anything else (another organization, another role, a login that is still linked) stays refused."""
     if token.driver_id is None:
         return None
+    ensure_organization_open(db,token.tenant_id)
     user=db.query(User).filter(User.email==token.email,User.ktel_id==token.tenant_id).first()
     member=db.query(Membership).filter_by(tenant_id=token.tenant_id,user_id=user.id).with_for_update().first() if user else None
     if member is None or member.role!='driver' or member.driver_id is not None or not member.is_active or not user.is_active:
@@ -143,6 +168,7 @@ def accept_invitation(db,secret,password,full_name):
     token=valid_invitation(db,secret)
     with tenant_transaction(db,token.tenant_id):
         db.query(KTEL).filter_by(id=token.tenant_id).with_for_update().one()
+        ensure_organization_open(db,token.tenant_id)
         token=db.query(IdentityToken).filter_by(id=token.id).populate_existing().with_for_update().one()
         if token.consumed_at is not None or utc(token.expires_at)<=datetime.now(timezone.utc):
             raise HTTPException(400,'This invitation has expired or already been used')
@@ -197,7 +223,7 @@ def request_password_reset(db,email):
         return
     with tenant_transaction(db,user.ktel_id):
         member=db.query(Membership).filter_by(user_id=user.id,is_active=True).first()
-        if member is None:
+        if member is None or organization_closed(db,user.ktel_id):
             return
         issue_reset(db,user,user.ktel_id)
         db.commit()
@@ -223,7 +249,8 @@ def confirm_password_reset(db,secret,password):
     with tenant_transaction(db,token.tenant_id):
         user=db.query(User).filter_by(id=token.user_id).populate_existing().with_for_update().first()
         token=db.query(IdentityToken).filter_by(id=token.id).populate_existing().with_for_update().one()
-        if user is None or not user.is_active or token.consumed_at is not None or utc(token.expires_at)<=datetime.now(timezone.utc):
+        if (user is None or not user.is_active or token.consumed_at is not None or utc(token.expires_at)<=datetime.now(timezone.utc)
+                or organization_closed(db,token.tenant_id)):
             raise HTTPException(400,'This reset link is invalid, expired or already used. Request a new one.')
         now=datetime.now(timezone.utc)
         user.hashed_password=hash_password(password)

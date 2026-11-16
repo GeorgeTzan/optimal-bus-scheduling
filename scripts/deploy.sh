@@ -28,6 +28,8 @@ compose up -d db
 until compose exec -T db pg_isready -q; do sleep 1; done
 compose run --rm --no-deps backend python -m db.migrations upgrade
 compose run --rm --no-deps backend python -m db.provision_runtime --refresh-grants
+grep -qhs '^DATABASE_PLATFORM_URL=.' secrets/*.env || { echo "DATABASE_PLATFORM_URL is missing from secrets; old containers left running" >&2; exit 1; }
+compose exec -T db sh -c 'psql -U "$POSTGRES_USER" "$POSTGRES_DB" -tAc "SELECT 1 FROM pg_roles WHERE rolname = '"'"'ktel_platform'"'"'"' | grep -qx 1 || { echo "database role ktel_platform does not exist; old containers left running" >&2; exit 1; }
 compose up -d --remove-orphans
 for _ in $(seq 30); do
   if curl -fsS -o /dev/null http://127.0.0.1:3000/ && [ "$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:3000/api/auth/me)" = 401 ]; then

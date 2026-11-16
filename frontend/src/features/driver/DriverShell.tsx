@@ -3,6 +3,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { LogOut, Moon, Sun } from "lucide-react";
 import { useAuth } from "../auth/AuthContext";
 import { useI18n } from "../../i18n/context";
+import { SupportBanner } from "../../components/SupportBanner";
 
 /** Small phone-first frame for drivers: no office navigation, only language, theme and sign out. */
 export function DriverShell({ name, tab, onTab, children }: { name: string; tab: "duties" | "leave"; onTab: (tab: "duties" | "leave") => void; children: ReactNode }) {
@@ -38,6 +39,7 @@ export function DriverShell({ name, tab, onTab, children }: { name: string; tab:
           <button className="icon-button" onClick={() => void logout()} aria-label={el ? "Αποσύνδεση" : "Sign out"}><LogOut size={16} /></button>
         </div>
       </header>
+      <SupportBanner />
       {error === "logout_unavailable" && <p className="auth-error" role="alert">{el ? "Η αποσύνδεση δεν ολοκληρώθηκε. Δοκιμάστε ξανά." : "Sign-out did not complete. Try again."}</p>}
       <nav className="driver-tabs" aria-label={el ? "Ενότητες" : "Sections"}>
         <button className={`button ${tab === "duties" ? "primary" : "secondary"}`} aria-current={tab === "duties" ? "page" : undefined} onClick={() => onTab("duties")}>{el ? "Οι υπηρεσίες μου" : "My duties"}</button>

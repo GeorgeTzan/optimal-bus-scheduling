@@ -6,6 +6,7 @@ load_dotenv()
 # Local generated runtime-role credentials are separate from the existing migration-owner settings.
 from pathlib import Path
 load_dotenv(Path(__file__).resolve().parent / '.env.runtime.local')
+load_dotenv(Path(__file__).resolve().parent / '.env.platform.local')
 # Mail credentials live in their own git-ignored file (matches .env*.local) so they never sit in the tracked .env.
 load_dotenv(Path(__file__).resolve().parent / '.env.mail.local')
 
@@ -20,6 +21,7 @@ class Settings:
         )
         self.DATABASE_RUNTIME_URL: str = os.getenv('DATABASE_RUNTIME_URL', self.DATABASE_URL)
         self.DATABASE_WORKER_URL: str = os.getenv('DATABASE_WORKER_URL', self.DATABASE_RUNTIME_URL)
+        self.DATABASE_PLATFORM_URL: str = os.getenv('DATABASE_PLATFORM_URL', self.DATABASE_URL)
         self.AUTH_LOGIN_LIMIT: int = int(os.getenv('AUTH_LOGIN_LIMIT','5' if self.ENVIRONMENT=='production' else '20'))
         self.IMPORT_MAX_ROWS: int = int(os.getenv('IMPORT_MAX_ROWS','1000'))
         self.IMPORT_MAX_UPLOAD_BYTES: int = int(os.getenv('IMPORT_MAX_UPLOAD_BYTES',str(5*1024*1024)))
@@ -63,6 +65,11 @@ def validate_settings(settings: Settings) -> None:
             raise ValueError('SMTP_USE_TLS must be enabled in production.')
         if not settings.DATABASE_URL or "postgres:postgres@" in settings.DATABASE_URL:
             raise ValueError("DATABASE_URL must not use default credentials in production.")
+
+
+def validate_platform_settings(settings: Settings) -> None:
+    if settings.ENVIRONMENT == "production" and (not settings.DATABASE_PLATFORM_URL or settings.DATABASE_PLATFORM_URL == settings.DATABASE_URL):
+        raise ValueError("DATABASE_PLATFORM_URL must be set to the separate ktel_platform role in production.")
 
 
 settings = Settings()

@@ -10,7 +10,7 @@ from starlette.requests import Request as BufferedRequest
 from starlette.responses import Response
 from sqlalchemy.orm import Session
 from db.database import get_db
-from app.domain.identity.permissions import require_permission
+from app.domain.identity.permissions import require_member_permission, require_permission
 from app.domain.imports.service import ImportService, configured_limits, PERMISSIONS
 from app.domain.imports.schemas import BatchCorrection, VersionRequest
 from app.domain.imports.models import UploadBatch
@@ -272,7 +272,7 @@ def discard(
 def errors(
     batch_id: str,
     locale: Literal["en", "el"] | None = None,
-    user=Depends(require_permission("imports.read")),
+    user=Depends(require_member_permission("imports.read")),
     db: Session = Depends(get_db),
 ):
     from app.domain.imports.issues import issue_view
@@ -327,7 +327,7 @@ def errors(
 def populated(
     batch_id: str,
     locale: Literal["en", "el"] | None = None,
-    user=Depends(require_permission("imports.read")),
+    user=Depends(require_member_permission("imports.read")),
     db: Session = Depends(get_db),
 ):
     source = service(db, user)

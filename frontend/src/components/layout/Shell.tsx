@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "../../features/auth/AuthContext";
 import { Navbar } from "./Navbar";
+import { SupportBanner } from "../SupportBanner";
 import { useI18n } from "../../i18n/context";
 export type ShellTab =
   | "dashboard"
@@ -174,6 +175,7 @@ export function Shell({
       </aside>
       <div className="app-main" inert={menuOpen}>
         <Navbar currentTab={currentTab} onMenu={() => setMenuOpen(true)} />
+        <SupportBanner />
         <main>{children}</main>
       </div>
     </div>

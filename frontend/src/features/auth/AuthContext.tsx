@@ -13,7 +13,8 @@ export type UserRole =
   | "driver"
   | "fleet_manager"
   | "management"
-  | "viewer";
+  | "viewer"
+  | "support";
 export interface AuthUser {
   id: number;
   email: string;
@@ -23,6 +24,7 @@ export interface AuthUser {
   ktelName?: string;
   permissions: string[];
   sessionId: string;
+  supportSession: { endsAt: string } | null;
 }
 interface AuthContextType {
   user: AuthUser | null;
@@ -75,30 +77,34 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setError(null);
     try {
       const response = await apiFetch("/api/auth/me");
-      if (response.status === 401) {
+      if (response.status === 401 || response.status === 403) {
         setUser(null);
         return;
       }
       if (!response.ok) throw new Error("identity_unavailable");
       const identity = (await response.json()) as {
         id: number;
-        email: string;
+        email: string | null;
         full_name: string | null;
         role: UserRole;
         ktel_id: number;
         ktel_name: string;
         permissions: string[];
         session_id: string;
+        support_session: { ends_at: string } | null;
       };
       setUser({
         id: identity.id,
-        email: identity.email,
-        fullName: identity.full_name || identity.email,
+        email: identity.email ?? "",
+        fullName: identity.full_name || identity.email || "",
         role: identity.role,
         ktelId: identity.ktel_id,
         ktelName: identity.ktel_name,
         permissions: identity.permissions,
         sessionId: identity.session_id,
+        supportSession: identity.support_session
+          ? { endsAt: identity.support_session.ends_at }
+          : null,
       });
     } catch (err) {
       setError("identity_unavailable");

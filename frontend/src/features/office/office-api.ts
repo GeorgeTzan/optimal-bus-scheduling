@@ -1,3 +1,4 @@
+import { supportCodeMessages } from "../auth/support-codes";
 import { newRequestId } from "../navigation/request-id";
 export interface Issue {
   code?: string;
@@ -69,6 +70,7 @@ const messages: Record<string, [string, string]> = {
     "Το τέλος πρέπει να είναι μετά την έναρξη.",
     "The end must be after the start.",
   ],
+  ...supportCodeMessages,
 };
 function explain(status: number, code: string | null, el: boolean) {
   const known = code ? messages[code] : undefined;

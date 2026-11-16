@@ -10,6 +10,7 @@ import {
 } from "react";
 import { X } from "lucide-react";
 import { useI18n } from "../../i18n/context";
+import { supportCodeMessages } from "../auth/support-codes";
 import type { Resource } from "../resources/ResourceWorkspace";
 export interface Timetable {
   id: number;
@@ -112,6 +113,9 @@ export async function checked<T>(response: Response, el: boolean): Promise<T> {
       detail && typeof detail === "object" && "code" in detail
         ? detail.code
         : null;
+    const supportMessage =
+      typeof code === "string" ? supportCodeMessages[code] : undefined;
+    if (supportMessage) throw Error(supportMessage[el ? 0 : 1]);
     throw Error(
       response.status === 409
         ? el

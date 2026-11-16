@@ -24,16 +24,32 @@ def identity_link(secret,invitation=True):
     return f"{settings.PUBLIC_APP_URL}/{'accept-invitation' if invitation else 'reset-password'}#token={secret}"
 
 
-def enqueue_identity_email(db,token,secret,organization_name):
+def identity_email(token,secret,organization_name):
     invitation=token.kind=='invitation'
     link=identity_link(secret,invitation)
     subject=f'Πρόσκληση στο {organization_name}' if invitation else 'Επαναφορά κωδικού KTEL'
     body=(f'Έχετε προσκληθεί στο {organization_name}. Ο σύνδεσμος ισχύει για 48 ώρες.' if invitation
           else 'Ζητήσατε νέο κωδικό για το KTEL. Ο σύνδεσμος ισχύει για 30 λεπτά. Αν δεν το ζητήσατε, αγνοήστε το μήνυμα.')
     payload={'to':token.email,'subject':subject,'text':body+'\n\n'+link,'link':link}
-    row=EmailOutbox(id=str(uuid4()),tenant_id=token.tenant_id,identity_token_id=token.id,kind=token.kind,
+    return EmailOutbox(id=str(uuid4()),tenant_id=token.tenant_id,identity_token_id=token.id,kind=token.kind,
         encrypted_payload=_cipher().encrypt(json.dumps(payload,ensure_ascii=False).encode()).decode(),
         delivery_status='queued' if settings.SMTP_HOST and settings.SMTP_FROM else 'not_configured')
+
+
+def support_email(tenant_id,email,organization_name,reason,ends_at):
+    ends=ends_at.strftime('%Y-%m-%d %H:%M UTC')
+    payload={'to':email,'subject':f'Πρόσβαση υποστήριξης στο {organization_name} / Support access to {organization_name}',
+             'text':(f'Η υποστήριξη της πλατφόρμας βλέπει τον οργανισμό {organization_name} μόνο για ανάγνωση έως {ends}.\nΑιτία: {reason}\n'
+                     'Μπορείτε να ανακαλέσετε την πρόσβαση από την ενότητα Ομάδα.\n\n'
+                     f'Platform support is viewing {organization_name} read-only until {ends}.\nReason: {reason}\n'
+                     'You can revoke access from the Team area.')}
+    return EmailOutbox(id=str(uuid4()),tenant_id=tenant_id,identity_token_id=None,kind='support_session',
+        encrypted_payload=_cipher().encrypt(json.dumps(payload,ensure_ascii=False).encode()).decode(),
+        delivery_status='queued' if settings.SMTP_HOST and settings.SMTP_FROM else 'not_configured')
+
+
+def enqueue_identity_email(db,token,secret,organization_name):
+    row=identity_email(token,secret,organization_name)
     db.add(row);db.flush()
     return row
 
@@ -62,10 +78,13 @@ def deliver_once(factory,tenant_id,worker_id):
         ).order_by(EmailOutbox.created_at).with_for_update(skip_locked=True).first()
         if row is None:
             return False
-        token=db.query(IdentityToken).filter_by(id=row.identity_token_id).first()
-        expires=token.expires_at if token and token.expires_at.tzinfo else token.expires_at.replace(tzinfo=timezone.utc) if token else now
-        if not token or token.consumed_at is not None or expires<=now:
+        if row.identity_token_id is None and row.kind!='support_session':
             row.delivery_status='discarded';db.commit();return True
+        if row.identity_token_id is not None:
+            token=db.query(IdentityToken).filter_by(id=row.identity_token_id).first()
+            expires=token.expires_at if token and token.expires_at.tzinfo else token.expires_at.replace(tzinfo=timezone.utc) if token else now
+            if not token or token.consumed_at is not None or expires<=now:
+                row.delivery_status='discarded';db.commit();return True
         try:
             payload=decrypt_payload(row.encrypted_payload)
         except (InvalidToken,ValueError):

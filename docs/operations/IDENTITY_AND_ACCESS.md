@@ -10,7 +10,9 @@ uv run python -m db.provision_runtime --refresh-grants
 
 Refresh preserves role passwords and the private runtime configuration file. The API role can authenticate and manage permitted tenant records. The solver/mail worker cannot read user password hashes or manage organization members. Never run application traffic with migration-owner credentials.
 
-Platform operators create organizations through a separate privileged administration connection:
+Platform operators create organizations from the operator panel at `/platform` (customer list, subscription state, suspension, health, support access). This is the normal way to onboard a customer: the panel creates the organization and its first administrator invitation in one step and shows the invitation link once. Set-up, sign-in, suspension and support access are described in [PLATFORM_OPERATOR.md](PLATFORM_OPERATOR.md).
+
+The command line remains as a fallback, for example before the first operator exists or when the panel is unavailable. It runs through a separate privileged administration connection:
 
 ```sh
 uv run python -m app.cli.provision --name 'Organization name' --admin-email 'admin@example.org' --timezone Europe/Athens --invitation-file /private/path/first-admin.txt
@@ -28,9 +30,11 @@ uv run python -m app.domain.identity.mail_worker --tenant-id ORGANIZATION_ID
 
 The outbox uses leases and attempt fencing; `sent` means SMTP accepted the message, not inbox delivery. Ambiguous worker crashes may redeliver with a stable Message-ID. Failed messages stay `failed`; reissue an invitation or request a fresh reset after fixing SMTP. New requests invalidate previous links. There is no untested external-email success claim: integration tests use a local SMTP sink, including rejected delivery.
 
-Sessions last eight hours, use HttpOnly cookies (Secure in production, SameSite=Lax), and require a session-bound CSRF header for cookie-authenticated writes. Browser state reloads from `/auth/me`; JWTs and user authority are not persisted in localStorage. Logout, password changes and membership changes revoke server sessions. Revocable bearer credentials remain available for API compatibility. Open progress streams recheck access each poll. Login/reset budgets are atomic PostgreSQL counters keyed by an HMAC of action/address/email; limits persist across process restarts. Deploy behind a trusted proxy with a deliberate client-address policy before exposing the service publicly.
+Sessions last eight hours, use HttpOnly cookies (Secure in production, SameSite=Lax), and require a session-bound CSRF header for cookie-authenticated writes. Browser state reloads from `/auth/me`; JWTs and user authority are not persisted in localStorage. Logout, password changes and membership changes revoke server sessions. Revocable bearer credentials remain available for API compatibility. Open progress streams recheck access each poll. Login/reset budgets are atomic PostgreSQL counters keyed by an HMAC of action/address/email; limits persist across process restarts. Deploy behind a trusted proxy with a deliberate client-address policy before exposing the service publicly (see the trusted-proxy section of PLATFORM_OPERATOR.md).
 
 Driver accounts currently have only their own-duty capabilities; the driver portal remains a later implementation task. Organization invitations and roles do not imply that the remaining operational/import workflows are finished.
+
+Administrators can also allow time-limited, read-only platform support access from **Team**; see PLATFORM_OPERATOR.md. A customer whose status is suspended or cancelled cannot sign in, and its live sessions are refused.
 
 ## Team screen (administrators)
 

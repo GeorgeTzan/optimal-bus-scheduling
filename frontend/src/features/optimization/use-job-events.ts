@@ -39,7 +39,8 @@ export function useJobEvents(
   jobId: string | null,
   expectedSnapshotId?: string | null,
 ): UseJobEventsState {
-  const { apiFetch, isAuthenticated } = useAuth();
+  const { apiFetch, isAuthenticated, user } = useAuth();
+  const canStream = user?.role !== "support";
   const { locale } = useI18n();
   const [state, setState] = useState(initial);
   useEffect(() => {
@@ -218,7 +219,7 @@ export function useJobEvents(
         if (!terminal && !abort.signal.aborted) await pause();
       }
     };
-    void stream();
+    if (canStream) void stream();
     // Reconcile even when a proxy silently drops events but keeps the stream open.
     const poll = setInterval(() => {
       if (!terminal) void reconcile().catch(() => undefined);
@@ -227,6 +228,6 @@ export function useJobEvents(
       abort.abort();
       clearInterval(poll);
     };
-  }, [jobId, expectedSnapshotId, isAuthenticated, apiFetch, locale]);
+  }, [jobId, expectedSnapshotId, isAuthenticated, apiFetch, locale, canStream]);
   return state;
 }

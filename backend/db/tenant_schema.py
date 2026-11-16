@@ -22,7 +22,7 @@ def audit_database_tenancy(connection, runtime_roles=()):
     scopes = dict(manifest.SCOPES)
     # Include new tenant tables so the audit cannot accidentally cover just the original list.
     for table in inspector.get_table_names():
-        if table not in scopes:
+        if table not in scopes and not table.startswith('platform_'):
             scope = next((c['name'] for c in inspector.get_columns(table) if c['name'] in ('tenant_id','ktel_id')),None)
             if scope:
                 scopes[table] = scope
@@ -31,6 +31,7 @@ def audit_database_tenancy(connection, runtime_roles=()):
     for model_table in metadata.tables.values():
         scope=next((column.name for column in model_table.columns if column.name in ('tenant_id','ktel_id')),None)
         if scope:scopes.setdefault(model_table.name,scope)
+    def normalized(value):return ''.join((value or '').replace('"','').replace('public.','').split())
     for table in scopes:
         state = enforced.get(table)
         if not state or not state[0] or not state[1]:
@@ -39,12 +40,19 @@ def audit_database_tenancy(connection, runtime_roles=()):
         if state[2] in runtime_roles:
             issues.append(f'{table}: runtime role owns table')
         policies = connection.execute(text("SELECT policyname,qual,with_check,cmd,permissive,roles::text FROM pg_policies WHERE schemaname='public' AND tablename=:table"),{'table':table}).all()
-        def normalized(value):return ''.join((value or '').replace('"','').replace('public.','').split())
         expected_policy=f'({scopes[table]}=ktel_current_tenant())'
         if (len(policies)!=1 or policies[0][0]!='tenant_isolation'
             or any(normalized(clause)!=expected_policy for clause in policies[0][1:3])
             or tuple(policies[0][3:])!=('ALL','PERMISSIVE','{public}')):
             issues.append(f'{table}: missing, permissive or additional tenant isolation policy')
+    tenant_read=('tenant_read','(tenant_id=ktel_current_tenant())','','SELECT','PERMISSIVE','{public}')
+    for table,expected,message in (('platform_audit',{tenant_read,('platform_append','','true','INSERT','PERMISSIVE','{public}')},'only tenant read and platform append policies'),
+                                   ('platform_support_sessions',{tenant_read},'only the tenant read policy')):
+        if table not in enforced:continue
+        policies={(name,normalized(qual),normalized(check),*rest) for name,qual,check,*rest in connection.execute(text(
+            "SELECT policyname,qual,with_check,cmd,permissive,roles::text FROM pg_policies WHERE schemaname='public' AND tablename=:table"),{'table':table})}
+        if not all(enforced[table][:2]) or policies!=expected:
+            issues.append(f'{table}: RLS, FORCE RLS and {message} required')
     expected_relations=set()
     for table,columns,parent,referenced in manifest.FOREIGN_KEYS:
         expected_relations.add((table,tuple([scopes[table],*columns]),parent,tuple([scopes[parent],*referenced])))
@@ -84,8 +92,10 @@ def grant_runtime_access(connection,role, *, authenticate=False):
     available=set(inspector.get_table_names())
     if authenticate:
         access={table:'SELECT, INSERT, UPDATE, DELETE' for table in available
-            if any(c['name'] in ('tenant_id','ktel_id') for c in inspector.get_columns(table))}
-        access['ktels']='SELECT, UPDATE'
+            if not table.startswith('platform_') and any(c['name'] in ('tenant_id','ktel_id') for c in inspector.get_columns(table))}
+        access['ktels']='SELECT (id, name, region, timezone, status, created_at, support_access_until), UPDATE (support_access_until)'
+        if 'platform_audit' in available:access['platform_audit']='SELECT'
+        if 'platform_support_sessions' in available:access['platform_support_sessions']='SELECT (id, tenant_id, reason, ticket, expires_at, ended_at, created_at)'
         if 'domain_import_audit' in available:access['domain_import_audit']='SELECT, INSERT'
         if 'domain_operational_events' in available:access['domain_operational_events']='SELECT, INSERT'
         if 'domain_schedule_changes' in available:access['domain_schedule_changes']='SELECT, INSERT'
@@ -96,7 +106,7 @@ def grant_runtime_access(connection,role, *, authenticate=False):
         access={table:privileges for table,privileges in {
             'domain_jobs':'SELECT, UPDATE', 'domain_outbox_events':'SELECT, INSERT',
             'domain_revision_snapshots':'SELECT', 'domain_drivers':'SELECT', 'domain_vehicles':'SELECT',
-            'domain_email_outbox':'SELECT, UPDATE', 'domain_identity_tokens':'SELECT',
+            'domain_email_outbox':'SELECT, UPDATE', 'domain_identity_tokens':'SELECT', 'ktels':'SELECT (id, status)',
         }.items() if table in available}
     for table,privileges in access.items():
         connection.execute(text(f'GRANT {privileges} ON "{table}" TO {quoted}'))
@@ -106,17 +116,41 @@ def grant_runtime_access(connection,role, *, authenticate=False):
                 connection.execute(text(f'GRANT USAGE, SELECT ON SEQUENCE {sequence} TO {quoted}'))
     signatures=[f'public.{function}(text)' for function in
                 ('ktel_login_identity','ktel_token_identity','ktel_session_by_token','ktel_session_by_id','ktel_identity_token')]
-    signatures.append('public.ktel_auth_budget(text,integer,integer)')
+    signatures+=['public.ktel_auth_budget(text,integer,integer)','public.ktel_support_request(text,text,text,text)','public.ktel_end_support_sessions()']
     for signature in signatures:
         if connection.execute(text('SELECT to_regprocedure(:signature)'),{'signature':signature}).scalar_one() is not None:
             connection.execute(text(f'REVOKE ALL ON FUNCTION {signature} FROM {quoted}'))
             if authenticate:
                 connection.execute(text(f'GRANT EXECUTE ON FUNCTION {signature} TO {quoted}'))
+    for signature in PLATFORM_FUNCTIONS:
+        if connection.execute(text('SELECT to_regprocedure(:signature)'),{'signature':signature}).scalar_one() is not None:
+            connection.execute(text(f'REVOKE ALL ON FUNCTION {signature} FROM {quoted}'))
     # Only the mail worker may list the organizations that have mail waiting (ids only).
     if connection.execute(text("SELECT to_regprocedure('public.ktel_mail_tenants()')")).scalar_one() is not None:
         connection.execute(text(f'REVOKE ALL ON FUNCTION public.ktel_mail_tenants() FROM {quoted}'))
         if not authenticate:
             connection.execute(text(f'GRANT EXECUTE ON FUNCTION public.ktel_mail_tenants() TO {quoted}'))
+
+
+PLATFORM_FUNCTIONS=('public.platform_create_customer(text,text,text,text,date,text,text,text,timestamptz,text,text,text)',
+    'public.platform_set_status(integer,text)','public.platform_list_customers()','public.platform_update_customer(integer,text,date,text)','public.platform_customer_health()',
+    'public.platform_start_support_session(integer,integer,text,text,text,text)','public.platform_end_support_sessions(integer,integer,text,text)','public.platform_support_state(integer,integer)')
+
+
+def grant_platform_access(connection,role):
+    quoted=connection.dialect.identifier_preparer.quote(role)
+    connection.execute(text(f'GRANT USAGE ON SCHEMA public TO {quoted}'))
+    connection.execute(text(f'REVOKE ALL ON ALL TABLES IN SCHEMA public FROM {quoted}'))
+    connection.execute(text(f'REVOKE ALL ON ALL SEQUENCES IN SCHEMA public FROM {quoted}'))
+    connection.execute(text(f'REVOKE ALL ON ALL FUNCTIONS IN SCHEMA public FROM {quoted}'))
+    for table,privileges in (('platform_operators','SELECT, INSERT, UPDATE, DELETE'),('platform_sessions','SELECT, INSERT, UPDATE, DELETE'),('platform_audit','INSERT')):
+        connection.execute(text(f'GRANT {privileges} ON "{table}" TO {quoted}'))
+        sequence=connection.execute(text("SELECT pg_get_serial_sequence(:table,'id')"),{'table':table}).scalar_one()
+        connection.execute(text(f'GRANT USAGE, SELECT ON SEQUENCE {sequence} TO {quoted}'))
+    connection.execute(text(f'GRANT EXECUTE ON FUNCTION public.ktel_auth_budget(text,integer,integer) TO {quoted}'))
+    for signature in PLATFORM_FUNCTIONS:
+        if connection.execute(text('SELECT to_regprocedure(:signature)'),{'signature':signature}).scalar_one() is not None:
+            connection.execute(text(f'GRANT EXECUTE ON FUNCTION {signature} TO {quoted}'))
 
 
 def assert_runtime_role(connection):
@@ -129,3 +163,10 @@ def assert_runtime_role(connection):
     can_create=connection.execute(text("SELECT has_schema_privilege(current_user,'public','CREATE')")).scalar_one()
     if any(flags) or owns or can_create:
         raise RuntimeError('A least-privilege non-owner database role without schema creation or RLS bypass is required')
+
+
+def assert_support_grants(connection):
+    granted=connection.execute(text("""SELECT has_function_privilege(current_user,'public.ktel_support_request(text,text,text,text)','EXECUTE')
+        AND has_column_privilege(current_user,'platform_support_sessions','expires_at','SELECT')""")).scalar_one()
+    if not granted:
+        raise RuntimeError('Runtime grants are out of date: run python -m db.provision_runtime --refresh-grants before starting the API')

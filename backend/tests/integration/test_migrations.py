@@ -200,3 +200,34 @@ def test_work_rules_migration_upgrades_and_downgrades(postgres_engine):
         assert 'max_daily_driving_minutes' in {c['name'] for c in inspector.get_columns('domain_drivers')}
         command.upgrade(migration_config(connection), 'head')
         assert 'domain_work_rule_overrides' in inspect(connection).get_table_names()
+
+
+def test_platform_migrations_round_trip(postgres_engine):
+    from db.migrations import upgrade_database, migration_config
+    from alembic import command
+    with postgres_engine.begin() as connection:
+        upgrade_database(connection)
+        tables = set(inspect(connection).get_table_names())
+        assert {'platform_operators', 'platform_support_sessions'} <= tables
+        command.downgrade(migration_config(connection), '0026_platform_health')
+        inspector = inspect(connection)
+        assert 'platform_support_sessions' not in inspector.get_table_names()
+        assert 'platform_operators' in inspector.get_table_names()
+        assert not connection.execute(text("SELECT 1 FROM pg_constraint WHERE conname='ck_email_outbox_token_or_support'")).first()
+        command.downgrade(migration_config(connection), '0023_route_en_route_break')
+        assert 'platform_operators' not in inspect(connection).get_table_names()
+        command.upgrade(migration_config(connection), 'head')
+        assert {'platform_operators', 'platform_support_sessions'} <= set(inspect(connection).get_table_names())
+        assert connection.execute(text("SELECT convalidated FROM pg_constraint WHERE conname='ck_email_outbox_token_or_support'")).scalar_one() is True
+
+
+def test_outbox_check_migration_clears_tokenless_rows_before_validating(postgres_engine):
+    from db.migrations import upgrade_database
+    with postgres_engine.begin() as connection:
+        upgrade_database(connection, '0027_platform_support')
+        connection.execute(text("INSERT INTO ktels (id,name) VALUES (902,'Outbox owner')"))
+        for identifier, kind in (('keep', 'support_session'), ('drop', 'invitation')):
+            connection.execute(text("INSERT INTO domain_email_outbox(id,tenant_id,identity_token_id,kind,encrypted_payload,delivery_status,attempts,attempt_token,created_at) VALUES (:id,902,NULL,:kind,'x','queued',0,0,now())"), {'id': identifier, 'kind': kind})
+        upgrade_database(connection)
+        assert connection.execute(text("SELECT convalidated FROM pg_constraint WHERE conname='ck_email_outbox_token_or_support'")).scalar_one() is True
+        assert connection.execute(text('SELECT id FROM domain_email_outbox')).scalars().all() == ['keep']

@@ -755,7 +755,7 @@ export function ImportWorkspace({
                         : "View records")}
                   <ArrowRight size={15} />
                 </button>
-                {batch.raw_available && (
+                {batch.raw_available && user?.role !== "support" && (
                   <button
                     className="button secondary"
                     disabled={busy}
@@ -999,8 +999,9 @@ export function ImportWorkspace({
               </div>
               <footer className="import-actions">
                 <div>
-                  {(total.invalid + total.needs_match > 0 ||
-                    batch.issues.length > 0) && (
+                  {user?.role !== "support" &&
+                    (total.invalid + total.needs_match > 0 ||
+                      batch.issues.length > 0) && (
                     <button
                       className="import-text-button"
                       disabled={busy}

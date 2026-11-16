@@ -209,3 +209,22 @@ def unlink(driver_id:int,req:LinkRequest,user=Depends(require_permission('member
         unlink_driver(db,user.ktel_id,driver_id)
         return {'driver_id':driver_id,'unlinked':True}
     return once(db,user,req.request_id,'driver_link','unlink',{'driver_id':driver_id,**req.model_dump(mode='json')},work)
+
+
+class SupportAccessChange(BaseModel):
+    model_config=ConfigDict(extra='forbid')
+    enabled:bool
+
+
+@router.get('/support-access')
+def support_access(user=Depends(require_permission('members.manage')),db:Session=Depends(get_db)):
+    from app.domain.platform import support
+    return support.access_view(db,user.ktel_id)
+
+
+@router.put('/support-access')
+def change_support_access(req:SupportAccessChange,user=Depends(require_permission('members.manage')),db:Session=Depends(get_db)):
+    from app.domain.platform import support
+    support.set_access(db,user.ktel_id,req.enabled)
+    db.commit()
+    return support.access_view(db,user.ktel_id)

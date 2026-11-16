@@ -10,8 +10,9 @@ from config import settings
 from app.domain.identity.lookup import lookup_identity
 from app.domain.identity.models import Membership,AuthSession
 from app.domain.identity.tenant_session import tenant_transaction
-from app.domain.identity.service import create_session,accept_invitation,valid_invitation,SESSION_SECONDS,request_password_reset,confirm_password_reset
+from app.domain.identity.service import ensure_organization_open,create_session,accept_invitation,valid_invitation,SESSION_SECONDS,request_password_reset,confirm_password_reset
 from app.domain.identity.throttle import consume_budget
+from app.domain.platform import support
 
 def trusted_origin(request:Request):
     origin=request.headers.get('Origin')
@@ -50,6 +51,7 @@ def login(credentials:UserLogin,response:Response,request:Request,db:Session=Dep
             raise HTTPException(401,'The email or password is incorrect. Please try again.')
         if not user.is_active:
             raise HTTPException(403,'Your account is inactive. Contact your KTEL administrator.')
+        ensure_organization_open(db,found.ktel_id)
         member=db.query(Membership).filter_by(user_id=user.id,is_active=True).first()
         if member is None:
             raise HTTPException(403,'Your organization membership is inactive. Contact your administrator.')
@@ -59,8 +61,10 @@ def login(credentials:UserLogin,response:Response,request:Request,db:Session=Dep
 
 
 @router.get('/me',response_model=UserResponse)
-def me(current_user:User=Depends(get_current_user)):
+def me(current_user:User=Depends(get_current_user),db:Session=Depends(get_db)):
     current_user.ktel_name=current_user.ktel.name
+    if current_user.role!='support':
+        current_user.support_session=support.active_session(db,current_user.ktel_id)
     return current_user
 
 

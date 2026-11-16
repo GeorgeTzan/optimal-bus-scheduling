@@ -4,6 +4,7 @@ import { useAuth } from "../auth/AuthContext";
 import { useI18n } from "../../i18n/context";
 import { Field, Modal } from "../timetables/shared";
 import { InviteLink } from "./InviteLink";
+import { SupportAccess } from "./SupportAccess";
 import { ROLES, TeamError, deliveryText, requestId, roleText, teamCall, type Invitation, type Role, type TeamMember } from "./team-api";
 
 type Confirm =
@@ -141,6 +142,7 @@ export function TeamWorkspace() {
           })}
         </tbody></table></div>
       </section>
+      <SupportAccess />
       {confirm && (
         <Modal title={el ? "Επιβεβαίωση" : "Please confirm"} onClose={() => !busy && setConfirm(null)} busy={busy}>
           <div className="resource-form-body">

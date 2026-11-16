@@ -25,22 +25,31 @@ export function LoginForm({ onSuccess }: { onSuccess?: () => void }) {
         body: JSON.stringify({ email, password }),
       });
       if (!res.ok) {
+        const detail = (
+          (await res.json().catch(() => null)) as {
+            detail?: { code?: string };
+          } | null
+        )?.detail;
         setError(
-          res.status === 429
+          detail?.code === "organization_suspended"
             ? el
-              ? "Πολλές προσπάθειες σύνδεσης. Περιμένετε λίγα λεπτά και δοκιμάστε ξανά."
-              : "Too many sign-in attempts. Wait a few minutes and try again."
-            : res.status === 403
+              ? "Η πρόσβαση του οργανισμού σας έχει ανασταλεί. Επικοινωνήστε με τον πάροχο της πλατφόρμας."
+              : "Your organization's access is suspended. Contact the platform provider."
+            : res.status === 429
               ? el
-                ? "Ο λογαριασμός σας δεν είναι ενεργός. Επικοινωνήστε με τον διαχειριστή σας."
-                : "Your account is inactive. Contact your administrator."
-              : res.status === 401
+                ? "Πολλές προσπάθειες σύνδεσης. Περιμένετε λίγα λεπτά και δοκιμάστε ξανά."
+                : "Too many sign-in attempts. Wait a few minutes and try again."
+              : res.status === 403
                 ? el
-                  ? "Το email ή ο κωδικός δεν είναι σωστός. Δοκιμάστε ξανά."
-                  : "The email or password is incorrect. Please try again."
-                : el
-                  ? "Η σύνδεση δεν είναι διαθέσιμη αυτή τη στιγμή. Δοκιμάστε ξανά."
-                  : "Sign-in is unavailable right now. Please try again.",
+                  ? "Ο λογαριασμός σας δεν είναι ενεργός. Επικοινωνήστε με τον διαχειριστή σας."
+                  : "Your account is inactive. Contact your administrator."
+                : res.status === 401
+                  ? el
+                    ? "Το email ή ο κωδικός δεν είναι σωστός. Δοκιμάστε ξανά."
+                    : "The email or password is incorrect. Please try again."
+                  : el
+                    ? "Η σύνδεση δεν είναι διαθέσιμη αυτή τη στιγμή. Δοκιμάστε ξανά."
+                    : "Sign-in is unavailable right now. Please try again.",
         );
         return;
       }

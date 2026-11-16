@@ -20,7 +20,8 @@ function monthBefore(today: Date, back: number) {
 }
 
 export function ReportsWorkspace({ el }: { el: boolean }) {
-  const { apiFetch } = useAuth();
+  const { apiFetch, user } = useAuth();
+  const canExport = user?.role !== "support";
   const lang = el ? 0 : 1,
     locale = el ? "el-GR" : "en-GB";
   const t = (key: LabelKey) => LABELS[key][lang];
@@ -178,20 +179,24 @@ export function ReportsWorkspace({ el }: { el: boolean }) {
               }}
             />
           </label>
-          <button
-            className="button secondary"
-            disabled={busy !== null || !report}
-            onClick={() => void download("xlsx")}
-          >
-            Excel
-          </button>
-          <button
-            className="button secondary"
-            disabled={busy !== null || !report}
-            onClick={() => void download("pdf")}
-          >
-            PDF
-          </button>
+          {canExport && (
+            <>
+              <button
+                className="button secondary"
+                disabled={busy !== null || !report}
+                onClick={() => void download("xlsx")}
+              >
+                Excel
+              </button>
+              <button
+                className="button secondary"
+                disabled={busy !== null || !report}
+                onClick={() => void download("pdf")}
+              >
+                PDF
+              </button>
+            </>
+          )}
         </div>
       </header>
       {error && (

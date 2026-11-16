@@ -2,7 +2,7 @@ import os
 import pytest
 from fastapi.testclient import TestClient
 from main import app
-from config import Settings, validate_settings, get_settings
+from config import Settings, validate_settings, validate_platform_settings, get_settings
 
 
 client = TestClient(app, raise_server_exceptions=False)
@@ -91,3 +91,22 @@ def test_local_reference_opt_in_never_enables_public_production_fixture_tools(mo
     monkeypatch.setattr(settings, 'REFERENCE_TOOLS_ENABLED', True)
     assert client.get('/data').status_code == 404
     assert client.post('/api/v1/scheduling/revisions/import-reference', json={'service_date': '2026-06-01'}).status_code == 404
+
+
+@pytest.mark.parametrize('platform_url',[None,'postgresql://migration:private@localhost/ktel'])
+def test_production_requires_a_separate_platform_database_role(platform_url):
+    s=Settings(ENVIRONMENT='production',SECRET_KEY='x'*48,DATABASE_URL='postgresql://migration:private@localhost/ktel',
+               PUBLIC_APP_URL='https://ktel.example.org')
+    s.DATABASE_PLATFORM_URL=platform_url or s.DATABASE_URL
+    validate_settings(s)
+    with pytest.raises(ValueError,match='DATABASE_PLATFORM_URL'):validate_platform_settings(s)
+    s.DATABASE_PLATFORM_URL='postgresql://ktel_platform:private@localhost/ktel'
+    validate_platform_settings(s)
+
+
+def test_api_startup_refuses_production_without_platform_role(monkeypatch):
+    from config import settings
+    monkeypatch.setattr(settings,'ENVIRONMENT','production')
+    monkeypatch.setattr(settings,'DATABASE_PLATFORM_URL',settings.DATABASE_URL)
+    with pytest.raises(ValueError,match='DATABASE_PLATFORM_URL'):
+        with TestClient(app):pass

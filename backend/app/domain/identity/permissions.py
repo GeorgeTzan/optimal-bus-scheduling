@@ -12,6 +12,8 @@ PERMISSIONS={
     'management':{'resources.read','schedule.read','optimization.read','reports.read'},
     'viewer':{'resources.read','schedule.read','optimization.read'},
 }
+SUPPORT_EXCLUDED={'members.manage','organization.manage','schedule.approve','schedule.publish','optimization.run','incidents.manage'}
+PERMISSIONS['support']={permission for permission in PERMISSIONS['admin'] if permission not in SUPPORT_EXCLUDED and not permission.endswith('.write')}
 
 
 def require_permission(permission):
@@ -19,5 +21,13 @@ def require_permission(permission):
     def authorized(user=Depends(get_current_user)):
         if permission not in getattr(user,'permissions',()):
             raise HTTPException(403,'Your organization role does not allow this action')
+        return user
+    return authorized
+
+
+def require_member_permission(permission):
+    def authorized(user=Depends(require_permission(permission))):
+        if user.role=='support':
+            raise HTTPException(403,{'code':'support_not_available','message':'This is not available during a support session.'})
         return user
     return authorized

@@ -17,7 +17,7 @@ class UserLogin(BaseModel):
 class UserResponse(BaseModel):
     model_config=ConfigDict(from_attributes=True)
     id:int
-    email:EmailStr
+    email:Optional[EmailStr]=None
     full_name:Optional[str]=None
     is_active:bool
     ktel_id:int
@@ -25,6 +25,7 @@ class UserResponse(BaseModel):
     role:str
     permissions:list[str]
     session_id:str
+    support_session:Optional[dict]=None
 
     @computed_field
     @property

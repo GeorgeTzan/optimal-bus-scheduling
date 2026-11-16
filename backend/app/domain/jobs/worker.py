@@ -13,6 +13,8 @@ from datetime import datetime, timedelta, timezone
 from sqlalchemy.orm import sessionmaker
 import db.models  # Register FK targets in the standalone worker interpreter.
 import app.domain.scheduling.models
+from db.models import KTEL
+from app.domain.identity.service import CLOSED_STATUSES
 from app.domain.identity.tenant_session import set_tenant_scope
 from app.domain.jobs.models import Job
 from app.domain.jobs.repository import JobRepository
@@ -102,6 +104,8 @@ def record(factory, jid, tenant_id, worker_id, token, kind, data):
 def work_once(factory, tenant_id, worker_id):
     with factory() as db:
         set_tenant_scope(db, tenant_id)
+        if db.query(KTEL.status).filter(KTEL.id == tenant_id).scalar() in CLOSED_STATUSES:
+            return False
         job = JobRepository(db).claim_next_job(worker_id, lease_duration_seconds=30, allowed_tenant_id=tenant_id)
         if not job:
             return False

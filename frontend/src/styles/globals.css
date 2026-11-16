@@ -3109,3 +3109,24 @@ input.rule-invalid {
   .reports-workspace .resource-heading-actions .button, .reports-line { min-height: 44px; }
   .reports-days > td { padding: 0 10px; }
 }
+.platform-workspace { max-width: 1200px; margin: 0 auto; padding: 28px 16px 48px; }
+.platform-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; align-items: end; }
+.platform-form label { display: grid; gap: 4px; font-size: 13px; color: var(--muted); }
+.platform-form input, .platform-form select, .platform-form textarea { padding: 8px 10px; border: 1px solid var(--line); border-radius: 7px; background: var(--surface); color: var(--ink); font: inherit; }
+.platform-form > .auth-error, .platform-form > p, .platform-form > .resource-dialog-actions { grid-column: 1 / -1; }
+.platform-chip { display: inline-flex; align-items: center; margin: 0 6px 4px 0; padding: 3px 9px; border-radius: 999px; font-size: 12px; font-weight: 600; border: 1px solid currentColor; color: var(--muted); white-space: nowrap; }
+.platform-chip[data-status="active"] { color: var(--teal); }
+.platform-chip[data-status="trial"] { color: var(--accent); }
+.platform-chip[data-status="suspended"], .platform-chip[data-status="cancelled"] { color: #c2410c; }
+.platform-chip[data-status="warning"] { color: #b45309; background: #f59e0b1a; }
+.platform-chip[data-status="danger"] { color: #dc2626; background: #dc26261a; }
+.platform-health { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px 16px; margin: 0; }
+.platform-health div { display: grid; gap: 2px; }
+.platform-health dt { font-size: 12px; color: var(--muted); }
+.platform-health dd { margin: 0; font-weight: 600; }
+.platform-table td small { display: block; }
+.support-banner { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; padding: 8px 16px; color: #b45309; background: #f59e0b1a; border-bottom: 1px solid #f59e0b55; font-size: 13px; }
+.support-banner a { color: inherit; font-weight: 600; text-decoration: underline; }
+.platform-support { display: grid; gap: 10px; margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--line); }
+.platform-support h3 { margin: 0; font-size: 15px; }
+.platform-support p { margin: 0; }

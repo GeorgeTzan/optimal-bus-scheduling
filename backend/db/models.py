@@ -11,6 +11,7 @@ class KTEL(Base):
     name = Column(String, unique=True, index=True)
     region = Column(String)
     timezone = Column(String, nullable=False, default="Europe/Athens")
+    status = Column(String, nullable=False, default="active", server_default="active")
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
     users = relationship("User", back_populates="ktel")
