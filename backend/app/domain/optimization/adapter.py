@@ -111,6 +111,7 @@ def to_cv_problem(
                 long_route=raw.get("long_route", True),
                 origin_is_depot=raw.get("origin_is_depot", False),
                 destination_is_depot=raw.get("destination_is_depot", False),
+                en_route_break_minutes=raw.get("en_route_break_minutes", 0),
             )
         )
 

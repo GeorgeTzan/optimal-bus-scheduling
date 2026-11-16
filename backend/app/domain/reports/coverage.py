@@ -36,7 +36,7 @@ def month_trips(db, tenant_id: int, month: date, found: dict | None = None) -> l
     first, last = month.isoformat(), _month_end(month).isoformat()
     found = {day: entry for day, entry in found.items() if first <= day <= last}
     routes = template_routes(db, tenant_id, {trip.get("template_id") for _, _, snapshot in found.values() for trip in snapshot.source_data.get("trips", [])})
-    ends = _route_ends(db, tenant_id, {route_id for route_id, _ in routes.values()})
+    ends = _route_ends(db, tenant_id, {route[0] for route in routes.values()})
     assignments = defaultdict(list)
     if found:
         for row in db.query(RevisionAssignment).filter(RevisionAssignment.tenant_id == tenant_id, RevisionAssignment.revision_id.in_([revision.revision_id for _, revision, _ in found.values()])):

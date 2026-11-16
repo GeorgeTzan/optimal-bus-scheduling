@@ -1354,6 +1354,37 @@ def test_timetable_service_type_column_import(identity_setup):
     assert changed.json()["summary"]["updated"] == 1
 
 
+def test_timetable_en_route_break_column_import(identity_setup):
+    from app.domain.imports.parsers import parse_upload
+    from app.domain.timetables.models import Route
+
+    client, headers = operator(identity_setup)
+    a, b, driver, vehicle = network(client, headers)
+    record = {
+        "trip_code": "L001", "origin": a["code"], "destination": b["code"], "departure_time": "08:00", "arrival_time": "13:00",
+        "arrival_day_offset": 0, "operating_weekdays": [0], "valid_from": "2026-01-01", "valid_until": "2028-12-31",
+        "allowed_bus_types": ["02"], "en_route_break_minutes": 45,
+    }
+    staged = upload(client, headers, {"timetable": [record]}, "all")
+    commit_import(client, headers, staged)
+    tenant = identity_setup["first"].tenant_id
+    with identity_setup["owner_factory"]() as db:
+        assert 45 in {row.en_route_break_minutes for row in db.query(Route).filter_by(tenant_id=tenant)}
+    exported = client.get("/api/v1/imports/" + staged.json()["batch_id"] + "/populated.xlsx", headers=headers)
+    assert exported.status_code == 200, exported.text
+    rows = [row for row in parse_upload(exported.content, "saved.xlsx", "all", "en").rows if row.entity == "timetable"]
+    assert [row.values.get("en_route_break_minutes") for row in rows] == [45]
+    changed = upload(client, headers, {"timetable": [{**record, "en_route_break_minutes": 30}]}, "all").json()
+    assert changed["summary"]["updated"] == 1 and changed["rows"][0]["changed_fields"] == ["en_route_break_minutes"]
+    blank = upload(client, headers, {"timetable": [{**record, "en_route_break_minutes": None, "is_active": True}]}, "all").json()
+    assert blank["summary"]["by_entity"]["timetable"]["unchanged"] == 1
+    rejected = upload(client, headers, {"timetable": [{**record, "en_route_break_minutes": 300}]}, "all").json()
+    assert rejected["status"] != "ready"
+    assert "invalid_number" in str(rejected["rows"])
+    too_long = upload(client, headers, {"timetable": [{**record, "arrival_time": "08:30"}]}, "all").json()
+    assert "en_route_break_too_long" in str(too_long["rows"])
+
+
 def test_route_rule_permissions_are_row_aware_at_preview_and_commit(identity_setup):
     from app.domain.imports.service import ImportService
     from app.domain.timetables.models import Route

@@ -26,6 +26,7 @@ export interface Timetable {
   allowed_bus_types: string[] | null;
   distance_km: number | null;
   service_type: "intercity" | "urban";
+  en_route_break_minutes: number;
   is_active: boolean;
   calendar_ready: boolean;
 }
@@ -124,9 +125,13 @@ export async function checked<T>(response: Response, el: boolean): Promise<T> {
             ? el
               ? "Ο οδηγός ή το όχημα έχει ήδη επιλεγεί."
               : "This driver or vehicle is already paired."
-            : el
-              ? "Ελέγξτε τα στοιχεία. Δεν αποθηκεύτηκαν αλλαγές."
-              : "Check your entries. No changes were saved.",
+            : code === "en_route_break_too_long"
+              ? el
+                ? "Η στάση καθ' οδόν πρέπει να είναι μικρότερη από τη διάρκεια του δρομολογίου."
+                : "The en-route stop must be shorter than the trip duration."
+              : el
+                ? "Ελέγξτε τα στοιχεία. Δεν αποθηκεύτηκαν αλλαγές."
+                : "Check your entries. No changes were saved.",
     );
   }
   return data as T;

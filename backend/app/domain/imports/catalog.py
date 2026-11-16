@@ -200,6 +200,7 @@ class Catalog:
                 "destination_station_id": route.destination_station_id,
                 "distance_km": route.distance_km,
                 "service_type": route.service_type,
+                "en_route_break_minutes": route.en_route_break_minutes,
             }
         return {key: getattr(row, key) for key in FIELDS[kind]}
 

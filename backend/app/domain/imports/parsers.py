@@ -30,7 +30,7 @@ from app.domain.imports.cell_values import (
     serialize_source_value,
 )
 from app.domain.resources.schemas import DriverCreate, VehicleCreate, StationCreate, Code
-from app.domain.timetables.calendar import CalendarRule
+from app.domain.timetables.calendar import CalendarRule, scheduled_minutes
 from app.domain.timetables.operational_schemas import TransferCreate
 
 TransferFileFields = create_model(
@@ -90,6 +90,10 @@ def _issue(code, sheet, row, column, cell, locale):
             "Enter a plain number using the template language’s decimal separator.",
             "Συμπληρώστε έναν απλό αριθμό με το δεκαδικό διαχωριστικό της γλώσσας του προτύπου.",
         ),
+        "en_route_break_too_long": (
+            "The en-route stop must be shorter than the trip duration.",
+            "Η στάση καθ' οδόν πρέπει να είναι μικρότερη από τη διάρκεια του δρομολογίου.",
+        ),
     }
     en, el = messages.get(code, (f"Check {label}.", f"Ελέγξτε το πεδίο «{label}»."))
     return ImportIssue(
@@ -121,6 +125,11 @@ def _domain_issues(entity, values):
             raise CellValueError("invalid_value")
         if values.get("distance_km", 0) < 0 or values.get("distance_km", 0) > 10000:
             raise CellValueError("invalid_number")
+        stop = values.get("en_route_break_minutes", 0)
+        if not 0 <= stop <= 240:
+            raise CellValueError("invalid_number", "en_route_break_minutes")
+        if stop and stop >= scheduled_minutes(values["departure_time"], values["arrival_time"], values["arrival_day_offset"]):
+            raise CellValueError("en_route_break_too_long", "en_route_break_minutes")
     if entity == "connections":
         ConnectionFileFields.model_validate(values)
     if entity == "transfers":
@@ -567,7 +576,7 @@ def _parse_sheets(
                         )
                 except CellValueError as error:
                     spec = next(
-                        (s for s in specs if s.key in ("minutes", "distance_km")),
+                        (s for s in specs if s.key in ((error.key,) if error.key else ("minutes", "distance_km"))),
                         specs[0],
                     )
                     errors.append(

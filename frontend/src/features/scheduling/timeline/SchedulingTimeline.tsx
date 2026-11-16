@@ -3,9 +3,11 @@ import React, { useMemo, useState, useRef, useEffect } from "react";
 import { BusFront, UserRound, LockKeyhole, AlertTriangle } from "lucide-react";
 import { useI18n } from "../../../i18n/context";
 import type { StudioTrip, StudioResource } from "../types";
+import { findingText, type FindingLabels } from "../WorkRulesTab";
 import { scheduleDisplay, type ScheduleDisplayContext } from "../display";
 interface Props {
   displayContext?: ScheduleDisplayContext;
+  labels: FindingLabels;
   resources: StudioResource[];
   trips: StudioTrip[];
   selectedTripId: string | null;
@@ -19,6 +21,7 @@ const ROW_HEIGHT = 54,
   LABEL_WIDTH = 200;
 export function SchedulingTimeline({
   displayContext,
+  labels,
   resources,
   trips,
   selectedTripId,
@@ -269,7 +272,7 @@ export function SchedulingTimeline({
                             setHovered(null);
                           }}
                           aria-label={`${t.tripCode}: ${t.startStation} to ${t.endStation}`}
-                          title={`${t.tripCode} · ${stationName(t.startStation, el)} → ${stationName(t.endStation, el)}\n${timeLabel(t.startMinutes)}–${timeLabel(t.endMinutes)}${t.violationMessage ? "\n" + t.violationMessage : ""}`}
+                          title={`${t.tripCode} · ${stationName(t.startStation, el)} → ${stationName(t.endStation, el)}\n${timeLabel(t.startMinutes)}–${timeLabel(t.endMinutes)}${(t.violations ?? []).map((v) => "\n" + findingText(v, displayContext?.timezone ?? "", el, labels)).join("")}`}
                           onClick={() => onSelectTrip(t.id)}
                           className={`timeline-trip route-${color} ${t.hasViolation ? "has-conflict" : ""} ${t.isLocked ? "is-locked" : ""} ${selectedTripId === t.id ? "is-selected" : ""} ${dragged === t.id ? "is-dragging" : ""}`}
                           style={{ left, width: Math.max(width, 8) }}

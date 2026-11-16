@@ -164,6 +164,24 @@ def test_route_service_type_roundtrip(identity_setup):
     assert client.post('/api/v1/timetables', headers=headers, json={**template_payload(origin, destination, trip_code='T003'), 'service_type': 'metro'}).status_code == 422
 
 
+def test_route_en_route_break_roundtrip(identity_setup):
+    client, headers, create, origin, destination, driver, vehicle = setup_operator(identity_setup)
+    template = create('timetables', template_payload(origin, destination, en_route_break_minutes=45))
+    assert template['en_route_break_minutes'] == 45
+    url = f"/api/v1/timetables/{template['id']}"
+    assert client.get(url, headers=headers).json()['en_route_break_minutes'] == 45
+    changed = client.patch(url, headers=headers, json={'version': template['version'], 'en_route_break_minutes': 30})
+    assert changed.status_code == 200, changed.text
+    assert changed.json()['en_route_break_minutes'] == 30
+    too_long = client.patch(url, headers=headers, json={'version': changed.json()['version'], 'en_route_break_minutes': 105})
+    assert too_long.status_code == 422 and too_long.json()['detail']['code'] == 'en_route_break_too_long'
+    shorter = client.patch(url, headers=headers, json={'version': changed.json()['version'], 'departure_time': '01:00', 'arrival_day_offset': 0})
+    assert shorter.status_code == 422 and shorter.json()['detail']['code'] == 'en_route_break_too_long'
+    assert create('timetables', template_payload(origin, destination, trip_code='T002'))['en_route_break_minutes'] == 0
+    for value in (-1, 241):
+        assert client.post('/api/v1/timetables', headers=headers, json=template_payload(origin, destination, trip_code='T003', en_route_break_minutes=value)).status_code == 422
+
+
 def test_routes_listing(identity_setup):
     client, headers, create, origin, destination, driver, vehicle = setup_operator(identity_setup)
     template = create('timetables', template_payload(origin, destination, service_type='urban'))

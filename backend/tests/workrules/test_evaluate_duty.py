@@ -1,3 +1,4 @@
+from dataclasses import replace
 from datetime import date, datetime, timedelta, timezone
 
 from app.domain.workrules.evaluate import evaluate
@@ -71,6 +72,14 @@ def test_continuous_driving_290():
     assert len(f) == 1
     assert (f[0].kind, f[0].measured, f[0].limit) == ("legal", 290, 270)
     assert f[0].hint == {"break_needed_by": "2026-11-09T10:30:00+00:00"}
+
+
+def test_en_route_stop_counts_as_driver_break():
+    def found(stop):
+        return only(run(timeline(duty(DAY, replace(trip("t", DAY, 360, 660, long_route=False), en_route_break_minutes=stop)))), "WR_CONTINUOUS_DRIVING")
+    assert [f.measured for f in found(0)] == [300]
+    assert found(45) == []
+    assert [f.measured for f in found(20)] == [280]
 
 
 def test_break_needed_by_anchored_after_full_break():

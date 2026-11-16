@@ -33,6 +33,7 @@ class TripSnapshot:
     long_route: bool = True
     origin_is_depot: bool = False
     destination_is_depot: bool = False
+    en_route_break_minutes: int = 0
 
 
 @dataclass(frozen=True)

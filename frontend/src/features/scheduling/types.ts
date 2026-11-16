@@ -1,3 +1,4 @@
+import type { Violation } from "./revision-api";
 export interface StudioTrip {
   id: string;
   tripCode: string;
@@ -8,7 +9,7 @@ export interface StudioTrip {
   endStation: string;
   isLocked: boolean;
   hasViolation?: boolean;
-  violationMessage?: string;
+  violations?: Violation[];
   distanceKm?: number;
   roadType?: string;
   allowedBusTypes?: string[];

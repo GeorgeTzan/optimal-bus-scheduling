@@ -263,6 +263,7 @@ class ImportPlanner:
                 "allowed_bus_types",
                 "distance_km",
                 "service_type",
+                "en_route_break_minutes",
                 "is_active",
             }
         )
@@ -693,21 +694,19 @@ class ImportPlanner:
         )
         changed = [key for key, value in payload.items() if value != before.get(key)]
         review = any(
-            self.pending_changes(
-                ref, {"is_depot", "latitude", "longitude", "is_active"}
-            )
+            self.pending_changes(ref, {"latitude", "longitude", "is_active"})
             for ref in (origin, destination)
         )
         if current:
             from app.domain.timetables.operations import (
-                station_facts,
+                transfer_station_facts,
                 fingerprint as source_fingerprint,
             )
 
             review |= current.confirmed_source_hash != source_fingerprint(
                 [
-                    station_facts(self.catalog.records["stations"][origin["id"]]),
-                    station_facts(self.catalog.records["stations"][destination["id"]]),
+                    transfer_station_facts(self.catalog.records["stations"][origin["id"]]),
+                    transfer_station_facts(self.catalog.records["stations"][destination["id"]]),
                 ]
             )
         row.plan.update(

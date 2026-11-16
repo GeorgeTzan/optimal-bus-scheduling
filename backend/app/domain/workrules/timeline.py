@@ -26,6 +26,7 @@ class DutyTrip:
     route_id: int | None
     urban: bool
     long_route: bool
+    en_route_break_minutes: int = 0
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -40,6 +41,7 @@ class DutyTrip:
             "route_id": self.route_id,
             "urban": self.urban,
             "long_route": self.long_route,
+            "en_route_break_minutes": self.en_route_break_minutes,
         }
 
     @classmethod
@@ -56,6 +58,7 @@ class DutyTrip:
             route_id=data["route_id"],
             urban=data["urban"],
             long_route=data["long_route"],
+            en_route_break_minutes=data.get("en_route_break_minutes", 0),
         )
 
 

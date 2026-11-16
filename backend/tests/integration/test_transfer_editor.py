@@ -100,3 +100,20 @@ def test_empty_values_and_duplicate_directions_cannot_silently_become_a_transfer
         response=client.post(URL,headers=headers,json={'items':items})
         assert response.status_code==422,response.text[:500]
     assert editor(client,headers)['items'][0]['forward']['minutes']==30
+
+
+def patch_origin(client,headers,pair,**fields):
+    station=client.get('/api/v1/stations/'+str(pair['forward']['origin_station_id']),headers=headers).json()
+    response=client.patch('/api/v1/stations/'+str(station['id']),headers=headers,json={'version':station['version'],**fields})
+    assert response.status_code==200,response.text[:500]
+
+
+def test_depot_flag_keeps_travel_times_confirmed_but_location_and_activity_do_not(identity_setup):
+    client,headers,template,pairing,driver=prepared_customer(identity_setup)
+    pair=editor(client,headers)['items'][0]
+    patch_origin(client,headers,pair,is_depot=False)
+    assert editor(client,headers)['counts']['review_directions']==0
+    patch_origin(client,headers,pair,is_depot=True)
+    assert editor(client,headers)['counts']['review_directions']==0
+    patch_origin(client,headers,pair,latitude=38.5,longitude=22.5)
+    assert editor(client,headers)['counts']['review_directions']>0

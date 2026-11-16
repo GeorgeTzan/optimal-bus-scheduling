@@ -199,6 +199,22 @@ test("legal finding blocks request approval", async ({ page }) => {
   await expect(page.locator(".timeline-trip.has-conflict")).toHaveCount(1);
 });
 
+test("trip inspector and timeline tooltip show readable findings", async ({ page }) => {
+  await breach(page, "DR0", false);
+  const bar = page.locator(".timeline-trip.has-conflict");
+  await expect(bar).toHaveAttribute("title", /Only 7:30 rest after the previous duty/);
+  await expect(bar).not.toHaveAttribute("title", /WR_/);
+  await bar.click();
+  await page.getByRole("complementary", { name: "Trip Details" }).getByRole("button", { name: /Legality/ }).click();
+  const inspector = page.locator(".validation-result.error");
+  await expect(inspector).toContainText("Nikos Dimos:");
+  await expect(inspector).toContainText("Only 7:30 rest after the previous duty (limit 10:00).");
+  await expect(inspector).toContainText("Law");
+  await expect(inspector).not.toContainText("WR_");
+  await page.getByRole("button", { name: "ΕΛ", exact: true }).click();
+  await expect(inspector).toContainText("Μόνο 7:30 ανάπαυση από την προηγούμενη υπηρεσία");
+  await expect(inspector).not.toContainText("WR_");
+});
 test("override a warning with reason removes it", async ({ page }) => {
   await openStudio(page, "2026-10-31");
   const drivers = await items(page, "drivers");

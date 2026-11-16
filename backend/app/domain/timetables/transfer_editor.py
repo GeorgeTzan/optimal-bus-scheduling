@@ -4,7 +4,7 @@ from typing import Annotated
 from fastapi import HTTPException
 from pydantic import BaseModel,ConfigDict,Field,model_validator
 from app.domain.timetables.models import Station,StationTransfer
-from app.domain.timetables.operations import OperationsService,operational_readiness,station_facts,fingerprint
+from app.domain.timetables.operations import OperationsService,operational_readiness,transfer_station_facts,fingerprint
 from app.domain.timetables.operational_schemas import Positive,TransferCreate,TransferPatch
 
 
@@ -41,7 +41,7 @@ class TransferEditor:
         records={(row.origin_station_id,row.destination_station_id):row for row in self.ops.query(StationTransfer).filter(StationTransfer.origin_station_id!=StationTransfer.destination_station_id).all()}
         valid=set()
         for key,row in records.items():
-            if row.confirmed_source_hash==fingerprint([station_facts(stations[key[0]]),station_facts(stations[key[1]])]):valid.add(key)
+            if row.confirmed_source_hash==fingerprint([transfer_station_facts(stations[key[0]]),transfer_station_facts(stations[key[1]])]):valid.add(key)
         applicable={key for key in records if key[0] in required and key[1] in required}
         complete={tuple(sorted(key)) for key in valid if key[0] in required and key[1] in required and (key[1],key[0]) in valid}
         total_directions=len(required)*(len(required)-1)

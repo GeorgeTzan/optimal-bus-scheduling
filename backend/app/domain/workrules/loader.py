@@ -51,7 +51,7 @@ class WorkContext:
     day_origin_utc: datetime
     transfers: Mapping[tuple[str, str], int]
     tz: str = DEFAULT_TZ
-    trip_routes: Mapping[str, tuple[int | None, bool, bool]] = field(default_factory=dict)
+    trip_routes: Mapping[str, tuple[int | None, bool, bool] | tuple[int | None, bool, bool, int]] = field(default_factory=dict)
     depots: frozenset[str] = frozenset()
     emergency_drivers: frozenset[str] = frozenset()
     delays: Mapping[str, int] = field(default_factory=dict)
@@ -179,18 +179,18 @@ def _delays(db, tenant_id: int, found, rows) -> dict[tuple[str, str], int]:
     return {key: minutes for key, (_, minutes) in latest.items()}
 
 
-def template_routes(db, tenant_id: int, templates: set) -> dict[Any, tuple[int, str]]:
+def template_routes(db, tenant_id: int, templates: set) -> dict[Any, tuple[int, str, int]]:
     templates = templates - {None}
     return {
-        template_id: (route_id, service_type)
-        for template_id, route_id, service_type in db.query(ServiceTemplate.id, Route.id, Route.service_type)
+        template_id: (route_id, service_type, en_route_break)
+        for template_id, route_id, service_type, en_route_break in db.query(ServiceTemplate.id, Route.id, Route.service_type, Route.en_route_break_minutes)
         .join(Route, (Route.tenant_id == ServiceTemplate.tenant_id) & (Route.id == ServiceTemplate.route_id))
         .filter(ServiceTemplate.tenant_id == tenant_id, ServiceTemplate.id.in_(templates))
     } if templates else {}
 
 
-def route_facts(route: tuple[int, str] | None, distance_km: float | None, limit: int) -> tuple[int | None, bool, bool]:
-    return (route[0] if route else None, route is not None and route[1] == "urban", distance_km is None or distance_km > limit)
+def route_facts(route: tuple[int, str, int] | None, distance_km: float | None, limit: int) -> tuple[int | None, bool, bool, int]:
+    return (route[0] if route else None, route is not None and route[1] == "urban", distance_km is None or distance_km > limit, route[2] if route else 0)
 
 
 def _depots(db, tenant_id: int, codes: set[str]) -> dict[str, bool]:
@@ -304,7 +304,7 @@ def _published(db, tenant_id: int, policy: WorkRulePolicy, drivers: set[str], fi
             previous = None
             for row, crew in group:
                 label = labels.get(row.trip_id, {})
-                route_id, urban, long_route = route_facts(routes.get(label.get("template_id")), label.get("distance_km"), limit)
+                route_id, urban, long_route, en_route_break = route_facts(routes.get(label.get("template_id")), label.get("distance_km"), limit)
                 start = origin + timedelta(minutes=row.start_minutes)
                 if previous is not None:
                     start = max(start, previous)
@@ -323,6 +323,7 @@ def _published(db, tenant_id: int, policy: WorkRulePolicy, drivers: set[str], fi
                         route_id=route_id,
                         urban=urban,
                         long_route=long_route,
+                        en_route_break_minutes=en_route_break,
                     )
                 )
         day = date.fromisoformat(snapshot.problem_data["service_date"])
@@ -398,7 +399,7 @@ def _prior_fingerprint(db, tenant_id: int) -> tuple:
         tuple(sorted(db.query(Station.code, Station.is_depot).filter(Station.tenant_id == tenant_id).all())),
         tuple(
             sorted(
-                db.query(ServiceTemplate.id, Route.id, Route.service_type)
+                db.query(ServiceTemplate.id, Route.id, Route.service_type, Route.en_route_break_minutes)
                 .join(Route, (Route.tenant_id == ServiceTemplate.tenant_id) & (Route.id == ServiceTemplate.route_id))
                 .filter(ServiceTemplate.tenant_id == tenant_id)
                 .all()

@@ -47,7 +47,7 @@ def draft_duties(work: WorkContext, problem: SolverProblem, assignments: Iterabl
 
 
 def draft_trip(work: WorkContext, trip, vehicle_id: str) -> DutyTrip:
-    route_id, urban, long_route = work.trip_routes.get(trip.id, UNKNOWN_ROUTE)
+    route_id, urban, long_route, en_route_break = (*work.trip_routes.get(trip.id, UNKNOWN_ROUTE), 0)[:4]
     return DutyTrip(
         trip_id=trip.id,
         start=work.day_origin_utc + timedelta(minutes=trip.start_minutes),
@@ -60,4 +60,5 @@ def draft_trip(work: WorkContext, trip, vehicle_id: str) -> DutyTrip:
         route_id=route_id,
         urban=urban,
         long_route=long_route,
+        en_route_break_minutes=en_route_break,
     )

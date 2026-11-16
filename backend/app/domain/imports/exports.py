@@ -40,6 +40,7 @@ def capture_committed_rows(service, rows, saved):
                 destination=code("stations", route.destination_station_id),
                 distance_km=route.distance_km,
                 service_type=route.service_type,
+                en_route_break_minutes=route.en_route_break_minutes,
             )
         elif row.entity == "pairings":
             values.update(

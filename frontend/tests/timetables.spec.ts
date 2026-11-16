@@ -89,6 +89,9 @@ test("guided timetable and service-day setup persists real clocks, crew and trav
     }
     await page.getByLabel("Departure time", { exact: true }).fill("08:00");
     await page.getByLabel("Arrival time", { exact: true }).fill("09:00");
+    await page
+      .getByLabel("En-route break (minutes)", { exact: true })
+      .fill("20");
     await page.screenshot({
       path: "test-results/timetable-route-step.png",
       fullPage: true,
@@ -108,6 +111,15 @@ test("guided timetable and service-day setup persists real clocks, crew and trav
     await expect(
       page.getByRole("row").filter({ hasText: "T001" }),
     ).toBeVisible();
+    await expect(
+      page.getByRole("row").filter({ hasText: "T001" }),
+    ).toContainText("En-route break 20′");
+    const savedTimetable = (
+      (await (await page.request.get("/api/v1/timetables?page_size=100")).json()) as {
+        items: { trip_code: string; en_route_break_minutes: number }[];
+      }
+    ).items.find((t) => t.trip_code === "T001");
+    expect(savedTimetable?.en_route_break_minutes).toBe(20);
     await expect(
       page
         .getByRole("row")

@@ -1,11 +1,13 @@
 from datetime import date, datetime, time, timedelta, timezone
 from zoneinfo import ZoneInfo
 
-from app.domain.optimization.contracts import ResourceSnapshot, SolverConfig, SolverProblem, TripSnapshot
-from app.domain.optimization.cv_bounded import CVBoundedV1
+from app.domain.optimization.contracts import Assignment, ResourceSnapshot, SolverConfig, SolverProblem, TripSnapshot
+from app.domain.optimization.cv_bounded import BoundedCustomSolver, CVBoundedV1, DutyRules, _duty, _timeline, fill_gaps
+from app.domain.optimization.cv_legacy import problem_snapshot_to_legacy_dict
+from framework.problem import Problem
 from app.domain.verification.rules import Severity
 from app.domain.verification.verifier import HardRuleVerifier
-from app.domain.workrules.budget import DriverDayBudget, driver_budget
+from app.domain.workrules.budget import DriverDayBudget, driver_budget, legal_duty
 from app.domain.workrules.loader import WorkContext, attach_work_context
 from app.domain.workrules.policy import build_policy
 from app.domain.workrules.timeline import DriverProfile, DriverTimeline, Duty, DutyTrip
@@ -118,3 +120,65 @@ def test_cv_drops_work_beyond_the_driver_budget():
                           work_policy=POLICY.to_dict(), driver_budgets=(budget("1", max_work_minutes=200),))
     result = CVBoundedV1().solve(built, CONFIG)
     assert len(result.assignments) == 1 and len(result.unassigned_trip_ids) == 1
+
+
+def with_budgets(trips, *budgets):
+    built = problem(trips, drivers=tuple(b["driver_id"] for b in budgets))
+    return SolverProblem(built.problem_id, built.tenant_id, DAY, trips, built.resources, (), built.stations, built.transfer_matrix,
+                         work_policy=POLICY.to_dict(), driver_budgets=budgets)
+
+
+def duties(built, result):
+    resources = {r.resource_id: r for r in built.resources}
+    grouped = {}
+    for a in sorted(result.assignments, key=lambda a: a.start_minutes):
+        grouped.setdefault(resources[a.resource_id].driver_id, []).append((a.resource_id, a.trip_id))
+    return grouped
+
+
+def assert_no_rule_findings(built, result):
+    budgets = {b["driver_id"]: DriverDayBudget.from_dict(b) for b in built.driver_budgets}
+    resources = {r.resource_id: r for r in built.resources}
+    for driver, legs in duties(built, result).items():
+        duty = _duty(built, driver, resources, legs)
+        timeline = _timeline(built, driver, "A", budgets[driver])
+        ok, caused = legal_duty(duty, timeline, POLICY, lambda a, b: 0 if a == b else 30, kinds=("legal", "warning"))
+        assert ok, caused
+
+
+def test_cv_never_leaves_must_return_driver_away_from_base():
+    trips = (trip("T1", "A", "B", 360, 480), trip("T2", "B", "A", 500, 620), trip("T3", "A", "B", 700, 820))
+    built = with_budgets(trips, budget("1", must_return_to_base=True))
+    result = CVBoundedV1().solve(built, CONFIG)
+    trip_map = {t.id: t for t in trips}
+    for legs in duties(built, result).values():
+        assert trip_map[legs[-1][1]].end_station == "A"
+    assert {"T1", "T2"} <= {a.trip_id for a in result.assignments}
+    assert_no_rule_findings(built, result)
+
+
+def test_cv_never_gives_split_duty_to_driver_without_split_shifts():
+    trips = (trip("T1", "A", "A", 360, 480), trip("T2", "A", "A", 900, 1000))
+    built = with_budgets(trips, budget("1", split_shift_allowed=False))
+    result = CVBoundedV1().solve(built, CONFIG)
+    assert len(result.assignments) == 1 and len(result.unassigned_trip_ids) == 1
+    assert_no_rule_findings(built, result)
+
+
+def test_cv_covers_trip_with_another_driver_when_first_choice_breaks_rules():
+    trips = (trip("T1", "A", "B", 360, 480),)
+    built = with_budgets(trips, budget("1", must_return_to_base=True), budget("2"))
+    result = CVBoundedV1().solve(built, CONFIG)
+    assert [(a.resource_id, a.trip_id) for a in result.assignments] == [("PAIR_2", "T1")]
+    assert_no_rule_findings(built, result)
+
+
+def test_uncovered_trip_is_added_to_a_duty_it_fits():
+    trips = (trip("T1", "A", "B", 360, 480), trip("T2", "B", "A", 500, 620))
+    built = with_budgets(trips, budget("1"))
+    solver = BoundedCustomSolver()
+    solver.set_problem(Problem(problem_snapshot_to_legacy_dict(built)))
+    solver.rules = DutyRules(built)
+    first = Assignment("PAIR_1", "T1", 360, 480, "A", "B")
+    filled = fill_gaps(solver, built, [first])
+    assert [(a.resource_id, a.trip_id) for a in filled] == [("PAIR_1", "T1"), ("PAIR_1", "T2")]

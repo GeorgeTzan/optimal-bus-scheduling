@@ -28,7 +28,7 @@ from app.domain.optimization.contracts import (
     ProgressSink,
     SchedulingSolver,
 )
-from app.domain.workrules.budget import DriverDayBudget, legal_duty
+from app.domain.workrules.budget import DriverDayBudget, day_baseline, legal_duty
 from app.domain.workrules.facts import duty_facts
 from app.domain.workrules.policy import WorkRulePolicy
 from app.domain.workrules.timeline import DriverProfile, DriverTimeline, Duty, DutyTrip
@@ -38,13 +38,13 @@ from app.domain.optimization.cv_legacy import (
 )
 
 
-def _duty(problem: SolverProblem, driver_id: str, resources, assignments) -> Duty:
+def _duty(problem: SolverProblem, driver_id: str, resources, legs) -> Duty:
     origin = datetime.combine(problem.service_date, dtime(), timezone.utc)
     trips = {t.id: t for t in problem.trips}
-    legs = []
-    for assignment in assignments:
-        trip = trips[assignment.trip_id]
-        legs.append(DutyTrip(
+    duty_legs = []
+    for resource_id, trip_id in legs:
+        trip = trips[trip_id]
+        duty_legs.append(DutyTrip(
             trip_id=trip.id,
             start=origin + timedelta(minutes=trip.start_minutes),
             end=origin + timedelta(minutes=trip.end_minutes),
@@ -52,12 +52,13 @@ def _duty(problem: SolverProblem, driver_id: str, resources, assignments) -> Dut
             destination=trip.end_station,
             origin_is_depot=trip.origin_is_depot,
             destination_is_depot=trip.destination_is_depot,
-            vehicle_id=resources[assignment.resource_id].bus_id,
+            vehicle_id=resources[resource_id].bus_id,
             route_id=trip.route_id,
             urban=trip.urban,
             long_route=trip.long_route,
+            en_route_break_minutes=trip.en_route_break_minutes,
         ))
-    return Duty(driver_id, problem.service_date, tuple(legs), "draft")
+    return Duty(driver_id, problem.service_date, tuple(duty_legs), "draft")
 
 
 def _timeline(problem: SolverProblem, driver_id: str, home_station: str, budget: DriverDayBudget | None) -> DriverTimeline:
@@ -73,52 +74,100 @@ def _timeline(problem: SolverProblem, driver_id: str, home_station: str, budget:
     return DriverTimeline(driver_id, profile, (), None, problem.service_date, vehicles)
 
 
-def legal_assignments(problem: SolverProblem, assignments) -> tuple[Assignment, ...]:
-    assignments = tuple(assignments)
-    if problem.work_policy is None:
-        return assignments
-    policy = WorkRulePolicy.from_dict(problem.work_policy)
-    budgets = {b["driver_id"]: DriverDayBudget.from_dict(b) for b in problem.driver_budgets}
-    resources = {r.resource_id: r for r in problem.resources}
-    homes: Dict[str, str] = {}
-    for r in problem.resources:
-        homes.setdefault(str(r.driver_id), r.home_station)
-    mates = {trip_id: chain.trip_ids for chain in problem.chains for trip_id in chain.trip_ids}
-    index = {station: i for i, station in enumerate(problem.stations)}
-    origin = datetime.combine(problem.service_date, dtime(), timezone.utc)
+class DutyRules:
+    def __init__(self, problem: SolverProblem):
+        self.problem = problem
+        self.policy = WorkRulePolicy.from_dict(problem.work_policy)
+        self.budgets = {b["driver_id"]: DriverDayBudget.from_dict(b) for b in problem.driver_budgets}
+        self.resources = {r.resource_id: r for r in problem.resources}
+        self.resource_by_bus = {r.bus_id: r for r in problem.resources}
+        self.homes: Dict[str, str] = {}
+        for r in problem.resources:
+            self.homes.setdefault(str(r.driver_id), r.home_station)
+        self.starts = {t.id: (t.start_minutes, t.id) for t in problem.trips}
+        self.index = {station: i for i, station in enumerate(problem.stations)}
+        self.origin = datetime.combine(problem.service_date, dtime(), timezone.utc)
+        self.timelines: Dict[str, DriverTimeline] = {}
+        self.baselines: Dict[str, tuple] = {}
+        self.verdicts: Dict[tuple, bool] = {}
 
-    def transfer(a: str, b: str):
-        return problem.transfer_matrix[index[a]][index[b]] if a in index and b in index else None
+    def transfer(self, a: str, b: str):
+        return self.problem.transfer_matrix[self.index[a]][self.index[b]] if a in self.index and b in self.index else None
 
-    def fits(driver_id: str, items) -> bool:
-        if not items:
+    def shift_fits(self, bus_id, trip_ids) -> bool:
+        resource = self.resource_by_bus[bus_id]
+        return self.fits(str(resource.driver_id), [(resource.resource_id, trip_id) for trip_id in trip_ids])
+
+    def fits(self, driver_id: str, legs) -> bool:
+        if not legs:
             return True
-        budget = budgets.get(driver_id)
-        timeline = _timeline(problem, driver_id, homes[driver_id], budget)
-        duty = _duty(problem, driver_id, resources, items)
+        key = (driver_id, tuple(sorted(legs)))
+        if key not in self.verdicts:
+            self.verdicts[key] = self.judge(driver_id, sorted(legs, key=lambda leg: self.starts[leg[1]]))
+        return self.verdicts[key]
+
+    def judge(self, driver_id: str, legs) -> bool:
+        budget = self.budgets.get(driver_id)
+        if driver_id not in self.timelines:
+            self.timelines[driver_id] = _timeline(self.problem, driver_id, self.homes[driver_id], budget)
+            self.baselines[driver_id] = day_baseline(self.timelines[driver_id], self.policy, self.problem.service_date, self.transfer)
+        timeline = self.timelines[driver_id]
+        duty = _duty(self.problem, driver_id, self.resources, legs)
         if budget is not None:
-            facts = duty_facts(duty, timeline.profile, policy, transfer)
+            facts = duty_facts(duty, timeline.profile, self.policy, self.transfer)
             if (
-                facts.start < origin + timedelta(minutes=budget.earliest_start_minutes)
-                or facts.end > origin + timedelta(minutes=budget.latest_end_minutes)
+                facts.start < self.origin + timedelta(minutes=budget.earliest_start_minutes)
+                or facts.end > self.origin + timedelta(minutes=budget.latest_end_minutes)
                 or facts.work_minutes > budget.max_work_minutes
                 or facts.long_route_driving_minutes > budget.max_long_route_driving_minutes
             ):
                 return False
-        return legal_duty(duty, timeline, policy, transfer)[0]
+        return legal_duty(duty, timeline, self.policy, self.transfer, kinds=("legal", "warning"), baseline=self.baselines[driver_id])[0]
 
-    grouped: Dict[str, List[Assignment]] = {}
+
+def legal_assignments(problem: SolverProblem, assignments, rules: DutyRules | None = None) -> tuple[Assignment, ...]:
+    assignments = tuple(assignments)
+    if problem.work_policy is None:
+        return assignments
+    rules = rules or DutyRules(problem)
+    mates = {trip_id: chain.trip_ids for chain in problem.chains for trip_id in chain.trip_ids}
+    released: set = set()
+    while True:
+        grouped: Dict[str, List[Assignment]] = {}
+        for assignment in assignments:
+            if assignment.resource_id in rules.resources and assignment.trip_id not in released:
+                grouped.setdefault(str(rules.resources[assignment.resource_id].driver_id), []).append(assignment)
+        before = len(released)
+        for driver_id, items in grouped.items():
+            items = sorted(items, key=lambda a: (a.start_minutes, a.trip_id))
+            while not rules.fits(driver_id, [(a.resource_id, a.trip_id) for a in items]):
+                dropped = set(mates.get(items[-1].trip_id, (items[-1].trip_id,)))
+                released |= dropped
+                items = [a for a in items if a.trip_id not in dropped]
+        if len(released) == before:
+            return tuple(a for a in assignments if a.trip_id not in released)
+
+
+def fill_gaps(solver, problem: SolverProblem, assignments) -> List[Assignment]:
+    trips = {t.id: t for t in problem.trips}
+    duties: Dict[str, List[str]] = {}
     for assignment in assignments:
-        if assignment.resource_id in resources:
-            grouped.setdefault(str(resources[assignment.resource_id].driver_id), []).append(assignment)
-    released = set()
-    for driver_id, items in grouped.items():
-        items = sorted(items, key=lambda a: (a.start_minutes, a.trip_id))
-        while not fits(driver_id, items):
-            dropped = set(mates.get(items[-1].trip_id, (items[-1].trip_id,)))
-            released |= dropped
-            items = [a for a in items if a.trip_id not in dropped]
-    return tuple(a for a in assignments if a.trip_id not in released)
+        duties.setdefault(assignment.resource_id, []).append(assignment.trip_id)
+    taken = {a.trip_id for a in assignments}
+    added: List[Assignment] = []
+    for trip in sorted(problem.trips, key=lambda t: (t.start_minutes, t.id)):
+        group = solver.trip_to_chain[trip.id].trip_ids if trip.id in solver.trip_to_chain else (trip.id,)
+        if taken & set(group):
+            continue
+        for resource in problem.resources:
+            legs = sorted(duties.get(resource.resource_id, []) + list(group), key=lambda t: (trips[t].start_minutes, t))
+            if solver.is_valid((resource.bus_id, legs))[0]:
+                duties[resource.resource_id] = legs
+                taken |= set(group)
+                added += [Assignment(resource.resource_id, t, trips[t].start_minutes, trips[t].end_minutes,
+                                     trips[t].start_station, trips[t].end_station) for t in group]
+                break
+    return [*assignments, *added]
 
 
 class BoundedCustomSolver(CustomSolver):
@@ -136,8 +185,16 @@ class BoundedCustomSolver(CustomSolver):
         self.seed = seed
         self.cp_sat_workers = cp_sat_workers
         self.subproblem_timeout_seconds = subproblem_timeout_seconds
+        self.rules: DutyRules | None = None
 
     def is_valid(self, shift):
+        valid, error = self.is_valid_partial(shift)
+        bus_id, legs = shift
+        if valid and bus_id is not None and self.rules is not None and not self.rules.shift_fits(bus_id, legs):
+            return False, "work_rules"
+        return valid, error
+
+    def is_valid_partial(self, shift):
         """The reference legality check plus frozen availability: trips and travel must fit usable windows, and chain mates must too."""
         valid, error = super().is_valid(shift)
         bus_id, legs = shift
@@ -174,13 +231,12 @@ class BoundedCustomSolver(CustomSolver):
         return sum(t.duration_minutes for t in trips if t.raw.get("longRoute", True)) <= raw["maxWorkMinutes"]
 
     def sanitize(self, solution: Solution) -> Solution:
-        """The shared greedy seed knows nothing about absences. Release trips availability forbids; a shift left invalid is released whole."""
+        """The shared greedy seed knows nothing about absences or work rules. Trim each shift from its end until it is valid."""
         states, released = [], list(solution.unassigned_trips)
         for duty in solution.assignments:
-            kept = [trip for trip in duty.assigned_trip_ids if self.is_valid((duty.bus_id, [trip]))[0]]
-            released += [trip for trip in duty.assigned_trip_ids if trip not in kept]
-            if kept and not self.is_valid((duty.bus_id, kept))[0]:
-                released, kept = released + kept, []
+            kept = list(duty.assigned_trip_ids)
+            while kept and not self.is_valid((duty.bus_id, kept))[0]:
+                released.append(kept.pop())
             states.append({"busId": duty.bus_id, "driverId": duty.driver_id, "homeStation": duty.home_station, "assignedTrips": kept,
                            "totalDrivingTime": duty.total_driving_time, "totalIdleTime": duty.total_idle_time, "baseMismatch": duty.base_mismatch})
         return Solution(solution.solver_name, states, released, solution.metrics, solution.solve_time, solution.raw)
@@ -264,7 +320,7 @@ class BoundedCustomSolver(CustomSolver):
 
             for bus_id in pre_bus:
                 for leg_id in pre_leg:
-                    success, _ = self.is_valid((bus_id, [leg_id]))
+                    success, _ = self.is_valid_partial((bus_id, [leg_id]))
                     if success:
                         graph.add_edge(bus_id, leg_id)
 
@@ -416,6 +472,7 @@ class CVBoundedV1(SchedulingSolver):
             subproblem_timeout_seconds=min(5.0, config.time_limit_seconds / max(1, config.iterations)),
         )
         solver.set_problem(legacy_problem)
+        solver.rules = DutyRules(problem) if problem.work_policy is not None else None
 
         start_time = time.time()
         sol_best, cost_best = None, float("inf")
@@ -424,7 +481,7 @@ class CVBoundedV1(SchedulingSolver):
             if i == 0:
                 greedy = GreedySASolver(use_sa=False)
                 sol = greedy.solve(legacy_problem)
-                if problem.availability_enforced or problem.driver_budgets:
+                if problem.availability_enforced or problem.driver_budgets or solver.rules is not None:
                     sol = solver.sanitize(sol)
             else:
                 sol = sol_best
@@ -450,7 +507,7 @@ class CVBoundedV1(SchedulingSolver):
                         if t:
                             observed.append(Assignment(bus_lookup[duty.bus_id], t.id, t.start_minutes,
                                                        t.end_minutes, t.start_station, t.end_station))
-                progress.candidate(legal_assignments(problem, observed), i + 1)
+                progress.candidate(legal_assignments(problem, observed, solver.rules), i + 1)
 
             if progress is not None:
                 progress.update(
@@ -485,7 +542,7 @@ class CVBoundedV1(SchedulingSolver):
                         )
                     )
 
-        assignments = list(legal_assignments(problem, assignments))
+        assignments = list(legal_assignments(problem, fill_gaps(solver, problem, legal_assignments(problem, assignments, solver.rules)), solver.rules))
         assigned_trip_ids = {a.trip_id for a in assignments}
         unassigned_trips = [t.id for t in problem.trips if t.id not in assigned_trip_ids]
         metrics = dict(sol_best.metrics)

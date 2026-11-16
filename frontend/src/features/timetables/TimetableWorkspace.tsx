@@ -219,6 +219,12 @@ export function TimetableWorkspace({ onPrepare }: { onPrepare: () => void }) {
                           +{row.arrival_day_offset} {el ? "ημέρα" : "day"}
                         </small>
                       )}
+                      {row.en_route_break_minutes > 0 && (
+                        <small>
+                          {el ? "Στάση καθ' οδόν" : "En-route break"}{" "}
+                          {row.en_route_break_minutes}′
+                        </small>
+                      )}
                     </td>
                     <td>
                       {row.operating_weekdays
@@ -281,6 +287,9 @@ export function TimetableWorkspace({ onPrepare }: { onPrepare: () => void }) {
                       {row.arrival_time?.slice(0, 5)}
                       {row.arrival_day_offset > 0
                         ? ` (+${row.arrival_day_offset})`
+                        : ""}
+                      {row.en_route_break_minutes > 0
+                        ? ` · ${el ? "Στάση καθ' οδόν" : "En-route break"} ${row.en_route_break_minutes}′`
                         : ""}
                     </small>
                   </div>
@@ -417,6 +426,7 @@ function TimetableForm({
     [serviceType, setServiceType] = useState<"intercity" | "urban">(
       row?.service_type ?? "intercity",
     ),
+    [stop, setStop] = useState(row?.en_route_break_minutes?.toString() ?? "0"),
     [days, setDays] = useState<number[]>(row?.operating_weekdays ?? []),
     [from, setFrom] = useState(row?.valid_from ?? ""),
     [until, setUntil] = useState(row?.valid_until ?? ""),
@@ -440,6 +450,7 @@ function TimetableForm({
     offset,
     distance,
     serviceType,
+    stop,
     days,
     from,
     until,
@@ -516,6 +527,7 @@ function TimetableForm({
             allowed_bus_types: types,
             distance_km: distance ? Number(distance) : null,
             service_type: serviceType,
+            en_route_break_minutes: stop ? Number(stop) : 0,
             is_active: active,
           }),
         }),
@@ -655,6 +667,26 @@ function TimetableForm({
                     <option value="urban">{el ? "Αστικό" : "Urban"}</option>
                   </select>
                 </Field>
+                <Field
+                  label={
+                    el ? "Στάση καθ' οδόν (λεπτά)" : "En-route break (minutes)"
+                  }
+                >
+                  <input
+                    type="number"
+                    min={0}
+                    max={240}
+                    step={1}
+                    value={stop}
+                    aria-describedby="timetable-stop-help"
+                    onChange={(e) => setStop(e.target.value)}
+                  />
+                </Field>
+                <p id="timetable-stop-help" className="resource-help">
+                  {el
+                    ? "Χρόνος στάσης κατά τη διαδρομή· μετράει ως διάλειμμα οδηγού."
+                    : "Stop time during the trip; counts as a driver break."}
+                </p>
                 <details>
                   <summary>
                     {el ? "Προαιρετική απόσταση" : "Optional distance"}

@@ -8,8 +8,9 @@ from app.domain.imports.template_schema import WEEKDAYS, ARRIVAL_DAYS, CHOICES
 
 
 class CellValueError(ValueError):
-    def __init__(self, code):
+    def __init__(self, code, key=None):
         self.code = code
+        self.key = key
 
 
 def parse_cell_value(value, kind, locale):

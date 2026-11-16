@@ -72,3 +72,8 @@ def resolve_service_day(rule:CalendarRule,service_date:date,iana_timezone:str,
     if result.duration_minutes<=0:
         raise ValueError('Arrival must follow departure; choose next-day arrival for an overnight trip')
     return result
+
+
+def scheduled_minutes(departure:str,arrival:str,arrival_day_offset:int)->int:
+    def minutes(clock):hours,rest=clock.split(':');return int(hours)*60+int(rest)
+    return arrival_day_offset*1440+minutes(arrival)-minutes(departure)

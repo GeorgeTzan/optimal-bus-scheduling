@@ -134,6 +134,12 @@ function words(v: Violation, tz: string, el: boolean): Text {
   }
 }
 
+export function findingText(v: Violation, tz: string, el: boolean, labels: FindingLabels) {
+  const driver = labels.driver(v.entity_ids[0]);
+  const sentence = isWorkRule(v) ? words(v, tz, el)[el ? 0 : 1] : v.message;
+  return driver ? `${driver}: ${sentence}` : sentence;
+}
+
 const origins: Record<string, Text> = {
   "Company rule": ["Κανόνας εταιρείας", "Company rule"],
   "Driver restriction": ["Περιορισμός οδηγού", "Driver restriction"],
@@ -181,7 +187,7 @@ export function FindingsList({
             <span className="finding-text">
               <span>
                 {driver && <strong>{driver}: </strong>}
-                {words(v, timezone, el)[lang]}
+                {isWorkRule(v) ? words(v, timezone, el)[lang] : v.message}
               </span>
               {detail && <small>{detail}</small>}
             </span>

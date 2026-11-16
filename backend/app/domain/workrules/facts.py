@@ -104,14 +104,35 @@ def duty_facts(
     second_piece = policy.value("break_split_second")
     urban_min = policy.value("urban_break")
 
+    def rest(minutes: int, resume: datetime) -> None:
+        nonlocal run, run_start, pending_piece, urban_break
+        if minutes >= full or (pending_piece and minutes >= second_piece):
+            run = 0
+            run_start = resume
+            pending_piece = False
+        elif minutes >= first_piece:
+            pending_piece = True
+        if urban and minutes >= urban_min:
+            urban_break = True
+
     for index, trip in enumerate(trips):
-        length = _minutes(trip.end - trip.start)
+        stop = min(trip.en_route_break_minutes, _minutes(trip.end - trip.start))
+        length = _minutes(trip.end - trip.start) - stop
         driving += length
         if trip.long_route:
             long_route += length
-        run += length
-        if run > longest:
-            longest, longest_start = run, run_start
+        halves = (length // 2, length - length // 2) if stop else (length,)
+        for half, piece in enumerate(halves):
+            if half:
+                stop_start = trip.start + timedelta(minutes=halves[0])
+                stop_end = stop_start + timedelta(minutes=stop)
+                kind = "work" if _classify(stop, policy) == "work" else "break"
+                gaps.append(Gap(stop_start, stop_end, kind))
+                if kind != "work":
+                    rest(stop, stop_end)
+            run += piece
+            if run > longest:
+                longest, longest_start = run, run_start
         if index + 1 == len(trips):
             break
         nxt = trips[index + 1]
@@ -137,14 +158,7 @@ def duty_facts(
         if remaining > 0:
             gaps.append(Gap(trip.end + timedelta(minutes=transfer), nxt.start, kind))
         if kind != "work":
-            if remaining >= full or (pending_piece and remaining >= second_piece):
-                run = 0
-                run_start = nxt.start
-                pending_piece = False
-            elif remaining >= first_piece:
-                pending_piece = True
-            if urban and remaining >= urban_min:
-                urban_break = True
+            rest(remaining, nxt.start)
 
     run += dead_back
     if run > longest:

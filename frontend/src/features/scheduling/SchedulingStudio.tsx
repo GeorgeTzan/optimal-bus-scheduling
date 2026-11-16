@@ -711,6 +711,7 @@ export function SchedulingStudio({
             </div>
             <SchedulingTimeline
               displayContext={displayContext}
+              labels={findingLabels(persistedRevision, trips)}
               resources={resources}
               trips={visible}
               selectedTripId={selected}
@@ -944,6 +945,7 @@ export function SchedulingStudio({
         <AssignmentInspector
           displayContext={displayContext}
           trip={selectedTrip}
+          labels={findingLabels(persistedRevision, trips)}
           resources={resources}
           isLockedRevision={
             readonly || busy || !!isOptimizing || isRestoringRun

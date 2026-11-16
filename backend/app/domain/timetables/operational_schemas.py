@@ -6,6 +6,7 @@ from app.domain.resources.schemas import Code,validate_patch
 from app.domain.timetables.calendar import CalendarRule,CalendarException,Clock,ArrivalDay,Fold,Weekday
 
 Positive=Annotated[int,Field(strict=True,ge=1)]
+BreakMinutes=Annotated[int,Field(strict=True,ge=0,le=240)]
 
 class TimetableCreate(CalendarRule):
     trip_code:Code
@@ -14,6 +15,7 @@ class TimetableCreate(CalendarRule):
     allowed_bus_types:tuple[Code,...]=Field(min_length=1,max_length=64)
     distance_km:float|None=Field(default=None,ge=0,le=10000)
     service_type:Literal['intercity','urban']='intercity'
+    en_route_break_minutes:BreakMinutes=0
     is_active:bool=True
 
     @field_validator('allowed_bus_types')
@@ -36,6 +38,7 @@ class TimetablePatch(BaseModel):
     allowed_bus_types:tuple[Code,...]|None=None
     distance_km:float|None=Field(default=None,ge=0,le=10000)
     service_type:Literal['intercity','urban']|None=None
+    en_route_break_minutes:BreakMinutes|None=None
     is_active:bool|None=None
     @model_validator(mode='after')
     def changes(self):

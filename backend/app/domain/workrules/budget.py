@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import date, datetime, timedelta
-from typing import Any, Callable, Mapping
+from typing import Any, Callable, Mapping, Sequence
 
 from app.domain.workrules.evaluate import evaluate
 from app.domain.workrules.facts import DutyFacts, duty_parts
@@ -157,10 +157,22 @@ def legal_duty(
     transfer_minutes: Callable[[str, str], int | None],
     *,
     tz: str = "Europe/Athens",
+    kinds: tuple[str, ...] = ("legal",),
+    baseline: Sequence[WorkRuleFinding] | None = None,
 ) -> tuple[bool, tuple[WorkRuleFinding, ...]]:
     day = duty.service_date
-    focus = (day, day + timedelta(days=7))
-    with_draft = evaluate(timeline.with_day(day, duty), policy, focus, transfer_minutes, tz=tz)
-    without_draft = evaluate(timeline.with_day(day, None), policy, focus, transfer_minutes, tz=tz)
-    caused = tuple(f for f in caused_by(with_draft, without_draft) if f.kind == "legal")
+    with_draft = evaluate(timeline.with_day(day, duty), policy, (day, day + timedelta(days=7)), transfer_minutes, tz=tz)
+    without_draft = day_baseline(timeline, policy, day, transfer_minutes, tz=tz) if baseline is None else baseline
+    caused = tuple(f for f in caused_by(with_draft, without_draft) if f.kind in kinds)
     return not caused, caused
+
+
+def day_baseline(
+    timeline: DriverTimeline,
+    policy: WorkRulePolicy,
+    day: date,
+    transfer_minutes: Callable[[str, str], int | None],
+    *,
+    tz: str = "Europe/Athens",
+) -> tuple[WorkRuleFinding, ...]:
+    return tuple(evaluate(timeline.with_day(day, None), policy, (day, day + timedelta(days=7)), transfer_minutes, tz=tz))

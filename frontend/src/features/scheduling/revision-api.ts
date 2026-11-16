@@ -109,9 +109,7 @@ export function studioTrips(rev: PersistedRevision): StudioTrip[] {
       allowedBusTypes: t.allowed_bus_types,
       isLocked: assignment?.is_locked ?? false,
       hasViolation: errors.length > 0,
-      violationMessage: errors
-        .map((v) => `${v.rule_id}: ${v.message}`)
-        .join("\n"),
+      violations: errors,
       distanceKm:
         source.get(t.id)?.distance_km ?? source.get(t.id)?.properties?.distance,
       roadType: source.get(t.id)?.classification?.roadType,

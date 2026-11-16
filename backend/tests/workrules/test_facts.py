@@ -1,6 +1,7 @@
+from dataclasses import replace
 from datetime import date, datetime, timezone
 
-from app.domain.workrules.facts import duty_facts
+from app.domain.workrules.facts import Gap, duty_facts
 from app.domain.workrules.policy import build_policy
 from app.domain.workrules.timeline import (
     Baseline,
@@ -151,3 +152,46 @@ def test_timeline_round_trip_and_with_day():
     assert DriverTimeline.from_dict(tl.to_dict()) == tl
     assert tl.with_day(date(2026, 3, 2), None).duties == ()
     assert tl.with_day(date(2026, 3, 3), d).duties[-1] is d
+
+
+def long_trip(stop, od=True, dd=True):
+    return replace(trip("t", utc(2, 8), utc(2, 13), od=od, dd=dd), en_route_break_minutes=stop)
+
+
+def test_long_trip_without_stop_runs_continuously():
+    f = facts(duty(long_trip(0)))
+    assert f.longest_driving_without_break == 300
+    assert f.driving_minutes == 300
+
+
+def test_full_en_route_stop_resets_continuous_driving():
+    plain, stopped = facts(duty(long_trip(0, False, False))), facts(duty(long_trip(45, False, False)))
+    assert stopped.driving_minutes == 255 + 25
+    assert stopped.longest_driving_without_break == 15 + 127
+    assert stopped.work_minutes == plain.work_minutes
+    assert stopped.gaps == (Gap(utc(2, 10, 7), utc(2, 10, 52), "break"),)
+    assert stopped.interruptions == 0
+
+
+def test_short_en_route_stop_is_only_a_first_piece():
+    f = facts(duty(long_trip(20)))
+    assert f.longest_driving_without_break == 280
+    assert f.work_minutes == facts(duty(long_trip(0))).work_minutes
+
+
+def test_long_en_route_stop_counts_as_work_not_interruption():
+    plain, stopped = facts(duty(long_trip(0))), facts(duty(long_trip(90)))
+    assert stopped.work_minutes == plain.work_minutes
+    assert stopped.interruptions == 0
+    assert stopped.longest_driving_without_break == 105
+
+
+def test_short_en_route_stop_completes_a_split_break():
+    d = duty(trip("a", utc(2, 6), utc(2, 7), od=True, dd=True), replace(long_trip(30), start=utc(2, 7, 20), end=utc(2, 12, 20)))
+    assert facts(d).longest_driving_without_break == 60 + 135
+
+
+def test_stored_trip_without_stop_loads_as_zero():
+    stored = trip("t", utc(2, 8), utc(2, 9)).to_dict()
+    stored.pop("en_route_break_minutes")
+    assert DutyTrip.from_dict(stored).en_route_break_minutes == 0

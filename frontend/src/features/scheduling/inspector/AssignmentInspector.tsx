@@ -16,10 +16,12 @@ import {
 } from "lucide-react";
 import { useI18n } from "../../../i18n/context";
 import type { StudioTrip, StudioResource } from "../types";
+import { FindingsList, type FindingLabels } from "../WorkRulesTab";
 import { scheduleDisplay, type ScheduleDisplayContext } from "../display";
 interface Props {
   displayContext?: ScheduleDisplayContext;
   trip: StudioTrip | null;
+  labels: FindingLabels;
   resources: StudioResource[];
   isLockedRevision?: boolean;
   onClose: () => void;
@@ -34,6 +36,7 @@ interface Props {
 export function AssignmentInspector({
   displayContext,
   trip,
+  labels,
   resources,
   isLockedRevision,
   onClose,
@@ -332,7 +335,12 @@ export function AssignmentInspector({
                           ? "Εντοπίστηκαν παραβιάσεις"
                           : "Rule violations found"}
                       </strong>
-                      <p>{trip.violationMessage}</p>
+                      <FindingsList
+                        violations={trip.violations ?? []}
+                        el={el}
+                        timezone={displayContext?.timezone ?? ""}
+                        labels={labels}
+                      />
                     </div>
                   </div>
                 ) : (

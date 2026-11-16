@@ -290,3 +290,16 @@ def test_operational_problem_carries_route_facts_and_worker_budgets(identity_set
     assert budget['earliest_start_minutes'] > early.start_minutes
     result = CVBoundedV1().solve(attached, SolverConfig(seed=1, time_limit_seconds=10, iterations=1))
     assert all(a.resource_id != crew(tuesday, FIRST) for a in result.assignments if a.trip_id == early.id)
+
+
+def test_en_route_break_reaches_the_problem_and_the_rule_check(identity_setup):
+    from app.domain.scheduling.snapshots import decode_problem
+    stops = (('a', 'b', {'trip_code': 'STOP', 'departure_time': '06:00', 'arrival_time': '11:00', 'arrival_day_offset': 0, 'operating_weekdays': [0], 'en_route_break_minutes': 45}),
+             ('a', 'b', {'trip_code': 'NONSTOP', 'departure_time': '12:00', 'arrival_time': '17:00', 'arrival_day_offset': 0, 'operating_weekdays': [0]}))
+    client, headers, made, vehicle = fleet(identity_setup, stops)
+    monday = draft(client, headers, MONDAY)
+    trips = {t.id: t for t in decode_problem(monday['problem']).trips}
+    assert trips[trip(monday, 'STOP')].en_route_break_minutes == 45
+    assert trips[trip(monday, 'NONSTOP')].en_route_break_minutes == 0
+    [only] = found(assign(client, headers, monday, {'STOP': FIRST, 'NONSTOP': SECOND})['verification'], 'WR_CONTINUOUS_DRIVING')
+    assert trip(monday, 'NONSTOP') in str(only) and trip(monday, 'STOP') not in str(only)

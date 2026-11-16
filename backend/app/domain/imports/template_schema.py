@@ -106,6 +106,7 @@ SHEETS = {
             C("distance_km", "Distance km", "Απόσταση χλμ.", "decimal"),
             C("is_active", "Active", "Ενεργό", "boolean"),
             C("service_type", "Service type", "Τύπος υπηρεσίας", "service_type"),
+            C("en_route_break_minutes", "En-route break (minutes)", "Στάση καθ' οδόν (λεπτά)", "integer"),
         ),
     ),
     "pairings": (
