@@ -33,6 +33,7 @@ import type { CandidatePlan } from "./CandidateComparisonTray";
 import type { Violation } from "./revision-api";
 import { WorkRulesTab, blocksApproval, findingLabels, isWorkRule } from "./WorkRulesTab";
 import { OverrideDialog } from "./OverrideDialog";
+import { PublishReason } from "./PublishReason";
 interface Props {
   initialRevision: StudioRevision;
   persistedRevision: PersistedRevision;
@@ -63,7 +64,11 @@ interface Props {
     resourceId: string,
     locked?: boolean,
   ) => Promise<void>;
-  onRevisionAction: (action: string) => Promise<void>;
+  onRevisionAction: (
+    action: string,
+    patches?: undefined,
+    extra?: { uncovered_reason?: string; uncovered_note?: string },
+  ) => Promise<void>;
 }
 export function SchedulingStudio({
   initialRevision: revision,
@@ -114,6 +119,7 @@ export function SchedulingStudio({
     "trips" | "conflicts" | "unassigned" | "candidates" | "rules"
   >("trips");
   const [overriding, setOverriding] = useState<Violation | null>(null);
+  const [reasonFor, setReasonFor] = useState<number | null>(null);
   const [onlyLocked, setOnlyLocked] = useState(false);
   const [iterations, setIterations] = useState(3);
   const [busy, setBusy] = useState(false);
@@ -172,6 +178,14 @@ export function SchedulingStudio({
         ? "schedule.approve"
         : "schedule.publish",
   );
+  const cancelled = new Set(
+    persistedRevision.source_trips
+      .filter((trip) => trip.is_cancelled)
+      .map((trip) => trip.id),
+  );
+  const uncovered = persistedRevision.assignments.filter(
+    (item) => item.resource_id === "UNASSIGNED" && !cancelled.has(item.trip_id),
+  ).length;
   const execute = async (work: () => Promise<void>) => {
     setBusy(true);
     setNotice(null);
@@ -494,17 +508,22 @@ export function SchedulingStudio({
                 : `${blockingRules} legal finding${blockingRules === 1 ? "" : "s"} block this request`
               : undefined
           }
-          onClick={() =>
-            execute(() =>
-              onRevisionAction(
-                revision.status === "draft"
-                  ? "request-approval"
-                  : revision.status === "approval_requested"
-                    ? "approve"
-                    : "publish",
-              ),
-            )
-          }
+          onClick={() => {
+            if (revision.status === "draft" || revision.status === "approval_requested")
+              return execute(() =>
+                onRevisionAction(revision.status === "draft" ? "request-approval" : "approve"),
+              );
+            if (uncovered > 0) return setReasonFor(uncovered);
+            return execute(async () => {
+              try {
+                await onRevisionAction("publish");
+              } catch (failure) {
+                const { code, uncovered: missing } = failure as { code?: string; uncovered?: number };
+                if (code !== "uncovered_reason_required") throw failure;
+                setReasonFor(missing ?? 1);
+              }
+            });
+          }}
         >
           <Send size={14} />
           {revision.status === "draft"
@@ -969,6 +988,20 @@ export function SchedulingStudio({
           onDone={(saved) => {
             setOverriding(null);
             onSaveChange(saved, revision.revisionId);
+          }}
+        />
+      )}
+      {reasonFor !== null && (
+        <PublishReason
+          count={reasonFor}
+          el={el}
+          onCancel={() => setReasonFor(null)}
+          onConfirm={async (reason, note) => {
+            await onRevisionAction("publish", undefined, {
+              uncovered_reason: reason,
+              ...(note ? { uncovered_note: note } : {}),
+            });
+            setReasonFor(null);
           }}
         />
       )}

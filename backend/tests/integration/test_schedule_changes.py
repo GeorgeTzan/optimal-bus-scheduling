@@ -70,7 +70,8 @@ def test_concurrent_requests_with_one_id_have_one_successor(identity_setup):
 
 
 def transition(client,headers,revision,action):
-    return client.post('/api/v1/scheduling/revisions/'+revision['revision_id']+'/'+action,headers=headers,json={'version':revision['version']})
+    body={'version':revision['version'],**({'uncovered_reason':'no_driver'} if action=='publish' else {})}
+    return client.post('/api/v1/scheduling/revisions/'+revision['revision_id']+'/'+action,headers=headers,json=body)
 
 
 def test_a_newer_publication_blocks_an_already_prepared_successor(identity_setup):

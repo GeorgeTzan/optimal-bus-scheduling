@@ -14,6 +14,7 @@ const views: ShellTab[] = [
   "office",
   "team",
   "rules",
+  "reports",
   "archive",
 ];
 const entities: (Entity | "all")[] = [

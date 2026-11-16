@@ -21,6 +21,7 @@ from app.domain.scheduling.snapshots import RevisionSnapshot, encode_problem, de
 from app.domain.optimization.contracts import Assignment
 from app.domain.verification.verifier import HardRuleVerifier
 from app.domain.workrules.loader import load_work_context
+from app.domain.reports.models import REASONS
 
 router = APIRouter(prefix='/api/v1/scheduling', tags=['scheduling'])
 
@@ -30,6 +31,8 @@ writer = require_permission('schedule.write')
 
 class VersionRequest(BaseModel):
     version: int = Field(ge=1)
+    uncovered_reason: Optional[Literal[*REASONS]] = None
+    uncovered_note: Optional[str] = Field(None, max_length=500)
 
 
 class AssignmentPatch(BaseModel):
@@ -101,9 +104,9 @@ def serialize(db, rev, emergency_drivers=None):
                 verification=asdict(verify(db, rev, emergency_drivers)))
 
 
-def audit(db, rev, user, action):
+def audit(db, rev, user, action, **details):
     db.add(SchedulingAuditLog(tenant_id=rev.tenant_id, revision_id=rev.revision_id, actor=str(user.id),
-                             action=action, details={'version': rev.version}))
+                             action=action, details={'version': rev.version, **details}))
 
 
 @router.get('/revisions/active')
@@ -315,12 +318,22 @@ def transition(rid: str, action: str, req: VersionRequest, user: User = Depends(
         approval = db.query(ApprovalRequest).filter_by(tenant_id=user.ktel_id, revision_id=rid, status='approved').first()
         if rev.status != 'approved' or not approval:
             raise HTTPException(409, 'Approved revision required')
+        uncovered = sum(1 for row in rows_for(db, rev) if row.resource_id == 'UNASSIGNED' and not row.is_cancelled)
+        reason = note = None
+        if uncovered:
+            if req.uncovered_reason is None:
+                raise HTTPException(422, {'code': 'uncovered_reason_required', 'message': 'Say why some trips have no driver before publishing.', 'uncovered': uncovered})
+            reason = req.uncovered_reason
+            note = (req.uncovered_note or '').strip() or None
+            if reason == 'other' and note is None:
+                raise HTTPException(422, {'code': 'uncovered_note_required', 'message': 'Describe the reason when choosing other.', 'uncovered': uncovered})
         db.add(Publication(publication_id=str(uuid.uuid4()), tenant_id=user.ktel_id, revision_id=rid,
-                           published_by=str(user.id), verification_report=asdict(report)))
+                           published_by=str(user.id), verification_report=asdict(report),
+                           uncovered_reason=reason, uncovered_note=note))
         rev.status = 'published'
     rev.version += 1
     rev.updated_at = datetime.now(timezone.utc)
-    audit(db, rev, user, action)
+    audit(db, rev, user, action, **({'uncovered_reason': reason, 'uncovered_note': note} if action == 'publish' else {}))
     db.flush()
     response = serialize(db, rev)
     db.commit()

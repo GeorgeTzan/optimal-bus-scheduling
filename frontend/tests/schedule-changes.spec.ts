@@ -37,7 +37,7 @@ async function setup(page: Page, published: boolean) {
     for (const action of ["request-approval", "approve", "publish"]) {
       response = await page.request.post(
         `/api/v1/scheduling/revisions/${revision.revision_id}/${action}`,
-        { headers: await headers(page), data: { version: revision.version } },
+        { headers: await headers(page), data: { version: revision.version, ...(action === "publish" ? { uncovered_reason: "no_driver" } : {}) } },
       );
       expect(response.ok(), await response.text()).toBeTruthy();
       revision = await response.json();

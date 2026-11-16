@@ -13,6 +13,7 @@ import {
   Route,
   ClipboardList,
   Scale,
+  FileBarChart,
   Ellipsis,
 } from "lucide-react";
 import { useAuth } from "../../features/auth/AuthContext";
@@ -86,6 +87,7 @@ export function Shell({
     { id: "team", icon: Users, el: "Ομάδα", en: "Team" },
     { id: "rules", icon: Scale, el: "Κανόνες εργασίας", en: "Work rules" },
     { id: "imports", icon: Upload, el: "Εισαγωγές", en: "Data imports" },
+    { id: "reports", icon: FileBarChart, el: "Αναφορές", en: "Reports" },
   ] as const;
   return (
     <div className={`app-shell ${collapsed ? "sidebar-collapsed" : ""} ${menuOpen ? "menu-open" : ""}`}>
@@ -115,7 +117,7 @@ export function Shell({
         <div className="nav-caption">{el ? "ΧΩΡΟΣ ΕΡΓΑΣΙΑΣ" : "WORKSPACE"}</div>
         <nav aria-label={el ? "Κύρια πλοήγηση" : "Main navigation"}>
           {items.filter((item) => {
-            const capability = item.id === "team" ? "members.manage" : item.id === "imports" ? "imports.read" : ["drivers","fleet","timetables","planning","dashboard","rules"].includes(item.id) ? "resources.read" : "schedule.read";
+            const capability = item.id === "team" ? "members.manage" : item.id === "imports" ? "imports.read" : item.id === "reports" ? "reports.read" : ["drivers","fleet","timetables","planning","dashboard","rules"].includes(item.id) ? "resources.read" : "schedule.read";
             return user?.permissions.includes(capability);
           }).map((item) => (
             <button

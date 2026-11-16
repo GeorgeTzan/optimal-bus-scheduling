@@ -17,7 +17,7 @@ test("approved leave shows how many trips need review, lists them, and leads to 
   const headers = await csrf(page);
   let revision = await (await page.request.get("/api/v1/scheduling/revisions/active?service_date=" + day)).json();
   for (const action of ["request-approval", "approve", "publish"]) {
-    const response = await page.request.post(`/api/v1/scheduling/revisions/${revision.revision_id}/${action}`, { headers, data: { version: revision.version } });
+    const response = await page.request.post(`/api/v1/scheduling/revisions/${revision.revision_id}/${action}`, { headers, data: { version: revision.version, ...(action === "publish" ? { uncovered_reason: "no_driver" } : {}) } });
     expect(response.ok(), await response.text()).toBeTruthy();
     revision = await response.json();
   }
@@ -86,7 +86,7 @@ test("a day with two absent drivers is repaired in one reviewed change and then 
     return response.json();
   };
   let revision = await (await page.request.get("/api/v1/scheduling/revisions/active?service_date=" + day)).json();
-  for (const action of ["request-approval", "approve", "publish"]) revision = await post(`/api/v1/scheduling/revisions/${revision.revision_id}/${action}`, { version: revision.version });
+  for (const action of ["request-approval", "approve", "publish"]) revision = await post(`/api/v1/scheduling/revisions/${revision.revision_id}/${action}`, { version: revision.version, ...(action === "publish" ? { uncovered_reason: "no_driver" } : {}) });
   const me = ((await (await page.request.get("/api/v1/identity/members")).json()).members as { id: number }[])[0]!.id;
   await post("/api/v1/office/approval-routes", { request_id: crypto.randomUUID(), membership_id: me });
   const drivers = (await (await page.request.get("/api/v1/drivers?page_size=10")).json()).items as { id: number }[];
@@ -118,7 +118,7 @@ test("a day with two absent drivers is repaired in one reviewed change and then 
   let successor = await (await page.request.get("/api/v1/scheduling/revisions/active?service_date=" + day)).json();
   expect(successor.status).toBe("draft");
   expect(successor.revision_id).not.toBe(revision.revision_id);
-  for (const action of ["request-approval", "approve", "publish"]) successor = await post(`/api/v1/scheduling/revisions/${successor.revision_id}/${action}`, { version: successor.version });
+  for (const action of ["request-approval", "approve", "publish"]) successor = await post(`/api/v1/scheduling/revisions/${successor.revision_id}/${action}`, { version: successor.version, ...(action === "publish" ? { uncovered_reason: "no_driver" } : {}) });
   await page.getByRole("button", { name: "Office", exact: true }).click();
   await page.getByLabel("Month").fill("2026-10");
   await page.getByRole("button", { name: "Affected trips", exact: true }).click();

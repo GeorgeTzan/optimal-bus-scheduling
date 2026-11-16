@@ -22,7 +22,7 @@ test("a linked driver sees only own duties on a phone, acknowledges them, reques
   await expect(page.getByRole("button", { name: "Sign out", exact: true })).toBeVisible();
   let revision = await (await page.request.get("/api/v1/scheduling/revisions/active?service_date=" + day)).json();
   for (const action of ["request-approval", "approve", "publish"]) {
-    const response = await page.request.post(`/api/v1/scheduling/revisions/${revision.revision_id}/${action}`, { headers: await csrf(page), data: { version: revision.version } });
+    const response = await page.request.post(`/api/v1/scheduling/revisions/${revision.revision_id}/${action}`, { headers: await csrf(page), data: { version: revision.version, ...(action === "publish" ? { uncovered_reason: "no_driver" } : {}) } });
     expect(response.ok(), await response.text()).toBeTruthy();
     revision = await response.json();
   }

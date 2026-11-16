@@ -68,7 +68,8 @@ def assign(client, headers, revision, plan):
 
 
 def act(client, headers, revision, action):
-    return client.post(f"{REVISIONS}/{revision['revision_id']}/{action}", headers=headers, json={'version': revision['version']})
+    body = {'version': revision['version'], **({'uncovered_reason': 'no_driver'} if action == 'publish' else {})}
+    return client.post(f"{REVISIONS}/{revision['revision_id']}/{action}", headers=headers, json=body)
 
 
 def publish(client, headers, revision):

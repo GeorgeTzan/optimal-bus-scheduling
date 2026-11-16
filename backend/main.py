@@ -7,7 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from core.sentry import init_sentry
 from config import settings
 from api import auth, trips, drivers, solver as solver_api
-from app.api import optimization, events, scheduling, identity, resources, timetables, imports, operations, schedule_changes, office, driver, workrules
+from app.api import optimization, events, scheduling, identity, resources, timetables, imports, operations, schedule_changes, office, driver, workrules, reports
 from app.domain.identity.reference_tools import require_reference_tools
 from dat_parser import get_full_data
 from db.database import engine, Base
@@ -76,6 +76,7 @@ app.include_router(schedule_changes.router)
 app.include_router(office.router)
 app.include_router(driver.router)
 app.include_router(workrules.router)
+app.include_router(reports.router)
 
 
 @app.get("/")

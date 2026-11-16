@@ -18,10 +18,11 @@ from app.domain.scheduling.models import Publication, RevisionAssignment, Schedu
 from app.domain.scheduling.snapshots import RevisionSnapshot
 from app.domain.timetables.display_clock import frozen_clock
 from app.domain.timetables.models import Route, ServiceTemplate, Station
+from app.domain.workforce.models import WorkforceDriver
 from app.domain.workrules import service
 from app.domain.workrules.budget import driver_budget
 from app.domain.workrules.draft import touched_drivers
-from app.domain.workrules.facts import duty_parts
+from app.domain.workrules.facts import DutyFacts, duty_parts
 from app.domain.workrules.models import DriverRouteRule, DriverWorkBaseline, DriverWorkProfile, VehicleRouteRule, WorkRuleOverride
 from app.domain.workrules.policy import WorkRulePolicy
 from app.domain.workrules.timeline import Baseline, DriverProfile, DriverTimeline, Duty, DutyTrip
@@ -451,6 +452,15 @@ def attach_work_context(problem: SolverProblem, ctx: WorkContext) -> SolverProbl
         if d in ctx.timelines
     ]
     return replace(problem, work_policy=ctx.policy.to_dict(), driver_budgets=tuple(b.to_dict() for b in budgets))
+
+
+def published_duty_facts(db, tenant_id: int, first: date, last: date) -> tuple[dict[str, DriverTimeline], dict[str, list[tuple[Duty, DutyFacts]]]]:
+    policy = service.company_policy(db, tenant_id)
+    codes = dict(db.query(Station.id, Station.code).filter(Station.tenant_id == tenant_id))
+    homes = {str(row.id): codes.get(row.home_station_id) or "" for row in db.query(WorkforceDriver).filter(WorkforceDriver.tenant_id == tenant_id)}
+    timelines, transfers = _timelines(db, tenant_id, policy, homes, first, last, None, first)
+    facts = {key: duty_parts(timeline.duties, timeline.profile, policy, lambda a, b: transfers.get((a, b))) for key, timeline in timelines.items()}
+    return timelines, facts
 
 
 def driver_week(db, tenant_id: int, driver_id: int, day: date) -> dict[str, Any]:

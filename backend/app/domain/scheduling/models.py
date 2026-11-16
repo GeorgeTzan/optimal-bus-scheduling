@@ -78,6 +78,8 @@ class Publication(Base):
     revision_id = Column(String, ForeignKey("domain_schedule_revisions.revision_id"), index=True, nullable=False)
     published_by = Column(String, nullable=False)
     verification_report = Column(JSON, default=dict, nullable=False)
+    uncovered_reason = Column(String(20), nullable=True)
+    uncovered_note = Column(String(500), nullable=True)
     published_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
 

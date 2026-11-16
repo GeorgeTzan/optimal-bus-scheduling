@@ -26,6 +26,10 @@ Implemented, uncommitted: per-member office grants (off by default), leave appro
 
 Implemented on `feat/v2-ktel-platform`: a versioned legal table (PD 54/1998, EU 561/2006; «Προς επιβεβαίωση», not confirmed by counsel), stricter-only company limits, opt-in warning rules, driver, vehicle and route restrictions, per-driver adoption baselines, warning overrides (`schedule.approve`), emergency 660' duties in urgent changes (`schedule.publish`), verifier findings in the Studio, solver budgets and the `legal_duty` helper, and import columns. Operations and known limitations: `docs/operations/DRIVER_WORK_RULES.md`. Solver authors: `docs/operations/WRITING_A_SOLVER.md`. Gates: backend 581 passed; typecheck and production build clean; browser 76 passed, 1 skipped on `next start`; 1 000-trip verification with work context 0.07 s. This is not legal certification.
 
+## Management reports (2026-11-16)
+
+Implemented on `feat/management-reports`: a Reports screen for `reports.read` (`admin`, `management`) with yearly overtime-cap progress, a monthly overtime comparison and coverage by line; a required reason when a day with uncovered trips is published (Studio and urgent changes); Excel and PDF exports in Greek or English; a download record with a "changed since last export" flag; migration `0021_management_reports`. All figures are planned figures from published schedules, not hours worked. Definitions, known limitations and deployment: `docs/operations/MANAGEMENT_REPORTS.md`. Gates: backend full suite 639 passed (`uv run pytest -q`, 29 min 54 s); browser 38 passed on the development server (`reports`, `scheduling`, `schedule-changes`, `work-rules`, `phone-menu`, `daily-operations`, `office-impacts` specs). Not run in this pass: the remaining browser specs and a production-build (`next start`) run. Not deployed.
+
 The sections below retain earlier recovery and task evidence; the current slice above supersedes their historical “next task” statements.
 
 ## Delivered recovery slice

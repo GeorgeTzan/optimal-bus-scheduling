@@ -19,7 +19,7 @@ async function publish(page: Page) {
   for (const action of ["request-approval", "approve", "publish"]) {
     response = await page.request.post(
       `/api/v1/scheduling/revisions/${revision.revision_id}/${action}`,
-      { headers: await headers(page), data: { version: revision.version } },
+      { headers: await headers(page), data: { version: revision.version, ...(action === "publish" ? { uncovered_reason: "no_driver" } : {}) } },
     );
     expect(response.ok(), await response.text()).toBeTruthy();
     revision = await response.json();
@@ -278,7 +278,7 @@ test('a successor shows and resolves a report recorded on its earlier publicatio
   const report=await page.request.post('/api/v1/operations/reports',{headers:await headers(page),data:{publication_id:before.publication.publication_id,trip_id:before.items[0].trip_id,expected_version:0,request_id:crypto.randomUUID(),kind:'delay',delay_minutes:12,description:'Earlier publication delay.'}});expect(report.status()).toBe(201);
   const departed=await page.request.post('/api/v1/operations/reports',{headers:await headers(page),data:{publication_id:before.publication.publication_id,trip_id:before.items[0].trip_id,expected_version:1,request_id:crypto.randomUUID(),kind:'departure',description:'Departure confirmed by team.'}});expect(departed.status()).toBe(201);
   const changed=await page.request.post('/api/v1/scheduling/changes',{headers:await headers(page),data:{publication_id:before.publication.publication_id,version:(await(await page.request.get('/api/v1/scheduling/revisions/'+before.publication.revision_id)).json()).version,reason:'Review later trip',reviewed_not_started:[before.items[1].trip_id],patches:[{trip_id:before.items[1].trip_id,new_resource_id:'UNASSIGNED'}],request_id:crypto.randomUUID()}});expect(changed.status(),await changed.text()).toBe(201);let rev=await changed.json();
-  for(const action of ['request-approval','approve','publish']){const response=await page.request.post(`/api/v1/scheduling/revisions/${rev.revision_id}/${action}`,{headers:await headers(page),data:{version:rev.version}});expect(response.ok(),await response.text()).toBeTruthy();rev=await response.json();}
+  for(const action of ['request-approval','approve','publish']){const response=await page.request.post(`/api/v1/scheduling/revisions/${rev.revision_id}/${action}`,{headers:await headers(page),data:{version:rev.version,...(action === 'publish' ? { uncovered_reason: 'no_driver' } : {})}});expect(response.ok(),await response.text()).toBeTruthy();rev=await response.json();}
   await page.goto('/?view=operations&service_date='+day);await page.getByRole('button',{name:'Trip details for 333001',exact:true}).click();
   await expect(page.getByText('Departure · reported on an earlier publication',{exact:true})).toBeVisible();
   const linked=page.getByRole('region',{name:'Earlier publication updates'});

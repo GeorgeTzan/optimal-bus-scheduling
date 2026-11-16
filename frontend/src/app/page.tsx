@@ -24,6 +24,7 @@ import { OverviewWorkspace } from "../features/dashboard/OverviewWorkspace";
 import { OfficeWorkspace } from "../features/office/OfficeWorkspace";
 import { TeamWorkspace } from "../features/team/TeamWorkspace";
 import { WorkRulesWorkspace } from "../features/workrules/WorkRulesWorkspace";
+import { ReportsWorkspace } from "../features/reports/ReportsWorkspace";
 import { SchedulingStudio } from "../features/scheduling/SchedulingStudio";
 import { useJobEvents } from "../features/optimization/use-job-events";
 import {
@@ -240,6 +241,7 @@ function WorkspacePage() {
       new_resource_id: string;
       is_locked?: boolean;
     }>,
+    extra?: { uncovered_reason?: string; uncovered_note?: string },
   ) => {
     if (!revision) return;
     const mutationEpoch = navigationEpoch.current;
@@ -251,6 +253,7 @@ function WorkspacePage() {
         body: JSON.stringify({
           version: revision.version,
           ...(patches ? { patches } : {}),
+          ...extra,
         }),
       },
     );
@@ -258,12 +261,16 @@ function WorkspacePage() {
       if (res.status === 409 && navigationEpoch.current === mutationEpoch)
         await reloadRevision();
       const data = (await res.json()) as {
-        detail?: string | { message?: string };
+        detail?: string | { message?: string; code?: string; uncovered?: number };
       };
-      throw new Error(
-        typeof data.detail === "string"
-          ? data.detail
-          : (data.detail?.message ?? `Schedule update failed (${res.status})`),
+      const detail = typeof data.detail === "string" ? null : data.detail;
+      throw Object.assign(
+        new Error(
+          typeof data.detail === "string"
+            ? data.detail
+            : (detail?.message ?? `Schedule update failed (${res.status})`),
+        ),
+        { code: detail?.code, uncovered: detail?.uncovered },
       );
     }
     const saved = (await res.json()) as PersistedRevision;
@@ -419,6 +426,13 @@ function WorkspacePage() {
     return (
       <Shell currentTab={activeTab} onTabChange={navigate}>
         {user?.permissions.includes("resources.read") ? <WorkRulesWorkspace /> : null}
+      </Shell>
+    );
+
+  if (activeTab === "reports")
+    return (
+      <Shell currentTab={activeTab} onTabChange={navigate}>
+        {user?.permissions.includes("reports.read") ? <ReportsWorkspace el={isEl} /> : null}
       </Shell>
     );
 
@@ -604,23 +618,6 @@ function WorkspacePage() {
               onApplyPlan={handleApplyPlan}
               onRunCVSolver={handleRunCVSolver}
             />
-          </div>
-        )}
-
-        {/* 6. Imports & Reports Views */}
-        {activeTab === "reports" && (
-          <div className="space-y-3 rounded-2xl border border-slate-200 bg-white p-8 text-center font-sans shadow-xs dark:border-slate-800 dark:bg-slate-900">
-            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-sky-50 text-2xl text-sky-500 dark:bg-sky-950/50">
-              📥
-            </div>
-            <h3 className="text-base font-bold text-slate-900 dark:text-white">
-              {isEl ? "Επιχειρησιακές Αναφορές" : "Operational Reports"}
-            </h3>
-            <p className="mx-auto max-w-md text-xs text-slate-500">
-              {isEl
-                ? "Η ενότητα δεν έχει συνδεθεί ακόμη. Το Studio χρησιμοποιεί εισαγόμενο σύνολο αναφοράς."
-                : "This module is not connected yet. The Scheduling Studio uses an explicitly imported reference dataset."}
-            </p>
           </div>
         )}
       </div>

@@ -165,7 +165,7 @@ async function breach(page: import("@playwright/test").Page, nextCrew: "DR0" | "
     });
   const move = async (revision: any) => {
     for (const action of ["request-approval", "approve", "publish"])
-      revision = await call(page, "post", `/api/v1/scheduling/revisions/${revision.revision_id}/${action}`, { version: revision.version });
+      revision = await call(page, "post", `/api/v1/scheduling/revisions/${revision.revision_id}/${action}`, { version: revision.version, ...(action === "publish" ? { uncovered_reason: "no_driver" } : {}) });
     return revision;
   };
   const monday = await call(page, "post", "/api/v1/scheduling/revisions", { service_date: PRIOR });
