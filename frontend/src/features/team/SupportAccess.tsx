@@ -19,6 +19,19 @@ const actionText: Record<string, [string, string]> = {
   customer_status_changed: ["Αλλαγή κατάστασης", "Status changed"],
 };
 
+type Row = { entry: Entry } | { views: [Entry, ...Entry[]] };
+
+function groupViews(entries: Entry[]): Row[] {
+  const rows: Row[] = [];
+  for (const entry of entries) {
+    const last = rows[rows.length - 1];
+    if (entry.action !== "support_request") rows.push({ entry });
+    else if (last && "views" in last) last.views.push(entry);
+    else rows.push({ views: [entry] });
+  }
+  return rows;
+}
+
 export function SupportAccess() {
   const { apiFetch } = useAuth(),
     el = useI18n().locale === "el",
@@ -53,11 +66,16 @@ export function SupportAccess() {
         {access.entries.length > 0 && (
           <div className="resource-table-scroll"><table className="resource-table" aria-label={el ? "Ιστορικό πρόσβασης υποστήριξης" : "Support access history"}><thead><tr>
             <th>{el ? "Πότε" : "When"}</th><th>{el ? "Ποιος" : "Who"}</th><th>{el ? "Ενέργεια" : "Action"}</th><th>{el ? "Λεπτομέρειες" : "Details"}</th></tr></thead><tbody>
-            {access.entries.map((entry, index) => (
-              <tr key={`${entry.at}-${index}`}>
-                <td>{when(entry.at)}</td><td>{el ? "Υποστήριξη πλατφόρμας" : "Platform support"}</td>
-                <td>{(actionText[entry.action] ?? [entry.action, entry.action])[lang]}</td>
-                <td>{[entry.reason, entry.ticket && `#${entry.ticket}`, entry.method && entry.path && `${entry.method} ${entry.path}`].filter(Boolean).join(" · ")}</td></tr>))}
+            {groupViews(access.entries).map((row, index) => "views" in row ? (
+              <tr key={`views-${index}`}>
+                <td>{when(row.views[0].at)}</td><td>{el ? "Υποστήριξη πλατφόρμας" : "Platform support"}</td>
+                <td colSpan={2}><details><summary>{el ? `Προβολή · ${row.views.length} αιτήματα` : `Viewed · ${row.views.length} requests`}</summary>
+                  <ul>{row.views.map((view, at) => <li key={at}>{when(view.at)} · {view.method} {view.path}</li>)}</ul></details></td></tr>
+            ) : (
+              <tr key={`${row.entry.at}-${index}`}>
+                <td>{when(row.entry.at)}</td><td>{el ? "Υποστήριξη πλατφόρμας" : "Platform support"}</td>
+                <td>{(actionText[row.entry.action] ?? [row.entry.action, row.entry.action])[lang]}</td>
+                <td>{[row.entry.reason, row.entry.ticket && `#${row.entry.ticket}`].filter(Boolean).join(" · ")}</td></tr>))}
           </tbody></table></div>)}
       </>)}
     </section>

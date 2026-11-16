@@ -278,6 +278,11 @@ test("a consented read-only support session is visible to the customer and ends 
       history.getByText("Customer reports a missing duty · #T-77"),
     ).toBeVisible();
     await expect(history.getByText("Viewed").first()).toBeVisible();
+    const views = history.locator("details").first();
+    await expect(views).not.toHaveAttribute("open", "");
+    await expect(views.getByText("GET /auth/me").first()).toBeHidden();
+    await views.locator("summary").click();
+    await expect(views.getByText("GET /auth/me").first()).toBeVisible();
     await expect(history.getByText("Platform support").first()).toBeVisible();
 
     await admin.getByRole("button", { name: "Revoke access" }).click();
