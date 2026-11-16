@@ -143,3 +143,13 @@ def test_export_validates_parameters_and_isolates_organizations(identity_setup):
     assert wb['Coverage'].max_row == 1 and wb['Month'].max_row == 1
     assert {row[0].value: row[1].value for row in wb['About'].iter_rows()}['Organization'] == 'Second KTEL'
     assert [row.format for row in exports(identity_setup, 'second')] == ['xlsx'] and exports(identity_setup) == []
+
+
+def test_pdf_columns_fit_their_longest_header_word():
+    from reportlab.pdfbase.pdfmetrics import stringWidth
+    from app.domain.reports.files import WIDTHS, column_widths, label
+    headers = [label(key, 'el') for key in ('code', 'driver', 'active', 'used', 'planned', 'limit', 'remaining', 'emergency', 'absolute_total', 'absolute_limit', 'status', 'history', 'projection')]
+    widths = column_widths(headers, WIDTHS['cap'], 770, 'DejaVu-Bold', 7)
+    assert abs(sum(widths) - 770) < 0.01
+    for header, width in zip(headers, widths):
+        assert width >= max(stringWidth(word, 'DejaVu-Bold', 7) for word in header.split()) + 12

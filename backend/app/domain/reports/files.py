@@ -172,6 +172,23 @@ def xlsx_bytes(report: dict, lang: Lang, meta: dict) -> bytes:
     return output.getvalue()
 
 
+def column_widths(headers: list[str], weights: tuple[int, ...], total: float, font: str, size: float) -> list[float]:
+    floors = [max(pdfmetrics.stringWidth(word, font, size) for word in str(header).split()) + 12 for header in headers]
+    fixed: dict[int, float] = {}
+    while True:
+        free = [index for index in range(len(weights)) if index not in fixed]
+        if not free:
+            scale = total / sum(fixed.values())
+            return [fixed[index] * scale for index in range(len(weights))]
+        room = total - sum(fixed.values())
+        share = sum(weights[index] for index in free)
+        widths = {index: room * weights[index] / share for index in free}
+        short = {index: floors[index] for index, width in widths.items() if width < floors[index]}
+        if not short:
+            return [fixed.get(index, widths.get(index)) for index in range(len(weights))]
+        fixed.update(short)
+
+
 def _paragraph(value, style) -> Paragraph:
     return Paragraph("" if value is None else escape(str(value)).replace("\n", "<br/>"), style)
 
@@ -191,7 +208,7 @@ def pdf_bytes(report: dict, lang: Lang, meta: dict) -> bytes:
     for key, headers, rows in sections(report, lang):
         story.append(_paragraph(label(f"{key}_heading", lang), heading))
         cells = [[_paragraph(value, head) for value in headers]] + [[_paragraph(value, body) for value in row] for row in rows]
-        table = Table(cells, colWidths=[document.width * weight / sum(WIDTHS[key]) for weight in WIDTHS[key]], repeatRows=1, splitInRow=1)
+        table = Table(cells, colWidths=column_widths(headers, WIDTHS[key], document.width, head.fontName, head.fontSize), repeatRows=1, splitInRow=1)
         table.setStyle(TableStyle([
             ("GRID", (0, 0), (-1, -1), 0.4, colors.HexColor("#9aa3ad")),
             ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#e8ecf1")),

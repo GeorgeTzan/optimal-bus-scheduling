@@ -354,6 +354,10 @@ export function ReportsWorkspace({ el }: { el: boolean }) {
                       row.names
                         .map((names) => names[lang] || names[0] || "")
                         .join(" – ") || t("no_line");
+                    const station = (code: string) => {
+                      const names = row.names[row.stations.indexOf(code)];
+                      return names ? names[lang] || names[0] || code : code;
+                    };
                     const days = lines[`${month}|${row.line}`];
                     const reasons = Object.entries(row.reasons).sort(
                       ([a], [b]) => a.localeCompare(b),
@@ -429,7 +433,11 @@ export function ReportsWorkspace({ el }: { el: boolean }) {
                                           key={`${day.date}|${day.direction}`}
                                         >
                                           <td className="team-name">
-                                            {date(day.date)} · {day.direction}
+                                            {date(day.date)} ·{" "}
+                                            {day.direction
+                                              .split("→")
+                                              .map(station)
+                                              .join(" → ")}
                                           </td>
                                           <td data-label={t("uncovered")}>
                                             {day.uncovered.join(", ") || "—"}

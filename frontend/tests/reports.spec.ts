@@ -108,6 +108,9 @@ test("management sees the three sections and downloads both files", async ({
   await page.getByRole("button", { name: /Central depot – Harbour/ }).click();
   const days = page.getByRole("region", { name: /Affected days/ });
   await expect(days).toContainText("333002");
+  await expect(days).toContainText(
+    /Central depot → Harbour|Harbour → Central depot/,
+  );
   await expect(days).toContainText("No driver available");
   await expect(days).toContainText("Canonical browser operator");
   for (const [name, extension] of [
